@@ -1,0 +1,1 @@
+Welcome to SCNGame! This page is dedicated to roughing out what should be done and how we should go about doing it. It's effectively a small scratch pad for me to figure things out in terms of project management and is consequently incredibly informal.
