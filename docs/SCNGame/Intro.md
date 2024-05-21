@@ -8,17 +8,15 @@ This stage prioritises research and prototyping to understand *what* game we sho
 
 It's worth noting that many of the things done here will still be done beyond pre-dev, but this stage focuses all its time on these tasks. Such tasks include:
 - Determining a rough project plan and goals
-- Outlining a significant set of early requirements
 - Determining what tools and techniques need to be researched and learnt to facilitate development
-- Learning (at least) the basis of these tools
-- Producing high-fidelity prototypes using the tools - both as practice and to determine how valuable they are to the project goal
+- Learning (at least) the basics of these tools
+- Producing low-fidelity prototypes to get an idea of how things work
 This should only consume about a months worth of development
-
 ### In-Dev
 This is where the meat begins! We actually write some fricking code!!
 
 This is the stage where 'normal' development takes place - we follow through three sub-phases building up to a significant release of the game:
-- **alpha**: coding to implement a requirement with internal testing (automated and manual)
+- **alpha**: coding to implement a requirement or set of requirements with internal testing (automated and manual)
 - **beta**: coding to refine an implemented requirement with external testing (play testers)
 - **release candidate**: refining prior to release to ensure quality and integrity
 Development will continuously cycle between these three phases.
@@ -31,9 +29,9 @@ We will loosely follow scrum development - but with much less rigidity and accou
 #### Pre-Dev Sprints
 A pre-dev sprint will last 1 week.
 
-Since pre-dev is all about initial planning and structuring - all tasks will be involved in producing prototypes and sketches, and determining a large backlog of requirements to form the 'meat' of the game. It may also include some initial formal specifications for things that *need* specifying (e.g. sprite size, engine, tools to use, etc...).
+Pre-dev sprints will *only* be used for research and lo-fi prototypes. It's just to get a feel for how things might work and to learn how to use the tools we need.
 
-At the start of each sprint, a meeting will be held determining what work needs to be done, and who should do it. There won't be any backlog of tasks - although one of the tasks itself will be producing a backlog of requirements.
+At the start of each sprint, a meeting will be held determining what work needs to be done, and who should do it. 
 #### In-Dev Sprints
 An in-dev sprint will last 2 weeks.
 
