@@ -1,0 +1,23 @@
+## What's been Figured Out
+- JBump is wonderful for collision
+	- Separate 'hitbox' and 'wall collider' where the wall collider is 1 pixel tall - allowing for proper 2.5d wall collision
+	- The 'wall collider' is moved first, and then based on any collision it experiences the other hitboxes move as well
+	- Need to create a 'Wall' class so 'instanceof' can be used to determine if something is a wall or not
+- Use a sprite offset between collision and rendering to allow for sword animations
+	- The simulated position should not change
+	- It is the render components responsibility to account for any offset for sprites or animations
+	- Every other component (i.e. input and physics) can live never knowing the sprite is offset from the characters actual position
+- Use background and foreground layers in Tiled to allow the player and other entities to walk behind and in front of things like buildings or tree
+- A factory can be used to build up different actors.
+## What still needs to be Figured Out
+- How the hell to do UI... like... at all 
+	- Learn the basics of using scene2d.ui
+	- Figure out how to build up basic components like a pause menu and dialogue screen
+	- Figure out how to use custom skins with art produced by either Casper or Nathan 
+- Where to hold the 'World' object from JBump
+	- in the Game class? in some manager class? in a factory?
+	- How should references be passed between actors/entities? Should it be a global static member? or should it be injected?
+	- To achieve loose coupling, perhaps we pass a World reference to the physics component of each entity per frame. This allows the 'World' to be quickly swapped out without having to update every entity to match the new World - we simply pass a difference reference. It also means we can effectively have several 'layers', being different worlds, so certain objects can exist in a completely separate collision layer to others (although management of this may be trickier, but this way gives us the freedom to do so)
+- Managing state
+	- enums and switch cases seem the best way to me
+- Animation handling
