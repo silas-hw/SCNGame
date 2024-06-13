@@ -4,6 +4,8 @@ This is a cool game project I'll be working on with my partner (Casper/casuoh) a
 
 These docs are basically just to keep track of notes and other findings, as well as potentially a place to document code and class diagrams (although this will likely be quite rare).
 
+These docs are made in [Obsidian](https://obsidian.md/), and to be read properly must be opened within Obsidian.
+
 ## Index
 - [[Intro]] is an initial discussion of the project plan and management
 - Pre-Dev is everything done before 'proper' development
