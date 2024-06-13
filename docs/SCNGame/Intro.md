@@ -27,11 +27,7 @@ We will follow an agile approach to development following continuous integration
 We will loosely follow scrum development - but with much less rigidity and accounting for a much lower velocity and throughput (Casper and Nathan both have jobs outside of making this game, and a single dev can only do so much!). 
 ### Sprints
 #### Pre-Dev Sprints
-A pre-dev sprint will last 1 week.
-
-Pre-dev sprints will *only* be used for research and lo-fi prototypes. It's just to get a feel for how things might work and to learn how to use the tools we need.
-
-At the start of each sprint, a meeting will be held determining what work needs to be done, and who should do it. 
+Pre-dev won't consist of sprints. It's just gonna be some messy prototyping and sketching to get our footing. 
 #### In-Dev Sprints
 An in-dev sprint will last 2 weeks.
 
@@ -41,4 +37,10 @@ Halfway between each sprint, we will hold an 'in-review' meeting where we discus
 
 At the end of each sprint, I will form a sprint retrospective analysing the work of the sprint and how future work may need to change based on it.
 
+## Task Assignment
+Tasks will be displayed on a Kanban board on a GitHub Project. There will be no prioritisation - you simply pick up a task you feel like doing. The only consideration that needs to be taken is whether or not a task is 'ready' or not (i.e. does it have any other dependencies that need to be completed first). Unready tasks will be placed in the 'backlog'. However, there will be a limit on the number of items in the backlog. This is because we may discover things we want to do later to be different after completing that things dependency.
 
+There will also be a limit on the number of tasks that can be present in 'ready', 'in progress' and 'in review' to prevent an overbearing quantity of work being considered at once. We develop incrementally! A quantity of small changes leads to a whole project. Rome wasn't built in a day.
+
+### Dependent Tasks
+Say we want to create some form of shop system. This is dependent on a dialog system being in place, which is in turn dependent on the UI system being in place. If we create all the tasks for the shop system and put them in the backlog before even implementing the UI, we may discover (as a result of implementing the UI) that the way we want the shop system to work to be completely different to how we initially planned. Having a limit on the number of tasks in the backlog encourages only creating dependent tasks when they are close to being ready and mitigates the risk of this happening.
