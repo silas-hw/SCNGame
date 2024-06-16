@@ -12,6 +12,9 @@
 - Scene2D render order is bloody messy. 
 	- The best way to adjust the z-index of actors so that 'higher up' actors are drawn earlier (as per how 2.5d should look) is to sort the actor array at every frame using a comparator
 	- As a result of messing about with this, I figured that `BaseActor` should override setX, setY, getX, and getY so it only relies on a `Vector2` for an actors position rather than having some weird possible integrity issues with the pre-existing x and y values in `scene2d.Actor` and my own position vector
+
+#### Important Things to Remember
+- Make sure all walls and collision boxes have a whole integer position and bounding width + height. Fractional position or size can make collision with the player weirdddd
 ## What still needs to be Figured Out
 - How the hell to do UI... like... at all 
 	- Learn the basics of using scene2d.ui
