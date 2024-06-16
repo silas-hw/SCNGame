@@ -5,10 +5,13 @@
 	- Need to create a 'Wall' class so 'instanceof' can be used to determine if something is a wall or not
 - Use a sprite offset between collision and rendering to allow for sword animations
 	- The simulated position should not change
-	- It is the render components responsibility to account for any offset for sprites or animations
+	- It is the render component's responsibility to account for any offset for sprites or animations
 	- Every other component (i.e. input and physics) can live never knowing the sprite is offset from the characters actual position
 - Use background and foreground layers in Tiled to allow the player and other entities to walk behind and in front of things like buildings or tree
 - A factory can be used to build up different actors.
+- Scene2D render order is bloody messy. 
+	- The best way to adjust the z-index of actors so that 'higher up' actors are drawn earlier (as per how 2.5d should look) is to sort the actor array at every frame using a comparator
+	- As a result of messing about with this, I figured that `BaseActor` should override setX, setY, getX, and getY so it only relies on a `Vector2` for an actors position rather than having some weird possible integrity issues with the pre-existing x and y values in `scene2d.Actor` and my own position vector
 ## What still needs to be Figured Out
 - How the hell to do UI... like... at all 
 	- Learn the basics of using scene2d.ui
@@ -18,6 +21,7 @@
 	- in the Game class? in some manager class? in a factory?
 	- How should references be passed between actors/entities? Should it be a global static member? or should it be injected?
 	- To achieve loose coupling, perhaps we pass a World reference to the physics component of each entity per frame. This allows the 'World' to be quickly swapped out without having to update every entity to match the new World - we simply pass a difference reference. It also means we can effectively have several 'layers', being different worlds, so certain objects can exist in a completely separate collision layer to others (although management of this may be trickier, but this way gives us the freedom to do so)
+		- This also encourages the idea that collision is a matter for the physics component, and not the input or render component. The Player itself, as well as the input and render components, do not (and should not) be aware of the physics World.
 - Managing state
 	- enums and switch cases seem the best way to me
 - Animation handling
