@@ -23,6 +23,8 @@ import java.util.Comparator;
  * <p>
  * This implements an InputProcessor, and propagates all input events to registered entities. This works unlike a
  * {@link com.badlogic.gdx.InputMultiplexer input multiplexer}. Every single entity will receive the input event.
+ *
+ * @author Silas Hayes-Williams
  */
 public class Scene implements Disposable, InputProcessor {
     protected Array<Entity> entities;
