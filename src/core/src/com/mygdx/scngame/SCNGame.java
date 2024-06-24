@@ -36,13 +36,20 @@ public class SCNGame extends ApplicationAdapter {
 		scene = new Scene(viewport, batch, shape);
 		scene.addEntity(new Player());
 
+		Player player2 = new Player();
+		player2.position.set(500, 500);
+
+		scene.addEntity(player2);
+
 		Gdx.input.setInputProcessor(scene);
 	}
 
 	@Override
 	public void render () {
+		Gdx.graphics.setTitle("" + Gdx.graphics.getFramesPerSecond());
 		ScreenUtils.clear(0, 0, 0, 0);
 		scene.draw();
+		scene.update(null, Gdx.graphics.getDeltaTime());
 	}
 
 	@Override
