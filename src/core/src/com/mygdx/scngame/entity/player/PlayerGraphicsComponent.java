@@ -8,8 +8,11 @@ import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.GraphicsComponent;
 
 public class PlayerGraphicsComponent implements GraphicsComponent<Entity> {
-    Texture texture = new Texture(Gdx.files.internal("sprites/test.png"));
+    Texture texture;
 
+    public PlayerGraphicsComponent(Texture texture) {
+        this.texture = texture;
+    }
     @Override
     public void draw(Entity container, SpriteBatch batch, ShapeRenderer shape, float alpha) {
         batch.draw(texture, container.position.x, container.position.y);
@@ -17,6 +20,5 @@ public class PlayerGraphicsComponent implements GraphicsComponent<Entity> {
 
     @Override
     public void dispose() {
-        texture.dispose();
     }
 }
