@@ -37,8 +37,6 @@ public class PlayerInputComponent extends InputAdapter implements InputComponent
 
         container.direction.set(dx, dy);
         container.direction.nor();
-
-        System.out.println(container.direction);
     }
 
     @Override

@@ -65,7 +65,7 @@ public class Scene implements Disposable, InputProcessor {
         this.entities.clear();
     }
 
-    public void update(World<?> world, float delta) {
+    public void update(World<Object> world, float delta) {
         for(Entity entity : entities) {
             entity.update(world, delta);
         }
