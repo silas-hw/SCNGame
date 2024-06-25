@@ -15,6 +15,7 @@ import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Rect;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.Entity;
+import com.mygdx.scngame.entity.EntityFactory;
 import com.mygdx.scngame.entity.player.Player;
 import com.mygdx.scngame.physics.DamageBox;
 import com.mygdx.scngame.physics.HitBox;
@@ -44,12 +45,7 @@ public class SCNGame extends ApplicationAdapter {
 		viewport = new ScreenViewport(cam);
 
 		scene = new Scene(viewport, batch, shape);
-		scene.addEntity(new Player());
-
-		Player player2 = new Player();
-		player2.position.set(500, 500);
-
-		scene.addEntity(player2);
+		scene.addEntity(EntityFactory.createPlayer());
 
 		Gdx.input.setInputProcessor(scene);
 	}

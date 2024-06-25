@@ -1,6 +1,8 @@
 package com.mygdx.scngame.entity.player;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -18,13 +20,46 @@ public class Player extends Entity {
     protected PhysicsComponent<? super Player> physicsComponent;
 
     public Player() {
-        this.inputComponent = new PlayerInputComponent();
-        this.graphicsComponent = new PlayerGraphicsComponent();
-        this.physicsComponent = new PlayerPhysicsComponent(this);
-        addListener(inputComponent);
-
         position.x = 0;
         position.y = 0;
+    }
+
+    public Player(InputComponent<? super Player> input,
+                  GraphicsComponent<? super Player> graphics,
+                  PhysicsComponent<? super Player> physics) {
+        this.inputComponent = input;
+        this.graphicsComponent = graphics;
+        this.physicsComponent = physics;
+
+        addListener(this.inputComponent);
+        position.x = 0;
+        position.y = 0;
+    }
+
+    public void setInputComponent(InputComponent<? super Player> input) {
+        if(this.inputComponent != null) {
+            removeListener(this.inputComponent);
+            this.inputComponent.dispose();
+        }
+
+        this.inputComponent = input;
+        addListener(this.inputComponent);
+    }
+
+    public void setPhysicsComponent(PhysicsComponent<? super Player> physics) {
+        if(this.physicsComponent != null) {
+            this.physicsComponent.dispose();
+        }
+
+        this.physicsComponent = physics;
+    }
+
+    public void setGraphicsComponent(GraphicsComponent<? super Player> graphics) {
+        if(this.graphicsComponent != null) {
+            this.graphicsComponent.dispose();
+        }
+
+        this.graphicsComponent = graphics;
     }
 
     @Override
