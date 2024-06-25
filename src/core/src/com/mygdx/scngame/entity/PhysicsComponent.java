@@ -4,5 +4,5 @@ import com.badlogic.gdx.utils.Disposable;
 import com.dongbat.jbump.World;
 
 public interface PhysicsComponent<T extends Entity> extends Disposable {
-    void update(T container, World<?> world, float delta);
+    void update(T container, World<Object> world, float delta);
 }

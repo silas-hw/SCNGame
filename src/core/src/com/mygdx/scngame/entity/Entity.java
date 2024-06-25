@@ -11,11 +11,13 @@ import com.dongbat.jbump.World;
 
 public abstract class Entity implements Disposable, InputProcessor {
     public Vector2 position = new Vector2();
+    public Vector2 direction = new Vector2();
+
     private final Array<InputProcessor> inputListeners = new Array<>();
 
     public Entity() {}
 
-    public void update(World<?> world, float delta) {}
+    public void update(World<Object> world, float delta) {}
 
     public void draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {}
 
