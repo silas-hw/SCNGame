@@ -67,11 +67,17 @@ public class Scene implements Disposable, InputProcessor {
 
     public void update(World<Object> world, float delta) {
         for(Entity entity : entities) {
+            if(entity.isDead) {
+                entities.removeValue(entity, false);
+                continue;
+            }
+
             entity.update(world, delta);
         }
     }
 
     public void draw() {
+        entities.sort(this.renderComparator);
         viewport.getCamera().update();
         viewport.apply();
 
@@ -92,6 +98,8 @@ public class Scene implements Disposable, InputProcessor {
         for(Entity entity : entities) {
             entity.dispose();
         }
+
+        clearEntities();
 
         if(ownsBatch) {
             batch.dispose();
