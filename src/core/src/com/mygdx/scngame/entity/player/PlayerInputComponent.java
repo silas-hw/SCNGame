@@ -33,6 +33,7 @@ public class PlayerInputComponent extends InputAdapter implements InputComponent
 
         if(RIGHT) {
             dx++;
+            container.isDying = true;
         }
 
         container.direction.set(dx, dy);

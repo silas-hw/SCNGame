@@ -19,6 +19,8 @@ public class Player extends Entity {
     protected GraphicsComponent<? super Player> graphicsComponent;
     protected PhysicsComponent<? super Player> physicsComponent;
 
+    public boolean isDying = false;
+
     public Player() {
         position.x = 0;
         position.y = 0;
