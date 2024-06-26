@@ -21,6 +21,13 @@ public class PlayerPhysicsComponent implements PhysicsComponent<Player> {
 
     @Override
     public void update(Player container, World<Object> world, float delta) {
+        if(container.isDying) {
+            if(world.hasItem(collisionItem)) world.remove(collisionItem);
+            if(world.hasItem(hitbox)) world.remove(hitbox);
+            container.isDead = true;
+            return;
+        }
+
         if(!world.hasItem(collisionItem)) {
             world.add(collisionItem, container.position.x, container.position.y, 16, 32);
         }
@@ -37,7 +44,6 @@ public class PlayerPhysicsComponent implements PhysicsComponent<Player> {
 
     @Override
     public void dispose() {
-
     }
 
     public static class Filter implements CollisionFilter {

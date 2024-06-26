@@ -69,6 +69,7 @@ public class Scene implements Disposable, InputProcessor {
         for(Entity entity : entities) {
             if(entity.isDead) {
                 entities.removeValue(entity, false);
+                entity.dispose();
                 continue;
             }
 
