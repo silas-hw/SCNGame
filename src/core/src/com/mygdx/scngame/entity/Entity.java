@@ -13,6 +13,9 @@ public abstract class Entity implements Disposable, InputProcessor {
     public Vector2 position = new Vector2();
     public Vector2 direction = new Vector2();
 
+    // used by Scene to remove dead entities without coupling Entity to Scene
+    public boolean isDead = false;
+
     private final Array<InputProcessor> inputListeners = new Array<>();
 
     public Entity() {}
