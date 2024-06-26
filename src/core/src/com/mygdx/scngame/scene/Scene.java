@@ -212,7 +212,7 @@ public class Scene implements Disposable, InputProcessor {
 
         @Override
         public int compare(Entity entity, Entity other) {
-            return Float.compare(entity.position.y, other.position.y);
+            return Float.compare(other.position.y, entity.position.y);
         }
 
         @Override
