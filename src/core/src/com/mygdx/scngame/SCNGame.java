@@ -60,8 +60,9 @@ public class SCNGame extends ApplicationAdapter {
 		Gdx.graphics.setTitle("" + Gdx.graphics.getFramesPerSecond());
 
 		ScreenUtils.clear(Color.WHITE);
-		scene.draw();
+
 		scene.update(world, Gdx.graphics.getDeltaTime());
+		scene.draw();
 
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_BLEND);
