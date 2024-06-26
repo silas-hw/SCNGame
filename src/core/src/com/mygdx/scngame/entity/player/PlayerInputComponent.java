@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.mygdx.scngame.entity.EntityFactory;
 import com.mygdx.scngame.entity.InputComponent;
 
 public class PlayerInputComponent extends InputAdapter implements InputComponent<Player> {
@@ -33,7 +34,6 @@ public class PlayerInputComponent extends InputAdapter implements InputComponent
 
         if(RIGHT) {
             dx++;
-            container.isDying = true;
         }
 
         container.direction.set(dx, dy);

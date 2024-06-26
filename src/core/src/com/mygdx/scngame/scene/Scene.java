@@ -5,9 +5,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.Entity;
+import com.mygdx.scngame.entity.EntityContext;
 
 import java.util.Comparator;
 
@@ -26,8 +28,8 @@ import java.util.Comparator;
  *
  * @author Silas Hayes-Williams
  */
-public class Scene implements Disposable, InputProcessor {
-    protected Array<Entity> entities;
+public class Scene implements Disposable, InputProcessor, EntityContext {
+    protected SnapshotArray<Entity> entities;
     protected Comparator<Entity> renderComparator;
 
     protected SpriteBatch batch;
@@ -45,7 +47,7 @@ public class Scene implements Disposable, InputProcessor {
     }
 
     public Scene(Viewport viewport, SpriteBatch batch, ShapeRenderer shape) {
-        entities = new Array<>();
+        entities = new SnapshotArray(true, 4, Entity.class);
         renderComparator = new YComparator();
 
         this.batch = batch;
@@ -54,6 +56,13 @@ public class Scene implements Disposable, InputProcessor {
     }
 
     public void addEntity(Entity entity) {
+        // change entity context to this if it currently belongs to another context
+        if(entity.context != null) {
+            entity.context.removeEntity(entity);
+        }
+
+        entity.context = this;
+
         this.entities.add(entity);
     }
 
@@ -65,16 +74,25 @@ public class Scene implements Disposable, InputProcessor {
         this.entities.clear();
     }
 
+    @Override
+    public boolean hasEntity(Entity entity) {
+        return entities.contains(entity, false);
+    }
+
     public void update(World<Object> world, float delta) {
-        for(Entity entity : entities) {
-            if(entity.isDead) {
-                entities.removeValue(entity, false);
-                entity.dispose();
+        Entity[] e = entities.begin();
+
+        for(int i = 0; i<entities.size; i++) {
+            if (e[i].isDead) {
+                entities.removeValue(e[i], false);
+                e[i].dispose();
                 continue;
             }
 
-            entity.update(world, delta);
+            e[i].update(world, delta);
         }
+
+        entities.end();
     }
 
     public void draw() {
@@ -87,9 +105,12 @@ public class Scene implements Disposable, InputProcessor {
 
         batch.begin();
 
-        for(Entity entity : entities) {
-            entity.draw(batch, shape, alpha);
+        Entity[] e = entities.begin();
+        for(int i = 0; i<entities.size; i++) {
+            e[i].draw(batch, shape, alpha);
         }
+
+        entities.end();
 
         batch.end();
     }

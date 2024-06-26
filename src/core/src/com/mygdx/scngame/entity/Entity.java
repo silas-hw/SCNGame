@@ -18,6 +18,8 @@ public abstract class Entity implements Disposable, InputProcessor {
 
     private final Array<InputProcessor> inputListeners = new Array<>();
 
+    public EntityContext context = null;
+
     public Entity() {}
 
     public void update(World<Object> world, float delta) {}

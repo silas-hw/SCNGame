@@ -45,12 +45,13 @@ public class SCNGame extends ApplicationAdapter {
 		viewport = new ScreenViewport(cam);
 
 		scene = new Scene(viewport, batch, shape);
-		scene.addEntity(EntityFactory.createPlayer());
 
-		Player player = EntityFactory.createPlayer();
-		player.position.x = 50;
-		player.position.y = 50;
-		scene.addEntity(player);
+		for(int i = 0; i<1000; i++) {
+			Player temp = EntityFactory.createPlayer();
+			temp.position.x = i*50;
+			temp.position.y = i*50;
+			scene.addEntity(temp);
+		}
 
 		Gdx.input.setInputProcessor(scene);
 	}
