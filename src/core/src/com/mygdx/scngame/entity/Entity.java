@@ -11,6 +11,7 @@ import com.dongbat.jbump.World;
 
 /**
  * Represents a single 'Entity' within the Game.
+ *
  */
 public abstract class Entity implements Disposable, InputProcessor {
     public Vector2 position = new Vector2();
@@ -21,7 +22,13 @@ public abstract class Entity implements Disposable, InputProcessor {
 
     private final Array<InputProcessor> inputListeners = new Array<>();
 
-    public EntityContext context = null;
+    /**
+     * An empty {@link EntityContextAdapter} such that if the context is not set there is still
+     * a context that can be interacted with
+     */
+    public final static EntityContext NULL_CONTEXT = new EntityContextAdapter();
+    public EntityContext context = NULL_CONTEXT;
+
 
     public Entity() {}
 
