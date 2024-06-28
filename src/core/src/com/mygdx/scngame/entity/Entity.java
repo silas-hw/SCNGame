@@ -9,6 +9,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.dongbat.jbump.World;
 
+/**
+ * Represents a single 'Entity' within the Game.
+ */
 public abstract class Entity implements Disposable, InputProcessor {
     public Vector2 position = new Vector2();
     public Vector2 direction = new Vector2();
@@ -22,8 +25,20 @@ public abstract class Entity implements Disposable, InputProcessor {
 
     public Entity() {}
 
+    /**
+     * Invoked when the entity is to update its state and handle input
+     *
+     * @param world the {@link World physics world} for the Entity to interact with
+     * @param delta the delta time since the last call to update
+     */
     public void update(World<Object> world, float delta) {}
 
+    /**
+     *
+     * @param batch the {@link SpriteBatch sprite batch} to draw sprites to
+     * @param shape the {@link ShapeRenderer shape renderer} to draw shapes to
+     * @param alpha
+     */
     public void draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {}
 
     public void addListener(InputProcessor listener) {

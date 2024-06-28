@@ -8,11 +8,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.dongbat.jbump.World;
-import com.mygdx.scngame.entity.Entity;
-import com.mygdx.scngame.entity.GraphicsComponent;
-import com.mygdx.scngame.entity.InputComponent;
-import com.mygdx.scngame.entity.PhysicsComponent;
-import com.sun.tools.jdeps.Graph;
+import com.mygdx.scngame.entity.*;
 
 public class Player extends Entity {
     protected InputComponent<? super Player> inputComponent;
@@ -26,7 +22,8 @@ public class Player extends Entity {
         position.y = 0;
     }
 
-    public Player(InputComponent<? super Player> input,
+    public Player(EntityContext context,
+                  InputComponent<? super Player> input,
                   GraphicsComponent<? super Player> graphics,
                   PhysicsComponent<? super Player> physics) {
         this.inputComponent = input;
@@ -34,8 +31,6 @@ public class Player extends Entity {
         this.physicsComponent = physics;
 
         addListener(this.inputComponent);
-        position.x = 0;
-        position.y = 0;
     }
 
     public void setInputComponent(InputComponent<? super Player> input) {
