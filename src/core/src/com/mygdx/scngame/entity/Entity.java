@@ -10,7 +10,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.dongbat.jbump.World;
 
 /**
- * Represents a single 'Entity' within the Game.
+ * Represents a single 'Entity' within the Game. An Entity is also a {@link InputProcessor input processor} and is
+ * expected to be able to handle input events. It is recommended
  *
  */
 public abstract class Entity implements Disposable, InputProcessor {
