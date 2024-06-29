@@ -4,10 +4,11 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.dongbat.jbump.World;
+import com.mygdx.scngame.entity.component.EntityContextAdapter;
+import com.mygdx.scngame.entity.context.EntityContext;
 
 /**
  * Represents a single 'Entity' within the Game. An Entity is also a {@link InputProcessor input processor} and is

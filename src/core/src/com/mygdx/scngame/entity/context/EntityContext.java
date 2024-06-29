@@ -1,4 +1,6 @@
-package com.mygdx.scngame.entity;
+package com.mygdx.scngame.entity.context;
+
+import com.mygdx.scngame.entity.Entity;
 
 /**
  * The context for which a {@link Entity entity} may reside within. It is the point of contact

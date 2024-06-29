@@ -1,4 +1,7 @@
-package com.mygdx.scngame.entity;
+package com.mygdx.scngame.entity.component;
+
+import com.mygdx.scngame.entity.Entity;
+import com.mygdx.scngame.entity.context.EntityContext;
 
 /**
  * A convenience implementation of {@link EntityContext entity context} so you can implement

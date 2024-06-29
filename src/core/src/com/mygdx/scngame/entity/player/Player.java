@@ -1,14 +1,13 @@
 package com.mygdx.scngame.entity.player;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.*;
+import com.mygdx.scngame.entity.component.GraphicsComponent;
+import com.mygdx.scngame.entity.component.InputComponent;
+import com.mygdx.scngame.entity.component.PhysicsComponent;
+import com.mygdx.scngame.entity.context.EntityContext;
 
 public class Player extends Entity {
     protected InputComponent<? super Player> inputComponent;

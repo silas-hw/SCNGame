@@ -1,13 +1,8 @@
 package com.mygdx.scngame.entity.player;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.mygdx.scngame.entity.EntityFactory;
-import com.mygdx.scngame.entity.InputComponent;
+import com.mygdx.scngame.entity.component.InputComponent;
 
 public class PlayerInputComponent extends InputAdapter implements InputComponent<Player> {
     private boolean UP = false;

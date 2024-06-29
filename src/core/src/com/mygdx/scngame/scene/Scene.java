@@ -3,13 +3,12 @@ package com.mygdx.scngame.scene;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.Entity;
-import com.mygdx.scngame.entity.EntityContext;
+import com.mygdx.scngame.entity.context.EntityContext;
 
 import java.util.Comparator;
 

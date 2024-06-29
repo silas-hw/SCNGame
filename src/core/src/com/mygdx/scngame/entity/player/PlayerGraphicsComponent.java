@@ -1,11 +1,10 @@
 package com.mygdx.scngame.entity.player;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.scngame.entity.Entity;
-import com.mygdx.scngame.entity.GraphicsComponent;
+import com.mygdx.scngame.entity.component.GraphicsComponent;
 
 public class PlayerGraphicsComponent implements GraphicsComponent<Entity> {
     Texture texture;

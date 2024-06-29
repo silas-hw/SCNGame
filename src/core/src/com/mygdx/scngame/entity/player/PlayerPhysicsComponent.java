@@ -4,7 +4,7 @@ import com.dongbat.jbump.CollisionFilter;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Response;
 import com.dongbat.jbump.World;
-import com.mygdx.scngame.entity.PhysicsComponent;
+import com.mygdx.scngame.entity.component.PhysicsComponent;
 import com.mygdx.scngame.physics.HitBox;
 
 public class PlayerPhysicsComponent implements PhysicsComponent<Player> {
