@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.dongbat.jbump.World;
-import com.mygdx.scngame.entity.component.EntityContextAdapter;
+import com.mygdx.scngame.entity.context.EntityContextAdapter;
 import com.mygdx.scngame.entity.context.EntityContext;
 
 /**
