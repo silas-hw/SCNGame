@@ -4,10 +4,12 @@ package com.mygdx.scngame.physics;
  * Used by the physics engine to apply damage to an entity. An entity can detect its own
  * collision with a DamageBox and determine how to apply the damage to itself.
  */
-public class DamageBox {
+public class DamageBox extends Box {
     public float damage;
     public Source source;
     public DamageType type;
+
+    public boolean solid = false;
 
     public enum Source {
         PLAYER,

@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.context.EntityContext;
+import com.mygdx.scngame.physics.Box;
 
 import java.util.Comparator;
 
@@ -78,7 +79,7 @@ public class Scene implements Disposable, InputProcessor, EntityContext {
         return entities.contains(entity, false);
     }
 
-    public void update(World<Object> world, float delta) {
+    public void update(World<Box> world, float delta) {
         Entity[] e = entities.begin();
 
         for(int i = 0; i<entities.size; i++) {

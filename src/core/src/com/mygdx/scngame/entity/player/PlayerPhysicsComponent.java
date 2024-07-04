@@ -1,26 +1,29 @@
 package com.mygdx.scngame.entity.player;
 
-import com.dongbat.jbump.CollisionFilter;
-import com.dongbat.jbump.Item;
-import com.dongbat.jbump.Response;
-import com.dongbat.jbump.World;
+import com.dongbat.jbump.*;
 import com.mygdx.scngame.entity.component.PhysicsComponent;
+import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.HitBox;
 
 public class PlayerPhysicsComponent implements PhysicsComponent<Player> {
 
-    private Item<Object> collisionItem;
-    private Item<Object> hitbox;
+    private Item<Box> collisionItem;
+    private Item<Box> hitbox;
 
     private final CollisionFilter FILTER = new Filter();
 
     public PlayerPhysicsComponent(Player player) {
-        collisionItem = new Item<>(player);
+        Box foot = new Box();
+        foot.solid = true;
+        foot.mask = (byte) 0b10000000;
+        foot.response = Response.slide;
+
+        collisionItem = new Item<>(foot);
         hitbox = new Item<>(new HitBox());
     }
 
     @Override
-    public void update(Player container, World<Object> world, float delta) {
+    public void update(Player container, World<Box> world, float delta) {
         if(container.isDying) {
             if(world.hasItem(collisionItem)) world.remove(collisionItem);
             if(world.hasItem(hitbox)) world.remove(hitbox);
@@ -38,8 +41,12 @@ public class PlayerPhysicsComponent implements PhysicsComponent<Player> {
 
         container.position.mulAdd(container.direction, 500f*delta);
 
-        world.move(collisionItem, container.position.x, container.position.y, FILTER);
-        world.move(hitbox, container.position.x, container.position.y, FILTER);
+        world.move(collisionItem, container.position.x, container.position.y, Box.GLOBAL_FILTER);
+        Rect rect = world.getRect(collisionItem);
+        container.position.x = rect.x;
+        container.position.y = rect.y;
+
+        world.move(hitbox, container.position.x, container.position.y, Box.GLOBAL_FILTER);
     }
 
     @Override

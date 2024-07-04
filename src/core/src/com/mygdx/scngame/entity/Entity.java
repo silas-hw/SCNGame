@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.context.EntityContextAdapter;
 import com.mygdx.scngame.entity.context.EntityContext;
+import com.mygdx.scngame.physics.Box;
 
 /**
  * Represents a single 'Entity' within the Game. An Entity is also a {@link InputProcessor input processor} and is
@@ -40,7 +41,7 @@ public abstract class Entity implements Disposable, InputProcessor {
      * @param world the {@link World physics world} for the Entity to interact with
      * @param delta the delta time since the last call to update
      */
-    public void update(World<Object> world, float delta) {}
+    public void update(World<Box> world, float delta) {}
 
     /**
      *

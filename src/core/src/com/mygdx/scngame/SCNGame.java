@@ -13,10 +13,12 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Rect;
+import com.dongbat.jbump.Response;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.EntityFactory;
 import com.mygdx.scngame.entity.player.Player;
+import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.DamageBox;
 import com.mygdx.scngame.physics.HitBox;
 import com.mygdx.scngame.scene.Scene;
@@ -30,7 +32,7 @@ public class SCNGame extends ApplicationAdapter {
 	Viewport viewport;
 
 	Texture texture;
-	World<Object> world;
+	World<Box> world;
 	
 	@Override
 	public void create () {
@@ -39,6 +41,12 @@ public class SCNGame extends ApplicationAdapter {
 
 		world = new World<>();
 
+		Box wall = new Box();
+		wall.solid = true;
+		wall.layer = (byte) 0b10000000;
+
+		world.add(new Item<>(wall), 150, 150, 150, 150);
+
 
 		cam = new OrthographicCamera();
 
@@ -46,12 +54,7 @@ public class SCNGame extends ApplicationAdapter {
 
 		scene = new Scene(viewport, batch, shape);
 
-		for(int i = 0; i<1000; i++) {
-			Player temp = EntityFactory.createPlayer();
-			temp.position.x = i*50;
-			temp.position.y = i*50;
-			scene.addEntity(temp);
-		}
+		scene.addEntity(EntityFactory.createPlayer());
 
 		Gdx.input.setInputProcessor(scene);
 	}
@@ -60,7 +63,7 @@ public class SCNGame extends ApplicationAdapter {
 	public void render () {
 		Gdx.graphics.setTitle("" + Gdx.graphics.getFramesPerSecond());
 
-		ScreenUtils.clear(Color.WHITE);
+		ScreenUtils.clear(Color.BLACK);
 
 		scene.update(world, Gdx.graphics.getDeltaTime());
 		scene.draw();

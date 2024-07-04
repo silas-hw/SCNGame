@@ -8,6 +8,7 @@ import com.mygdx.scngame.entity.component.GraphicsComponent;
 import com.mygdx.scngame.entity.component.InputComponent;
 import com.mygdx.scngame.entity.component.PhysicsComponent;
 import com.mygdx.scngame.entity.context.EntityContext;
+import com.mygdx.scngame.physics.Box;
 
 public class Player extends Entity {
     protected InputComponent<? super Player> inputComponent;
@@ -59,7 +60,7 @@ public class Player extends Entity {
     }
 
     @Override
-    public void update(World<Object> world, float delta) {
+    public void update(World<Box> world, float delta) {
         this.inputComponent.update(this);
         this.physicsComponent.update(this, world, delta);
     }
