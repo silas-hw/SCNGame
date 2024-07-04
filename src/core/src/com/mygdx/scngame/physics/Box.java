@@ -17,7 +17,12 @@ public class Box {
     /** a binary value representing the layers on which the box will be collided with by other boxes */
     public byte layer =  0b00000000;
 
-    /** determines whether a colliding Box will have a hard or soft collision with this Box */
+    /**
+     * determines whether a colliding Box will have a hard or soft collision with this Box
+     * <p>
+     * A 'soft' collision will always involve a 'cross' {@link Response}, whereas a 'hard' collision
+     * involves the colliding object responding in its required way.
+     */
     public boolean solid = false;
 
     /** The response returned if this Box has a hard collision with another Box */
@@ -27,11 +32,14 @@ public class Box {
 
     /**
      * The expected filter to be used by any collision involving a {@link Box}.
-     *
-     * If the box being collided with is solid, then the colliding box's response
+     * <p>
+     * If the box being collided with is solid, then the colliding box's {@link Response}
      * is returned. Otherwise, simply a 'cross' response is returned.
+     * <p>
+     * The mask and layer of each box is checked first to determine if a collision <i>should</i>
+     * occur.
      */
-    public static class globalFilter implements CollisionFilter {
+    private static class globalFilter implements CollisionFilter {
 
         @Override
         public Response filter(Item item, Item other) {
@@ -48,11 +56,8 @@ public class Box {
                 return null;
             }
 
-            System.out.println("Collision occuring!");
-
             if(otherBox.solid) return box.response;
             return Response.cross;
         }
     }
-
 }

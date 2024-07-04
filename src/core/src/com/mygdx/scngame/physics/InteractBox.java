@@ -1,5 +1,6 @@
 package com.mygdx.scngame.physics;
 
-public interface InteractBox {
-    void interact();
+public abstract class InteractBox extends Box {
+    public boolean solid = false;
+    public abstract void interact();
 }
