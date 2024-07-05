@@ -51,7 +51,7 @@ public abstract class Entity implements Disposable, InputProcessor {
      */
     public void draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {}
 
-    public void addListener(InputProcessor listener) {
+    public void addInputListener(InputProcessor listener) {
         inputListeners.add(listener);
     }
 
