@@ -8,6 +8,7 @@ import com.mygdx.scngame.entity.component.GraphicsComponent;
 import com.mygdx.scngame.entity.component.InputComponent;
 import com.mygdx.scngame.entity.component.PhysicsComponent;
 import com.mygdx.scngame.entity.context.EntityContext;
+import com.mygdx.scngame.event.StateChangeEvent;
 import com.mygdx.scngame.physics.Box;
 
 public class Player extends Entity {
@@ -21,6 +22,15 @@ public class Player extends Entity {
         position.x = 0;
         position.y = 0;
     }
+
+    public enum PlayerState {
+        MOVING,
+        ATTACKING,
+        BLOCKING,
+        DYING
+    }
+
+    private PlayerState state = PlayerState.MOVING;
 
     public Player(EntityContext context,
                   InputComponent<? super Player> input,

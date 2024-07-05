@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.component.GraphicsComponent;
+import com.mygdx.scngame.event.GameEvent;
 
 public class PlayerGraphicsComponent implements GraphicsComponent<Entity> {
     Texture texture;
@@ -19,5 +20,10 @@ public class PlayerGraphicsComponent implements GraphicsComponent<Entity> {
 
     @Override
     public void dispose() {
+    }
+
+    @Override
+    public void notify(GameEvent event) {
+
     }
 }

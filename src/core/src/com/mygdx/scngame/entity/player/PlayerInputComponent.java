@@ -3,6 +3,7 @@ package com.mygdx.scngame.entity.player;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.mygdx.scngame.entity.component.InputComponent;
+import com.mygdx.scngame.event.GameEvent;
 
 public class PlayerInputComponent extends InputAdapter implements InputComponent<Player> {
     private boolean UP = false;
@@ -84,5 +85,10 @@ public class PlayerInputComponent extends InputAdapter implements InputComponent
     @Override
     public void dispose() {
         return;
+    }
+
+    @Override
+    public void notify(GameEvent event) {
+
     }
 }

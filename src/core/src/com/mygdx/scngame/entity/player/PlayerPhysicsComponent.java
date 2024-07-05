@@ -2,6 +2,7 @@ package com.mygdx.scngame.entity.player;
 
 import com.dongbat.jbump.*;
 import com.mygdx.scngame.entity.component.PhysicsComponent;
+import com.mygdx.scngame.event.GameEvent;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.HitBox;
 
@@ -53,11 +54,8 @@ public class PlayerPhysicsComponent implements PhysicsComponent<Player> {
     public void dispose() {
     }
 
-    public static class Filter implements CollisionFilter {
+    @Override
+    public void notify(GameEvent event) {
 
-        @Override
-        public Response filter(Item item, Item item1) {
-            return null;
-        }
     }
 }
