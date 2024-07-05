@@ -43,6 +43,18 @@ public class Player extends Entity {
         addListener(this.inputComponent);
     }
 
+    public void setState(PlayerState newState) {
+        StateChangeEvent<PlayerState> event = new StateChangeEvent<>(this);
+        event.newState = newState;
+        event.prevState = this.state;
+
+        this.state = newState;
+
+        this.inputComponent.notify(event);
+        this.physicsComponent.notify(event);
+        this.graphicsComponent.notify(event);
+    }
+
     public void setInputComponent(InputComponent<? super Player> input) {
         if(this.inputComponent != null) {
             removeListener(this.inputComponent);
