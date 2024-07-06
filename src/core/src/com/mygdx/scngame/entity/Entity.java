@@ -55,11 +55,11 @@ public abstract class Entity implements Disposable, InputProcessor {
         inputListeners.add(listener);
     }
 
-    public void removeListener(InputProcessor listener) {
+    public void removeInputListener(InputProcessor listener) {
         inputListeners.removeValue(listener, false);
     }
 
-    public void clearListeners() {
+    public void clearInputListeners() {
         inputListeners.clear();
     }
 
