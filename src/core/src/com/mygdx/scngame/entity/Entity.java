@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.context.EntityContextAdapter;
 import com.mygdx.scngame.entity.context.EntityContext;
+import com.mygdx.scngame.event.GameEventListener;
 import com.mygdx.scngame.physics.Box;
 
 /**

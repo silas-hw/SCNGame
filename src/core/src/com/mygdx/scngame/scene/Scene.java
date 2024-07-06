@@ -32,7 +32,7 @@ import java.util.Comparator;
  *
  * @author Silas Hayes-Williams
  */
-public class Scene implements Disposable, InputProcessor, EntityContext, GameEventBus {
+public class Scene implements Disposable, InputProcessor, EntityContext {
     protected SnapshotArray<Entity> entities;
     protected Comparator<Entity> renderComparator;
 
