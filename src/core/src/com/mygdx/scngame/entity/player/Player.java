@@ -11,6 +11,7 @@ import com.mygdx.scngame.entity.context.EntityContext;
 import com.mygdx.scngame.event.StateChangeEvent;
 import com.mygdx.scngame.physics.Box;
 
+// TODO: add comments
 public class Player extends Entity {
     protected InputComponent<? super Player> inputComponent;
     protected GraphicsComponent<? super Player> graphicsComponent;
@@ -40,7 +41,7 @@ public class Player extends Entity {
         this.graphicsComponent = graphics;
         this.physicsComponent = physics;
 
-        addListener(this.inputComponent);
+        addInputListener(this.inputComponent);
     }
 
     public void setState(PlayerState newState) {
@@ -57,12 +58,12 @@ public class Player extends Entity {
 
     public void setInputComponent(InputComponent<? super Player> input) {
         if(this.inputComponent != null) {
-            removeListener(this.inputComponent);
+            removeInputListener(this.inputComponent);
             this.inputComponent.dispose();
         }
 
         this.inputComponent = input;
-        addListener(this.inputComponent);
+        addInputListener(this.inputComponent);
     }
 
     public void setPhysicsComponent(PhysicsComponent<? super Player> physics) {

@@ -3,12 +3,16 @@ package com.mygdx.scngame.scene;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.context.EntityContext;
+import com.mygdx.scngame.event.GameEvent;
+import com.mygdx.scngame.event.GameEventBus;
+import com.mygdx.scngame.event.GameEventListener;
 import com.mygdx.scngame.physics.Box;
 
 import java.util.Comparator;
@@ -28,9 +32,11 @@ import java.util.Comparator;
  *
  * @author Silas Hayes-Williams
  */
-public class Scene implements Disposable, InputProcessor, EntityContext {
+public class Scene implements Disposable, InputProcessor, EntityContext, GameEventBus {
     protected SnapshotArray<Entity> entities;
     protected Comparator<Entity> renderComparator;
+
+    private Array<GameEventListener> eventListeners;
 
     protected SpriteBatch batch;
     protected ShapeRenderer shape;
@@ -49,6 +55,8 @@ public class Scene implements Disposable, InputProcessor, EntityContext {
     public Scene(Viewport viewport, SpriteBatch batch, ShapeRenderer shape) {
         entities = new SnapshotArray(true, 4, Entity.class);
         renderComparator = new YComparator();
+
+        eventListeners = new Array<>();
 
         this.batch = batch;
         this.shape = shape;
@@ -77,6 +85,26 @@ public class Scene implements Disposable, InputProcessor, EntityContext {
     @Override
     public boolean hasEntity(Entity entity) {
         return entities.contains(entity, false);
+    }
+
+    @Override
+    public void fire(GameEvent event) {
+
+    }
+
+    @Override
+    public void addEventListener(GameEventListener listener) {
+
+    }
+
+    @Override
+    public void removeEventListener(GameEventListener listener) {
+
+    }
+
+    @Override
+    public void clearEventListeners() {
+
     }
 
     public void update(World<Box> world, float delta) {

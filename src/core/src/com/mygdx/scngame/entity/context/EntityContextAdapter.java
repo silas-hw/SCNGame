@@ -1,6 +1,8 @@
 package com.mygdx.scngame.entity.context;
 
 import com.mygdx.scngame.entity.Entity;
+import com.mygdx.scngame.event.GameEvent;
+import com.mygdx.scngame.event.GameEventListener;
 
 /**
  * A convenience implementation of {@link EntityContext entity context} so you can implement
@@ -25,5 +27,25 @@ public class EntityContextAdapter implements EntityContext {
     @Override
     public boolean hasEntity(Entity entity) {
         return false;
+    }
+
+    @Override
+    public void fire(GameEvent event) {
+
+    }
+
+    @Override
+    public void addEventListener(GameEventListener listener) {
+
+    }
+
+    @Override
+    public void removeEventListener(GameEventListener listener) {
+
+    }
+
+    @Override
+    public void clearEventListeners() {
+
     }
 }

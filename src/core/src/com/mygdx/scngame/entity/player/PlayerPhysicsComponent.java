@@ -11,8 +11,6 @@ public class PlayerPhysicsComponent implements PhysicsComponent<Player> {
     private Item<Box> collisionItem;
     private Item<Box> hitbox;
 
-    private final CollisionFilter FILTER = new Filter();
-
     public PlayerPhysicsComponent(Player player) {
         Box foot = new Box();
         foot.solid = true;
