@@ -44,7 +44,7 @@ public class Player extends Entity {
     }
 
     public void setState(PlayerState newState) {
-
+        PlayerStateChangeEvent event = new PlayerStateChangeEvent(this);
         event.newState = newState;
         event.prevState = this.state;
 
