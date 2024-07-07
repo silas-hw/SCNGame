@@ -12,8 +12,10 @@ public class PlayerPhysicsComponent implements PhysicsComponent<Player> {
     private Item<Box> collisionItem;
     private Item<Box> hitbox;
 
+    Box foot;
+
     public PlayerPhysicsComponent(Player player) {
-        Box foot = new Box();
+        foot = new Box();
         foot.solid = true;
         foot.mask = (byte) 0b10000000;
         foot.response = Response.slide;
@@ -79,7 +81,15 @@ public class PlayerPhysicsComponent implements PhysicsComponent<Player> {
     @Override
     public void notify(GameEvent event) {
         if(event instanceof PlayerStateChangeEvent) {
-            System.out.println("Player changing state! Detected by physics component");
+            switch(((PlayerStateChangeEvent) event).newState) {
+                // stick player to wall if they collide whilst dashing
+                case DASHING:
+                    foot.response = Response.touch;
+                    break;
+
+                default:
+                    foot.response = Response.slide;
+            }
         }
     }
 }
