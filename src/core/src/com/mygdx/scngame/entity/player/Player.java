@@ -28,6 +28,7 @@ public class Player extends Entity {
         MOVING,
         ATTACKING,
         BLOCKING,
+        DASHING,
         DYING
     }
 
@@ -55,6 +56,8 @@ public class Player extends Entity {
 
         Global.bus.fire(event);
     }
+
+    public PlayerState getState() {return this.state;}
 
     public void setInputComponent(InputComponent<? super Player> input) {
         if(this.inputComponent != null) {

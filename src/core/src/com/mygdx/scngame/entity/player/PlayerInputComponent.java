@@ -10,32 +10,42 @@ public class PlayerInputComponent extends InputAdapter implements InputComponent
     private boolean DOWN = false;
     private boolean LEFT = false;
     private boolean RIGHT = false;
+    public boolean SHIFT = false;
 
     @Override
     public void update(Player container) {
         int dx = 0;
         int dy = 0;
 
-        if(UP) {
-            dy++;
-            container.setState(Player.PlayerState.ATTACKING);
-        }
+        switch(container.getState()) {
+            case DASHING:
+                break;
 
-        if(DOWN) {
-            dy--;
-            container.setState(Player.PlayerState.MOVING);
-        }
+            case MOVING:
+                if(UP) {
+                    dy++;
+                }
 
-        if(LEFT) {
-            dx--;
-        }
+                if(DOWN) {
+                    dy--;
+                }
 
-        if(RIGHT) {
-            dx++;
-        }
+                if(LEFT) {
+                    dx--;
+                }
 
-        container.direction.set(dx, dy);
-        container.direction.nor();
+                if(RIGHT) {
+                    dx++;
+                }
+
+                if(SHIFT) {
+                    container.setState(Player.PlayerState.DASHING);
+                    SHIFT = false;
+                }
+
+                container.direction.set(dx, dy);
+                container.direction.nor();
+        }
     }
 
     @Override
@@ -56,6 +66,11 @@ public class PlayerInputComponent extends InputAdapter implements InputComponent
             case Input.Keys.A:
                 LEFT = true;
                 break;
+
+            case Input.Keys.SHIFT_LEFT:
+                SHIFT = true;
+                break;
+
         }
 
         return false;
@@ -78,6 +93,10 @@ public class PlayerInputComponent extends InputAdapter implements InputComponent
 
             case Input.Keys.A:
                 LEFT = false;
+                break;
+
+            case Input.Keys.SHIFT_LEFT:
+                SHIFT = false;
                 break;
         }
 

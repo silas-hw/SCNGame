@@ -24,6 +24,10 @@ public class PlayerPhysicsComponent implements PhysicsComponent<Player> {
         Global.bus.addEventListener(this);
     }
 
+    private float dashTimer = 0f;
+    private final float dashTime = 0.2f;
+    private final float dashDist = 400f;
+
     @Override
     public void update(Player container, World<Box> world, float delta) {
         if(container.isDying) {
@@ -41,7 +45,23 @@ public class PlayerPhysicsComponent implements PhysicsComponent<Player> {
             world.add(hitbox, container.position.x, container.position.y, 32, 64);
         }
 
-        container.position.mulAdd(container.direction, 500f*delta);
+        switch(container.getState()) {
+            case MOVING:
+                container.position.mulAdd(container.direction, 500f*delta);
+                break;
+
+            case DASHING:
+                dashTimer += delta;
+                container.position.mulAdd(container.direction, (dashDist/dashTime)*delta);
+
+                if(dashTimer >= dashTime) {
+                    dashTimer = 0f;
+                    container.setState(Player.PlayerState.MOVING);
+                }
+
+                break;
+        }
+
 
         world.move(collisionItem, container.position.x, container.position.y, Box.GLOBAL_FILTER);
         Rect rect = world.getRect(collisionItem);
