@@ -3,6 +3,7 @@ package com.mygdx.scngame.entity.player;
 import com.dongbat.jbump.*;
 import com.mygdx.scngame.entity.component.PhysicsComponent;
 import com.mygdx.scngame.event.GameEvent;
+import com.mygdx.scngame.event.Global;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.HitBox;
 
@@ -19,6 +20,8 @@ public class PlayerPhysicsComponent implements PhysicsComponent<Player> {
 
         collisionItem = new Item<>(foot);
         hitbox = new Item<>(new HitBox());
+
+        Global.bus.addEventListener(this);
     }
 
     @Override
@@ -50,10 +53,13 @@ public class PlayerPhysicsComponent implements PhysicsComponent<Player> {
 
     @Override
     public void dispose() {
+        Global.bus.removeEventListener(this);
     }
 
     @Override
     public void notify(GameEvent event) {
-
+        if(event instanceof PlayerStateChangeEvent) {
+            System.out.println("Player changing state! Detected by physics component");
+        }
     }
 }

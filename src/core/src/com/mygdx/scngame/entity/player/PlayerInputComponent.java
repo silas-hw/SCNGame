@@ -18,10 +18,12 @@ public class PlayerInputComponent extends InputAdapter implements InputComponent
 
         if(UP) {
             dy++;
+            container.setState(Player.PlayerState.ATTACKING);
         }
 
         if(DOWN) {
             dy--;
+            container.setState(Player.PlayerState.MOVING);
         }
 
         if(LEFT) {

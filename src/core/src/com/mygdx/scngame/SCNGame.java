@@ -18,12 +18,16 @@ import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.EntityFactory;
 import com.mygdx.scngame.entity.player.Player;
+import com.mygdx.scngame.entity.player.PlayerStateChangeEvent;
+import com.mygdx.scngame.event.GameEvent;
+import com.mygdx.scngame.event.GameEventListener;
+import com.mygdx.scngame.event.Global;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.DamageBox;
 import com.mygdx.scngame.physics.HitBox;
 import com.mygdx.scngame.scene.Scene;
 
-public class SCNGame extends ApplicationAdapter {
+public class SCNGame extends ApplicationAdapter implements GameEventListener {
 	SpriteBatch batch;
 	ShapeRenderer shape;
 	Texture img;
@@ -57,6 +61,8 @@ public class SCNGame extends ApplicationAdapter {
 		scene.addEntity(EntityFactory.createPlayer());
 
 		Gdx.input.setInputProcessor(scene);
+
+		Global.bus.addEventListener(this);
 	}
 
 	@Override
@@ -108,5 +114,12 @@ public class SCNGame extends ApplicationAdapter {
 	public void dispose () {
 		batch.dispose();
 		img.dispose();
+	}
+
+	@Override
+	public void notify(GameEvent event) {
+		if(event instanceof PlayerStateChangeEvent) {
+			System.out.println("Player changing state! Detected by main game class");
+		}
 	}
 }

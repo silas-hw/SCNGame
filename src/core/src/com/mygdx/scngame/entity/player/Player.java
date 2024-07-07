@@ -8,6 +8,7 @@ import com.mygdx.scngame.entity.component.GraphicsComponent;
 import com.mygdx.scngame.entity.component.InputComponent;
 import com.mygdx.scngame.entity.component.PhysicsComponent;
 import com.mygdx.scngame.entity.context.EntityContext;
+import com.mygdx.scngame.event.Global;
 import com.mygdx.scngame.physics.Box;
 
 // TODO: add comments
@@ -44,15 +45,15 @@ public class Player extends Entity {
     }
 
     public void setState(PlayerState newState) {
+
+        if(newState == this.state) return;
         PlayerStateChangeEvent event = new PlayerStateChangeEvent(this);
         event.newState = newState;
         event.prevState = this.state;
 
         this.state = newState;
 
-        this.inputComponent.notify(event);
-        this.physicsComponent.notify(event);
-        this.graphicsComponent.notify(event);
+        Global.bus.fire(event);
     }
 
     public void setInputComponent(InputComponent<? super Player> input) {
