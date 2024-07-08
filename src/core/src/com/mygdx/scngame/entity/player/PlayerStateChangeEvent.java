@@ -7,6 +7,6 @@ public class PlayerStateChangeEvent extends GameEvent {
     Player.PlayerState newState;
 
     public PlayerStateChangeEvent(Object source) {
-        super(source);
+        super(source, Type.CUSTOM);
     }
 }

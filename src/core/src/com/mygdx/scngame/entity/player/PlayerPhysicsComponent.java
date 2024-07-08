@@ -5,6 +5,7 @@ import com.mygdx.scngame.entity.component.PhysicsComponent;
 import com.mygdx.scngame.event.GameEvent;
 import com.mygdx.scngame.event.Global;
 import com.mygdx.scngame.physics.Box;
+import com.mygdx.scngame.physics.DamageBox;
 import com.mygdx.scngame.physics.HitBox;
 
 public class PlayerPhysicsComponent implements PhysicsComponent<Player> {
@@ -14,14 +15,20 @@ public class PlayerPhysicsComponent implements PhysicsComponent<Player> {
 
     Box foot;
 
+    private float health = 500f;
+
     public PlayerPhysicsComponent(Player player) {
         foot = new Box();
         foot.solid = true;
-        foot.mask = (byte) 0b10000000;
+        foot.mask = (byte) 0b11000000;
+        //foot.layer = (byte) 0b01000000;
         foot.response = Response.slide;
 
         collisionItem = new Item<>(foot);
-        hitbox = new Item<>(new HitBox());
+        Box hit = new HitBox();
+        hit.mask = (byte) 0b10000000;
+        hit.response = Response.cross;
+        hitbox = new Item<>(hit);
 
         Global.bus.addEventListener(this);
     }
@@ -30,8 +37,13 @@ public class PlayerPhysicsComponent implements PhysicsComponent<Player> {
     private final float dashTime = 0.2f;
     private final float dashDist = 400f;
 
+    private float invisTimer = 0f;
+    private final float invisTime = 0.3f;
+    private boolean invis = false;
+
     @Override
     public void update(Player container, World<Box> world, float delta) {
+        System.out.println("Health: " + health);
         if(container.isDying) {
             if(world.hasItem(collisionItem)) world.remove(collisionItem);
             if(world.hasItem(hitbox)) world.remove(hitbox);
@@ -50,6 +62,33 @@ public class PlayerPhysicsComponent implements PhysicsComponent<Player> {
         switch(container.getState()) {
             case MOVING:
                 container.position.mulAdd(container.direction, 500f*delta);
+
+                world.move(collisionItem, container.position.x, container.position.y, Box.GLOBAL_FILTER);
+                Rect rect = world.getRect(collisionItem);
+                container.position.x = rect.x;
+                container.position.y = rect.y;
+
+                Response.Result res = world.move(hitbox, container.position.x, container.position.y, Box.GLOBAL_FILTER);
+
+                if(invis && invisTimer < invisTime) {
+                    invisTimer += delta;
+                    break;
+                } else if(invis) {
+                    invis = false;
+                    invisTimer = 0f;
+                }
+
+                for(int i = 0; i<res.projectedCollisions.size(); i++) {
+                    Collision col = res.projectedCollisions.get(i);
+
+                    if(col.other.userData instanceof DamageBox) {
+                        DamageBox dBox = (DamageBox) col.other.userData;
+
+                        health -= dBox.damage;
+                        invis = true;
+                    }
+
+                }
                 break;
 
             case DASHING:
@@ -61,16 +100,18 @@ public class PlayerPhysicsComponent implements PhysicsComponent<Player> {
                     container.setState(Player.PlayerState.MOVING);
                 }
 
+                world.move(collisionItem, container.position.x, container.position.y, Box.GLOBAL_FILTER);
+                Rect rect1 = world.getRect(collisionItem);
+                container.position.x = rect1.x;
+                container.position.y = rect1.y;
+
+                world.move(hitbox, container.position.x, container.position.y, Box.GLOBAL_FILTER);
+
                 break;
         }
 
 
-        world.move(collisionItem, container.position.x, container.position.y, Box.GLOBAL_FILTER);
-        Rect rect = world.getRect(collisionItem);
-        container.position.x = rect.x;
-        container.position.y = rect.y;
 
-        world.move(hitbox, container.position.x, container.position.y, Box.GLOBAL_FILTER);
     }
 
     @Override

@@ -11,10 +11,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.dongbat.jbump.Item;
-import com.dongbat.jbump.Rect;
-import com.dongbat.jbump.Response;
-import com.dongbat.jbump.World;
+import com.dongbat.jbump.*;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.EntityFactory;
 import com.mygdx.scngame.entity.player.Player;
@@ -51,6 +48,10 @@ public class SCNGame extends ApplicationAdapter implements GameEventListener {
 
 		world.add(new Item<>(wall), 150, 150, 150, 150);
 
+		DamageBox damage = new DamageBox(5f, DamageBox.DamageType.DEFAULT);
+		damage.layer = (byte) 0b10000000;
+
+		world.add(new Item<>(damage), -150, -150, 150, 150);
 
 		cam = new OrthographicCamera();
 
