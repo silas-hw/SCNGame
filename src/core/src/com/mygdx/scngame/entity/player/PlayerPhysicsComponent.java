@@ -43,7 +43,7 @@ public class PlayerPhysicsComponent implements PhysicsComponent<Player> {
 
     @Override
     public void update(Player container, World<Box> world, float delta) {
-        System.out.println("Health: " + health);
+        //System.out.println("Health: " + health);
         if(container.isDying) {
             if(world.hasItem(collisionItem)) world.remove(collisionItem);
             if(world.hasItem(hitbox)) world.remove(hitbox);
@@ -121,8 +121,9 @@ public class PlayerPhysicsComponent implements PhysicsComponent<Player> {
 
     @Override
     public void notify(GameEvent event) {
-        if(event instanceof PlayerStateChangeEvent) {
-            switch(((PlayerStateChangeEvent) event).newState) {
+        if(event.getPayload() instanceof PlayerStateChange) {
+            PlayerStateChange payload = (PlayerStateChange) event.getPayload();
+            switch(payload.newState) {
                 // stick player to wall if they collide whilst dashing
                 case DASHING:
                     foot.response = Response.touch;

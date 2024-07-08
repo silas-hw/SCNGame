@@ -15,7 +15,7 @@ import com.dongbat.jbump.*;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.EntityFactory;
 import com.mygdx.scngame.entity.player.Player;
-import com.mygdx.scngame.entity.player.PlayerStateChangeEvent;
+import com.mygdx.scngame.entity.player.PlayerStateChange;
 import com.mygdx.scngame.event.GameEvent;
 import com.mygdx.scngame.event.GameEventListener;
 import com.mygdx.scngame.event.Global;
@@ -119,7 +119,7 @@ public class SCNGame extends ApplicationAdapter implements GameEventListener {
 
 	@Override
 	public void notify(GameEvent event) {
-		if(event instanceof PlayerStateChangeEvent) {
+		if(event.getPayload() instanceof PlayerStateChange) {
 			System.out.println("Player changing state! Detected by main game class");
 		}
 	}
