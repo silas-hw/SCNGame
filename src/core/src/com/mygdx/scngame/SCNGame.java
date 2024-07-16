@@ -3,6 +3,7 @@ package com.mygdx.scngame;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.*;
+import com.mygdx.scngame.dialog.Dialog;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.EntityFactory;
 import com.mygdx.scngame.entity.player.Player;
@@ -34,6 +36,8 @@ public class SCNGame extends ApplicationAdapter implements GameEventListener {
 
 	Texture texture;
 	World<Box> world;
+
+	Dialog dialog;
 	
 	@Override
 	public void create () {
@@ -61,9 +65,16 @@ public class SCNGame extends ApplicationAdapter implements GameEventListener {
 
 		scene.addEntity(EntityFactory.createPlayer());
 
-		Gdx.input.setInputProcessor(scene);
+		dialog = new Dialog();
+
+		InputMultiplexer multiplexer = new InputMultiplexer();
+		multiplexer.addProcessor(dialog);
+		multiplexer.addProcessor(scene);
+
+		Gdx.input.setInputProcessor(multiplexer);
 
 		Global.bus.addEventListener(this);
+		Global.bus.addEventListener(dialog);
 	}
 
 	@Override
@@ -73,7 +84,9 @@ public class SCNGame extends ApplicationAdapter implements GameEventListener {
 		ScreenUtils.clear(Color.BLACK);
 
 		scene.update(world, Gdx.graphics.getDeltaTime());
+
 		scene.draw();
+		dialog.draw();
 
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_BLEND);
@@ -100,15 +113,12 @@ public class SCNGame extends ApplicationAdapter implements GameEventListener {
 		shape.end();
 
 		Gdx.gl.glDisable(GL20.GL_BLEND);
-
-		if(Gdx.input.isKeyPressed(Input.Keys.E)) {
-			world = new World<>();
-		}
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		viewport.update(width, height);
+		dialog.getViewport().update(width, height);
 	}
 
 	@Override
