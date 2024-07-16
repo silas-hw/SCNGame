@@ -55,7 +55,7 @@ public class Player extends Entity {
 
         this.state = newState;
 
-        Global.bus.fire(new GameEvent(this, GameEvent.Type.CUSTOM, payload));
+        Global.bus.fire(new GameEvent(this, payload));
     }
 
     public PlayerState getState() {return this.state;}

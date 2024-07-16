@@ -2,8 +2,10 @@ package com.mygdx.scngame.entity.player;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.mygdx.scngame.dialog.DialogStart;
 import com.mygdx.scngame.entity.component.InputComponent;
 import com.mygdx.scngame.event.GameEvent;
+import com.mygdx.scngame.event.Global;
 
 public class PlayerInputComponent extends InputAdapter implements InputComponent<Player> {
     private boolean UP = false;
@@ -11,6 +13,10 @@ public class PlayerInputComponent extends InputAdapter implements InputComponent
     private boolean LEFT = false;
     private boolean RIGHT = false;
     public boolean SHIFT = false;
+
+    public PlayerInputComponent() {
+        Global.bus.addEventListener(this);
+    }
 
     @Override
     public void update(Player container) {
@@ -48,6 +54,8 @@ public class PlayerInputComponent extends InputAdapter implements InputComponent
         }
     }
 
+    private final GameEvent _dialogTest = new GameEvent(this, new DialogStart("test_dialog_1"));
+
     @Override
     public boolean keyDown(int keycode) {
         switch(keycode) {
@@ -65,6 +73,10 @@ public class PlayerInputComponent extends InputAdapter implements InputComponent
 
             case Input.Keys.A:
                 LEFT = true;
+                break;
+
+            case Input.Keys.E:
+                Global.bus.fire(_dialogTest);
                 break;
 
             case Input.Keys.SHIFT_LEFT:
@@ -110,6 +122,13 @@ public class PlayerInputComponent extends InputAdapter implements InputComponent
 
     @Override
     public void notify(GameEvent event) {
-
+        if(event.getPayload() instanceof DialogStart) {
+            System.out.println("Input captured dialog start");
+            LEFT = false;
+            RIGHT = false;
+            UP = false;
+            DOWN = false;
+            SHIFT = false;
+        }
     }
 }

@@ -11,36 +11,13 @@ public class GameEvent {
      */
     protected final Object payload;
 
-    /**
-     * Some events are simple enough to just be described by an id. For example, a DIALOG_START
-     * event just involves dispatching the dialog id to be loaded into the dialog system. Having just
-     * a plain old int stored here prevents an unneeded instanceof check on the payload.
-     * <p>
-     * All non 'CUSTOM' events make use of a simple integer ID as opposed to an Object payload.
-     */
-    public int id = 0;
-
-    public enum Type {
-        GAME_OVER,
-        SOURCE_KILLED,
-        DIALOG,
-        CUSTOM
-    }
-
-    protected Type type;
-
-    public GameEvent(Object source, Type type, Object payload) {
+    public GameEvent(Object source, Object payload) {
         this.source = source;
-        this.type = type;
         this.payload = payload;
     }
 
-    public GameEvent(Object source, Type type) {
-        this(source, type, null);
-    }
-
     public GameEvent(Object source) {
-        this(source, null, null);
+        this(source, null);
     }
 
     public Object getSource() {return this.source;}

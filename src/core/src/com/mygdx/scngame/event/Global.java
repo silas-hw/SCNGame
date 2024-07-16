@@ -14,14 +14,16 @@ public class Global implements GameEventBus {
 
     @Override
     public void fire(GameEvent event) {
+        System.out.println("Firing " + event);
         for(GameEventListener listener : listeners) {
-            if(listener != event.getSource()) listener.notify(event);
+            listener.notify(event);
         }
     }
 
     @Override
     public void addEventListener(GameEventListener listener) {
         listeners.add(listener);
+        System.out.println("Listener added: " + listener);
     }
 
     @Override
