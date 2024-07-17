@@ -10,14 +10,15 @@
 
 name: Test App Build Action
 
-# set version string for build.gradle to use
-env:
-  VERSION: ${{ github.ref_name }}
-
 on:
   push:
     branches: [ "main" ]
-    tags: 'v*.*.*'
+    tags: 
+      - 'v*.*.*'
+
+# set version string for build.gradle to use
+env:
+  VERSION: ${{ github.ref_name }}
 
 jobs:
   build:
@@ -49,7 +50,7 @@ jobs:
       with:
         name: SCNGame Artifact Test
         path: |
-          src/desktop/build/libs/desktop-0.0.0.jar
+          src/desktop/build/libs/desktop-${{ github.ref_name }}.jar
 
     - name: Release
       uses: softprops/action-gh-release@v2
