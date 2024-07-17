@@ -46,6 +46,15 @@ jobs:
         path: |
           src/desktop/build/libs/desktop-0.0.0.jar
 
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      with:
+        body: "Automated Build & Release"
+        prerelease: true
+        files: |
+          src/desktop/build/libs/desktop-0.0.0.jar
+          LICENSE
+
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
     #
