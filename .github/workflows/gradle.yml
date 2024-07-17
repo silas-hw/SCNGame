@@ -19,7 +19,8 @@ on:
 # set version string for build.gradle to use
 env:
   VERSION: ${{ github.ref_name }}
-
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
 jobs:
   build:
 
