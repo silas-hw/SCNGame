@@ -19,6 +19,10 @@ on:
 # set version string for build.gradle to use
 env:
   VERSION: ${{ github.ref_name }}
+
+# allow a release to be made
+permissions:
+  contents: write
   
 jobs:
   build:
