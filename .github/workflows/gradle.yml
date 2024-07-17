@@ -19,10 +19,6 @@ on:
 # set version string for build.gradle to use
 env:
   VERSION: ${{ github.ref_name }}
-
-# allow a release to be made
-permissions:
-  contents: write
   
 jobs:
   build:
@@ -58,8 +54,10 @@ jobs:
 
     - name: Release
       uses: softprops/action-gh-release@v2
+      
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # allow a release to be made
       with:
         body: "Automated Build & Release"
         prerelease: true
