@@ -14,10 +14,13 @@ buildscript {
     }
 }
 
+def versionFromEnv = System.getenv("VERSION")
+def versionStr = versionFromEnv ?: ""
+
 allprojects {
     apply plugin: "eclipse"
 
-    version = '0.0.0'
+    version = versionStr
     ext {
         appName = "SCNGame"
         gdxVersion = '1.12.1'
