@@ -10,9 +10,14 @@
 
 name: Test App Build Action
 
+# set version string for build.gradle to use
+env:
+  VERSION: ${{ github.ref_name }}
+
 on:
   push:
     branches: [ "main" ]
+    tags: 'v*.*.*'
 
 jobs:
   build:
@@ -52,7 +57,7 @@ jobs:
         body: "Automated Build & Release"
         prerelease: true
         files: |
-          src/desktop/build/libs/desktop-0.0.0.jar
+          src/desktop/build/libs/desktop-${{ github.ref_name }}.jar
           LICENSE
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
