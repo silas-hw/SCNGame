@@ -14,8 +14,6 @@ on:
   push:
     tags: 
         - 'v*.*.*'
-        
-    branches: [ "main" ]
     
 
 # set version string for build.gradle to use
