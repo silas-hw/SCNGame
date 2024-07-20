@@ -11,7 +11,6 @@ public class Global implements GameEventBus {
 
     }
 
-
     @Override
     public void fire(GameEvent event) {
         System.out.println("Firing " + event);
