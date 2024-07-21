@@ -10,11 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mygdx.scngame.entity.player.PlayerStateChange;
 import com.mygdx.scngame.event.GameEvent;
 import com.mygdx.scngame.event.GameEventListener;
-
-import javax.swing.text.View;
 
 public class Dialog extends InputAdapter implements GameEventListener {
 

@@ -24,6 +24,8 @@ public abstract class Entity implements Disposable, InputProcessor {
     // used by Scene to remove dead entities without coupling Entity to Scene
     public boolean isDead = false;
 
+    protected World<Box> world;
+
     private final Array<InputProcessor> inputListeners = new Array<>();
 
     /**
@@ -34,15 +36,16 @@ public abstract class Entity implements Disposable, InputProcessor {
     public EntityContext context = NULL_CONTEXT;
 
 
-    public Entity() {}
+    public Entity(World<Box> world) {
+        this.world = world;
+    }
 
     /**
      * Invoked when the entity is to update its state and handle input
      *
-     * @param world the {@link World physics world} for the Entity to interact with
      * @param delta the delta time since the last call to update
      */
-    public void update(World<Box> world, float delta) {}
+    public void update(float delta) {}
 
     /**
      *
@@ -51,6 +54,10 @@ public abstract class Entity implements Disposable, InputProcessor {
      * @param alpha
      */
     public void draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {}
+
+    public void setWorld(World<Box> world) {
+        this.world = world;
+    };
 
     public void addInputListener(InputProcessor listener) {
         inputListeners.add(listener);

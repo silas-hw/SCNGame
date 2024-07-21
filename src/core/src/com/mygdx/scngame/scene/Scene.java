@@ -107,7 +107,7 @@ public class Scene implements Disposable, InputProcessor, EntityContext {
 
     }
 
-    public void update(World<Box> world, float delta) {
+    public void update(float delta) {
         Entity[] e = entities.begin();
 
         for(int i = 0; i<entities.size; i++) {
@@ -117,7 +117,7 @@ public class Scene implements Disposable, InputProcessor, EntityContext {
                 continue;
             }
 
-            e[i].update(world, delta);
+            e[i].update(delta);
         }
 
         entities.end();

@@ -2,22 +2,17 @@ package com.mygdx.scngame;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.*;
 import com.mygdx.scngame.dialog.Dialog;
 import com.mygdx.scngame.entity.Entity;
-import com.mygdx.scngame.entity.EntityFactory;
 import com.mygdx.scngame.entity.player.Player;
-import com.mygdx.scngame.entity.player.PlayerStateChange;
 import com.mygdx.scngame.event.GameEvent;
 import com.mygdx.scngame.event.GameEventListener;
 import com.mygdx.scngame.event.Global;
@@ -63,7 +58,8 @@ public class SCNGame extends ApplicationAdapter implements GameEventListener {
 
 		scene = new Scene(viewport, batch, shape);
 
-		scene.addEntity(EntityFactory.createPlayer());
+		Player player = new Player(world);
+		scene.addEntity(player);
 
 		dialog = new Dialog();
 
@@ -83,7 +79,7 @@ public class SCNGame extends ApplicationAdapter implements GameEventListener {
 
 		ScreenUtils.clear(Color.BLACK);
 
-		scene.update(world, Gdx.graphics.getDeltaTime());
+		scene.update(Gdx.graphics.getDeltaTime());
 
 		scene.draw();
 		dialog.draw();
@@ -129,8 +125,5 @@ public class SCNGame extends ApplicationAdapter implements GameEventListener {
 
 	@Override
 	public void notify(GameEvent event) {
-		if(event.getPayload() instanceof PlayerStateChange) {
-			System.out.println("Player changing state! Detected by main game class");
-		}
 	}
 }

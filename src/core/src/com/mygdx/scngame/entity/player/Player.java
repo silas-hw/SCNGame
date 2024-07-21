@@ -8,93 +8,54 @@ import com.mygdx.scngame.entity.component.GraphicsComponent;
 import com.mygdx.scngame.entity.component.InputComponent;
 import com.mygdx.scngame.entity.component.PhysicsComponent;
 import com.mygdx.scngame.entity.context.EntityContext;
+import com.mygdx.scngame.entity.player.states.PlayerDashState;
+import com.mygdx.scngame.entity.player.states.PlayerMoveState;
 import com.mygdx.scngame.event.GameEvent;
 import com.mygdx.scngame.event.Global;
 import com.mygdx.scngame.physics.Box;
 
 // TODO: add comments
 public class Player extends Entity {
-    protected InputComponent<? super Player> inputComponent;
-    protected GraphicsComponent<? super Player> graphicsComponent;
-    protected PhysicsComponent<? super Player> physicsComponent;
-
     public boolean isDying = false;
 
-    public Player() {
-        position.x = 0;
-        position.y = 0;
-    }
+    private EntityState<? super Player> _state;
 
-    public enum PlayerState {
-        MOVING,
-        ATTACKING,
-        BLOCKING,
-        DASHING,
-        DYING
-    }
+    public final PlayerMoveState moveState = new PlayerMoveState();
+    public final PlayerDashState dashState = new PlayerDashState();
 
-    private PlayerState state = PlayerState.MOVING;
+    public Player(World<Box> world) {
+        super(world);
 
-    public Player(EntityContext context,
-                  InputComponent<? super Player> input,
-                  GraphicsComponent<? super Player> graphics,
-                  PhysicsComponent<? super Player> physics) {
-        this.inputComponent = input;
-        this.graphicsComponent = graphics;
-        this.physicsComponent = physics;
-
-        addInputListener(this.inputComponent);
-    }
-
-    public void setState(PlayerState newState) {
-
-        if(newState == this.state) return;
-        PlayerStateChange payload = new PlayerStateChange();
-        payload.newState = newState;
-        payload.prevState = this.state;
-
-        this.state = newState;
-
-        Global.bus.fire(new GameEvent(this, payload));
-    }
-
-    public PlayerState getState() {return this.state;}
-
-    public void setInputComponent(InputComponent<? super Player> input) {
-        if(this.inputComponent != null) {
-            removeInputListener(this.inputComponent);
-            this.inputComponent.dispose();
-        }
-
-        this.inputComponent = input;
-        addInputListener(this.inputComponent);
-    }
-
-    public void setPhysicsComponent(PhysicsComponent<? super Player> physics) {
-        if(this.physicsComponent != null) {
-            this.physicsComponent.dispose();
-        }
-
-        this.physicsComponent = physics;
-    }
-
-    public void setGraphicsComponent(GraphicsComponent<? super Player> graphics) {
-        if(this.graphicsComponent != null) {
-            this.graphicsComponent.dispose();
-        }
-
-        this.graphicsComponent = graphics;
+        this._state = moveState;
+        this._state.setContainer(this);
+        this._state.setWorld(world);
+        this._state.enter();
     }
 
     @Override
-    public void update(World<Box> world, float delta) {
-        this.inputComponent.update(this);
-        this.physicsComponent.update(this, world, delta);
+    public void setWorld(World<Box> world) {
+        super.setWorld(world);
+        this._state.setWorld(world);
+    }
+
+    @Override
+    public void update(float delta) {
+        EntityState<? super Player> newState =  _state.update(delta);
+
+        if(newState != null) {
+            this._state.exit();
+            this._state = newState;
+
+            this._state.setContainer(this);
+            this._state.setWorld(this.world);
+
+            this._state.enter();
+        }
     }
 
     @Override
     public void draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
-        graphicsComponent.draw(this, batch, shape, alpha);
+        _state.draw( batch, shape, alpha);
     }
 
     @Override
