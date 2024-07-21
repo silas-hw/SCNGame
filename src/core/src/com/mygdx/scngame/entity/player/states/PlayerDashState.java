@@ -23,7 +23,7 @@ public class PlayerDashState extends PlayerState {
         container.position.mulAdd(container.direction, (dashDist/dashTime)*delta);
 
         if(dashTimer >= dashTime) {
-            return container.moveState;
+            return new PlayerMoveState();
         }
 
         Response.Result res = world.move(collisionItem, container.position.x, container.position.y, Box.GLOBAL_FILTER);

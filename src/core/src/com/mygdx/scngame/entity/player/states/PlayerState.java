@@ -18,15 +18,7 @@ import com.mygdx.scngame.event.Global;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.HitBox;
 
-public class PlayerState extends InputAdapter implements EntityState<Player>, GameEventListener {
-    protected static boolean INPUT_UP;
-    protected static boolean INPUT_DOWN;
-    protected static boolean INPUT_RIGHT;
-    protected static boolean INPUT_LEFT;
-    protected static boolean INPUT_SHIFT;
-
-    protected static boolean INPUT_INTERACT;
-    private int interactCount = 0;
+public class PlayerState extends InputAdapter implements EntityState<Player> {
 
     protected Item<Box> collisionItem;
     protected Item<Box> hitbox;
@@ -56,15 +48,6 @@ public class PlayerState extends InputAdapter implements EntityState<Player>, Ga
 
     @Override
     public EntityState<? super Player> update(float delta) {
-
-        // only allow interact inputs to be captured within 1 frame of the input
-        if(interactCount > 1) {
-            INPUT_INTERACT = false;
-        }
-        else if(INPUT_INTERACT) {
-            interactCount++;
-        }
-
         return null;
     }
 
@@ -77,15 +60,11 @@ public class PlayerState extends InputAdapter implements EntityState<Player>, Ga
     @Override
     public void setContainer(Player container) {
         if(this.container != null) this.container.removeInputListener(this);
-
         this.container = container;
-
-        this.container.addInputListener(this);
     }
 
     @Override
     public void enter() {
-        Global.bus.addEventListener(this);
     }
 
     @Override
@@ -105,92 +84,10 @@ public class PlayerState extends InputAdapter implements EntityState<Player>, Ga
     public void exit() {
         world.remove(collisionItem);
         world.remove(hitbox);
-
-        Global.bus.removeEventListener(this);
-    }
-
-    protected void clearInputs() {
-        INPUT_DOWN = false;
-        INPUT_UP = false;
-        INPUT_LEFT = false;
-        INPUT_RIGHT = false;
-        INPUT_SHIFT = false;
-        INPUT_INTERACT = false;
     }
 
     @Override
     public void dispose() {
         texture.dispose();
-        container.removeInputListener(this);
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        switch(keycode) {
-            case Input.Keys.W:
-                INPUT_UP = false;
-                break;
-
-            case Input.Keys.S:
-                INPUT_DOWN = false;
-                break;
-
-            case Input.Keys.D:
-                INPUT_RIGHT = false;
-                break;
-
-            case Input.Keys.A:
-                INPUT_LEFT = false;
-                break;
-
-            case Input.Keys.E:
-                INPUT_INTERACT = false;
-                break;
-
-            case Input.Keys.SHIFT_LEFT:
-                INPUT_SHIFT = false;
-                break;
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean keyDown(int keycode) {
-        switch(keycode) {
-            case Input.Keys.W:
-                INPUT_UP = true;
-                break;
-
-            case Input.Keys.S:
-                INPUT_DOWN = true;
-                break;
-
-            case Input.Keys.D:
-                INPUT_RIGHT = true;
-                break;
-
-            case Input.Keys.A:
-                INPUT_LEFT = true;
-                break;
-
-            case Input.Keys.E:
-                INPUT_INTERACT = true;
-                interactCount = 0;
-                break;
-
-            case Input.Keys.SHIFT_LEFT:
-                INPUT_SHIFT = true;
-                break;
-
-        }
-        return false;
-    }
-
-    @Override
-    public void notify(GameEvent event) {
-        if(event.getPayload() instanceof DialogStart) {
-            clearInputs();
-        }
     }
 }

@@ -25,31 +25,31 @@ public class PlayerMoveState extends PlayerState {
         int dx = 0;
         int dy = 0;
 
-        if(INPUT_UP) {
+        if(container.INPUT_UP) {
             dy++;
         }
 
-        if(INPUT_DOWN) {
+        if(container.INPUT_DOWN) {
             dy--;
         }
 
-        if(INPUT_LEFT) {
+        if(container.INPUT_LEFT) {
             dx--;
         }
 
-        if(INPUT_RIGHT) {
+        if(container.INPUT_RIGHT) {
             dx++;
         }
 
         container.direction.set(dx, dy);
         container.direction.nor();
 
-        if(INPUT_SHIFT) {
-            INPUT_SHIFT = false;
-            return container.dashState;
+        if(container.INPUT_SHIFT) {
+            container.INPUT_SHIFT = false;
+            return new PlayerDashState();
         }
 
-        if(INPUT_INTERACT) {
+        if(container.INPUT_INTERACT) {
             Global.bus.fire(new GameEvent(container, new DialogStart("test_dialog_1")));
         }
 
