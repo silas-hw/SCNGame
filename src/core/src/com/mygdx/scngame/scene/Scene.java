@@ -52,15 +52,17 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Ga
     public boolean[] keyPressed = new boolean[Input.Keys.MAX_KEYCODE + 1];
     public boolean[] keysJustPressed = new boolean[Input.Keys.MAX_KEYCODE + 1];
 
+    private World<Box> world;
+
     // if the scene created its own batch. Used to determine whether to dispose of the batch and shape renderer
     private boolean ownsBatch = false;
 
-    public Scene(Viewport viewport) {
-        this(viewport, new SpriteBatch(), new ShapeRenderer());
+    public Scene(Viewport viewport, World<Box> world) {
+        this(viewport, new SpriteBatch(), new ShapeRenderer(), world);
         ownsBatch = true;
     }
 
-    public Scene(Viewport viewport, SpriteBatch batch, ShapeRenderer shape) {
+    public Scene(Viewport viewport, SpriteBatch batch, ShapeRenderer shape, World<Box> world) {
         entities = new SnapshotArray(true, 4, Entity.class);
         renderComparator = new YComparator();
 
@@ -69,6 +71,8 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Ga
         this.viewport = viewport;
 
         Global.bus.addEventListener(this);
+
+        this.world = world;
     }
 
     public void addEntity(Entity entity) {
@@ -77,7 +81,7 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Ga
             entity.context.removeEntity(entity);
         }
 
-        entity.context = this;
+        entity.init(this.world, this);
 
         this.entities.add(entity);
     }
@@ -93,6 +97,20 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Ga
     @Override
     public boolean hasEntity(Entity entity) {
         return entities.contains(entity, false);
+    }
+
+    @Override
+    public void setWorld(World<Box> world) {
+        this.world = world;
+
+        for(Entity entity : entities) {
+            entity.setWorld(world);
+        }
+    }
+
+    @Override
+    public World<Box> getWorld() {
+        return this.world;
     }
 
     @Override

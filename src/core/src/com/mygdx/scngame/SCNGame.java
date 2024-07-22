@@ -2,6 +2,7 @@ package com.mygdx.scngame;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -60,9 +61,9 @@ public class SCNGame extends ApplicationAdapter implements GameEventListener {
 
 		viewport = new ScreenViewport(cam);
 
-		scene = new Scene(viewport, batch, shape);
+		scene = new Scene(viewport, batch, shape, world);
 
-		Player player = new Player(world);
+		Player player = new Player();
 		scene.addEntity(player);
 
 		dialog = new Dialog();
@@ -113,6 +114,17 @@ public class SCNGame extends ApplicationAdapter implements GameEventListener {
 		shape.end();
 
 		Gdx.gl.glDisable(GL20.GL_BLEND);
+
+		if(Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+			world = new World<Box>();
+
+			Box wall = new Box();
+			wall.solid = true;
+			wall.layer = (byte) 0b10000000;
+			world.add(new Item<>(wall), -50, -50, 150, 150);
+
+			scene.setWorld(world);
+		}
 	}
 
 	@Override

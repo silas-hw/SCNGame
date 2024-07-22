@@ -63,7 +63,12 @@ public class PlayerState extends InputAdapter implements EntityState<Player> {
     }
 
     @Override
-    public void enter() {
+    public void enter(World<Box> world, Player container) {
+        this.world = world;
+        this.container = container;
+
+        this.world.add(collisionItem, container.position.x, container.position.y, 16, 16);
+        this.world.add(hitbox, container.position.x, container.position.y, 16, 32);
     }
 
     @Override

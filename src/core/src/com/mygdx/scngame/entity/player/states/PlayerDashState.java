@@ -37,8 +37,8 @@ public class PlayerDashState extends PlayerState {
     }
 
     @Override
-    public void enter() {
-        super.enter();
+    public void enter(World<Box> world, Player container) {
+        super.enter(world, container);
         collisionItem.userData.response = Response.touch;
 
         dashTimer = 0f;

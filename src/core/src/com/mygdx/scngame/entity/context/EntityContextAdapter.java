@@ -1,8 +1,10 @@
 package com.mygdx.scngame.entity.context;
 
+import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.event.GameEvent;
 import com.mygdx.scngame.event.GameEventListener;
+import com.mygdx.scngame.physics.Box;
 
 /**
  * A convenience implementation of {@link EntityContext entity context} so you can implement
@@ -27,6 +29,16 @@ public class EntityContextAdapter implements EntityContext {
     @Override
     public boolean hasEntity(Entity entity) {
         return false;
+    }
+
+    @Override
+    public void setWorld(World<Box> world) {
+
+    }
+
+    @Override
+    public World<Box> getWorld() {
+        return null;
     }
 
     @Override

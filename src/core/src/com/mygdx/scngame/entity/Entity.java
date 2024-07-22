@@ -32,8 +32,9 @@ public abstract class Entity implements Disposable {
     public EntityContext context = NULL_CONTEXT;
 
 
-    public Entity(World<Box> world) {
+    public void init(World<Box> world, EntityContext context) {
         this.world = world;
+        this.context = context;
     }
 
     /**

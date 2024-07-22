@@ -25,13 +25,12 @@ import java.util.Arrays;
 public class Player extends Entity {
     private EntityState<? super Player> _state;
 
-    public Player(World<Box> world) {
-        super(world);
+    @Override
+    public void init(World<Box> world, EntityContext context) {
+        super.init(world, context);
 
         this._state = new PlayerMoveState();
-        this._state.setContainer(this);
-        this._state.setWorld(world);
-        this._state.enter();
+        this._state.enter(world, this);
     }
 
     @Override
@@ -47,11 +46,7 @@ public class Player extends Entity {
         if(newState != null) {
             this._state.exit();
             this._state = newState;
-
-            this._state.setContainer(this);
-            this._state.setWorld(this.world);
-
-            this._state.enter();
+            this._state.enter(world, this);
         }
     }
 
