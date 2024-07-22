@@ -50,24 +50,4 @@ public class EntityContextAdapter implements EntityContext {
     public boolean isKeyJustPressed(int keycode) {
         return false;
     }
-
-    @Override
-    public void fire(GameEvent event) {
-
-    }
-
-    @Override
-    public void addEventListener(GameEventListener listener) {
-
-    }
-
-    @Override
-    public void removeEventListener(GameEventListener listener) {
-
-    }
-
-    @Override
-    public void clearEventListeners() {
-
-    }
 }

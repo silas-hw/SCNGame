@@ -63,16 +63,54 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Ga
     }
 
     public Scene(Viewport viewport, SpriteBatch batch, ShapeRenderer shape, World<Box> world) {
-        entities = new SnapshotArray(true, 4, Entity.class);
+        entities = new SnapshotArray<>(true, 4, Entity.class);
         renderComparator = new YComparator();
 
         this.batch = batch;
         this.shape = shape;
         this.viewport = viewport;
 
+
         Global.bus.addEventListener(this);
 
         this.world = world;
+    }
+
+    public void update(float delta) {
+        Entity[] e = entities.begin();
+
+        for(int i = 0; i<entities.size; i++) {
+            e[i].update(delta);
+        }
+
+        entities.end();
+
+        if(keyJustPressed) {
+            keyJustPressed = false;
+            for(int i = 0; i<keysJustPressed.length; i++) {
+                keysJustPressed[i] = false;
+            }
+        }
+    }
+
+    public void draw() {
+        entities.sort(this.renderComparator);
+        viewport.getCamera().update();
+        viewport.apply();
+
+        batch.setProjectionMatrix(viewport.getCamera().combined);
+        shape.setProjectionMatrix(viewport.getCamera().combined);
+
+        batch.begin();
+
+        Entity[] e = entities.begin();
+        for(int i = 0; i<entities.size; i++) {
+            e[i].draw(batch, shape, alpha);
+        }
+
+        entities.end();
+
+        batch.end();
     }
 
     public void addEntity(Entity entity) {
@@ -121,69 +159,6 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Ga
     @Override
     public boolean isKeyJustPressed(int keycode) {
         return keysJustPressed[keycode];
-    }
-
-    @Override
-    public void fire(GameEvent event) {
-
-    }
-
-    @Override
-    public void addEventListener(GameEventListener listener) {
-
-    }
-
-    @Override
-    public void removeEventListener(GameEventListener listener) {
-
-    }
-
-    @Override
-    public void clearEventListeners() {
-
-    }
-
-    public void update(float delta) {
-        Entity[] e = entities.begin();
-
-        for(int i = 0; i<entities.size; i++) {
-            if (e[i].isDead) {
-                entities.removeValue(e[i], false);
-                e[i].dispose();
-                continue;
-            }
-
-            e[i].update(delta);
-        }
-
-        entities.end();
-
-        if(keyJustPressed) {
-            keyJustPressed = false;
-            for(int i = 0; i<keysJustPressed.length; i++) {
-                keysJustPressed[i] = false;
-            }
-        }
-    }
-
-    public void draw() {
-        entities.sort(this.renderComparator);
-        viewport.getCamera().update();
-        viewport.apply();
-
-        batch.setProjectionMatrix(viewport.getCamera().combined);
-        shape.setProjectionMatrix(viewport.getCamera().combined);
-
-        batch.begin();
-
-        Entity[] e = entities.begin();
-        for(int i = 0; i<entities.size; i++) {
-            e[i].draw(batch, shape, alpha);
-        }
-
-        entities.end();
-
-        batch.end();
     }
 
     @Override

@@ -26,20 +26,20 @@ public class PlayerDashState extends PlayerState {
             return new PlayerMoveState();
         }
 
-        Response.Result res = world.move(collisionItem, container.position.x, container.position.y, Box.GLOBAL_FILTER);
+        Response.Result res = world.move(container.collisionItem, container.position.x, container.position.y, Box.GLOBAL_FILTER);
 
-        Rect rect1 = world.getRect(collisionItem);
+        Rect rect1 = world.getRect(container.collisionItem);
         container.position.x = rect1.x;
         container.position.y = rect1.y;
 
-        world.move(hitbox, container.position.x, container.position.y, Box.GLOBAL_FILTER);
+        world.move(container.hitbox, container.position.x, container.position.y, Box.GLOBAL_FILTER);
         return null;
     }
 
     @Override
     public void enter(World<Box> world, Player container) {
         super.enter(world, container);
-        collisionItem.userData.response = Response.touch;
+        container.collisionItem.userData.response = Response.touch;
 
         dashTimer = 0f;
     }
@@ -47,6 +47,6 @@ public class PlayerDashState extends PlayerState {
     @Override
     public void exit() {
         super.exit();
-        collisionItem.userData.response = Response.slide;
+        container.collisionItem.userData.response = Response.slide;
     }
 }

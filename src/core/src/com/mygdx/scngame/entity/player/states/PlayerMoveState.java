@@ -56,12 +56,12 @@ public class PlayerMoveState extends PlayerState {
 
         container.position.mulAdd(container.direction, 500f*delta);
 
-        world.move(collisionItem, container.position.x, container.position.y, Box.GLOBAL_FILTER);
-        Rect rect = world.getRect(collisionItem);
+        world.move(container.collisionItem, container.position.x, container.position.y, Box.GLOBAL_FILTER);
+        Rect rect = world.getRect(container.collisionItem);
         container.position.x = rect.x;
         container.position.y = rect.y;
 
-        Response.Result res = world.move(hitbox, container.position.x, container.position.y, Box.GLOBAL_FILTER);
+        Response.Result res = world.move(container.hitbox, container.position.x, container.position.y, Box.GLOBAL_FILTER);
 
         if(invis && invisTimer < invisTime) {
             invisTimer += delta;
