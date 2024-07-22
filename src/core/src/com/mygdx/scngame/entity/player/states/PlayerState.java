@@ -59,7 +59,6 @@ public class PlayerState extends InputAdapter implements EntityState<Player> {
 
     @Override
     public void setContainer(Player container) {
-        if(this.container != null) this.container.removeInputListener(this);
         this.container = container;
     }
 

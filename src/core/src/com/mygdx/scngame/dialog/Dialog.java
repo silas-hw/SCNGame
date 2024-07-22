@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.scngame.event.GameEvent;
 import com.mygdx.scngame.event.GameEventListener;
+import com.mygdx.scngame.event.Global;
 
 public class Dialog extends InputAdapter implements GameEventListener {
 
@@ -87,6 +88,7 @@ public class Dialog extends InputAdapter implements GameEventListener {
         switch (keycode) {
             case Input.Keys.E:
                 inFocus = false;
+                Global.bus.fire(new GameEvent(this, new DialogEnd()) );
                 break;
 
         }

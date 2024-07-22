@@ -1,5 +1,7 @@
 package com.mygdx.scngame.scene;
 
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -8,11 +10,13 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.World;
+import com.mygdx.scngame.dialog.DialogStart;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.context.EntityContext;
 import com.mygdx.scngame.event.GameEvent;
 import com.mygdx.scngame.event.GameEventBus;
 import com.mygdx.scngame.event.GameEventListener;
+import com.mygdx.scngame.event.Global;
 import com.mygdx.scngame.physics.Box;
 
 import java.util.Comparator;
@@ -27,22 +31,26 @@ import java.util.Comparator;
  * <p>
  * If a batch and shape renderer <i>are</i> provided, the provider is responsible for disposing of them.
  * <p>
- * This implements an InputProcessor, and propagates all input events to registered entities. This works unlike a
- * {@link com.badlogic.gdx.InputMultiplexer input multiplexer}. Every single entity will receive the input event.
+ * This implements an InputProcessor, and stores keyboard input events such that they can
+ * be polled locally by its entities, as opposed to globally via {@link com.badlogic.gdx.Input}.
+ * Inputs are cleared upon certain events that are expected to pause the main gameplay,
+ * such as {@link DialogStart}.
  *
  * @author Silas Hayes-Williams
  */
-public class Scene implements Disposable, InputProcessor, EntityContext {
+public class Scene extends InputAdapter implements Disposable, EntityContext, GameEventListener {
     protected SnapshotArray<Entity> entities;
     protected Comparator<Entity> renderComparator;
-
-    private Array<GameEventListener> eventListeners;
 
     protected SpriteBatch batch;
     protected ShapeRenderer shape;
     protected Viewport viewport;
 
     public float alpha = 1.0f;
+
+    private boolean keyJustPressed;
+    public boolean[] keyPressed = new boolean[Input.Keys.MAX_KEYCODE + 1];
+    public boolean[] keysJustPressed = new boolean[Input.Keys.MAX_KEYCODE + 1];
 
     // if the scene created its own batch. Used to determine whether to dispose of the batch and shape renderer
     private boolean ownsBatch = false;
@@ -56,11 +64,11 @@ public class Scene implements Disposable, InputProcessor, EntityContext {
         entities = new SnapshotArray(true, 4, Entity.class);
         renderComparator = new YComparator();
 
-        eventListeners = new Array<>();
-
         this.batch = batch;
         this.shape = shape;
         this.viewport = viewport;
+
+        Global.bus.addEventListener(this);
     }
 
     public void addEntity(Entity entity) {
@@ -85,6 +93,16 @@ public class Scene implements Disposable, InputProcessor, EntityContext {
     @Override
     public boolean hasEntity(Entity entity) {
         return entities.contains(entity, false);
+    }
+
+    @Override
+    public boolean isKeyPressed(int keycode) {
+        return keyPressed[keycode];
+    }
+
+    @Override
+    public boolean isKeyJustPressed(int keycode) {
+        return keysJustPressed[keycode];
     }
 
     @Override
@@ -121,6 +139,13 @@ public class Scene implements Disposable, InputProcessor, EntityContext {
         }
 
         entities.end();
+
+        if(keyJustPressed) {
+            keyJustPressed = false;
+            for(int i = 0; i<keysJustPressed.length; i++) {
+                keysJustPressed[i] = false;
+            }
+        }
     }
 
     public void draw() {
@@ -157,105 +182,33 @@ public class Scene implements Disposable, InputProcessor, EntityContext {
         }
     }
 
-    // Propagate all key events to registered entities
-
     @Override
     public boolean keyDown(int i) {
-        boolean handled = false;
+        keyJustPressed = true;
+        keysJustPressed[i] = true;
+        keyPressed[i] = true;
 
-        for(InputProcessor listener : entities) {
-            handled = listener.keyDown(i) || handled;
-        }
-
-        return handled;
+        return true;
     }
 
     @Override
     public boolean keyUp(int i) {
-        boolean handled = false;
-
-        for(InputProcessor listener : entities) {
-            handled = listener.keyUp(i) || handled;
-        }
-
-        return handled;
+        keyPressed[i] = false;
+        return true;
     }
 
     @Override
-    public boolean keyTyped(char c) {
-        boolean handled = false;
+    public void notify(GameEvent event) {
+        if(event.getPayload() instanceof DialogStart) {
+            keyJustPressed = false;
+            for(int i = 0; i<keysJustPressed.length; i++) {
+                keysJustPressed[i] = false;
+            }
 
-        for(InputProcessor listener : entities) {
-            handled = listener.keyTyped(c) || handled;
+            for(int i = 0; i<keyPressed.length; i++) {
+                keyPressed[i] = false;
+            }
         }
-
-        return handled;
-    }
-
-    @Override
-    public boolean touchDown(int i, int i1, int i2, int i3) {
-        boolean handled = false;
-
-        for(InputProcessor listener : entities) {
-            handled = listener.touchDown(i, i1, i2, i3) || handled;
-        }
-
-        return handled;
-    }
-
-    @Override
-    public boolean touchUp(int i, int i1, int i2, int i3) {
-        boolean handled = false;
-
-        for(InputProcessor listener : entities) {
-            handled = listener.touchUp(i, i1, i2, i3) || handled;
-        }
-
-        return handled;
-    }
-
-    @Override
-    public boolean touchCancelled(int i, int i1, int i2, int i3) {
-        boolean handled = false;
-
-        for(InputProcessor listener : entities) {
-            handled = listener.touchCancelled(i, i1, i2, i3) || handled;
-        }
-
-        return handled;
-    }
-
-    @Override
-    public boolean touchDragged(int i, int i1, int i2) {
-        boolean handled = false;
-
-        for(InputProcessor listener : entities) {
-            handled = listener.touchDragged(i, i1, i2) || handled;
-        }
-
-        return handled;
-    }
-
-    @Override
-    public boolean mouseMoved(int i, int i1) {
-        boolean handled = false;
-
-        for(InputProcessor listener : entities) {
-            handled = listener.mouseMoved(i, i1) || handled;
-        }
-
-        return handled;
-    }
-
-    @Override
-    public boolean scrolled(float v, float v1) {
-        boolean handled = false;
-
-        for(InputProcessor listener : entities) {
-            handled = listener.scrolled(v, v1) || handled;
-        }
-
-        return handled;
     }
 
     public static class YComparator implements Comparator<Entity> {

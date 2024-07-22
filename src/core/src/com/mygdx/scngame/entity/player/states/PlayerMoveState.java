@@ -1,5 +1,8 @@
 package com.mygdx.scngame.entity.player.states;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.dongbat.jbump.*;
 import com.mygdx.scngame.dialog.DialogStart;
 import com.mygdx.scngame.entity.EntityState;
@@ -10,7 +13,6 @@ import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.DamageBox;
 
 public class PlayerMoveState extends PlayerState {
-
 
     private float health = 500f;
 
@@ -25,31 +27,30 @@ public class PlayerMoveState extends PlayerState {
         int dx = 0;
         int dy = 0;
 
-        if(container.INPUT_UP) {
+        if(container.context.isKeyPressed(Input.Keys.W)) {
             dy++;
         }
 
-        if(container.INPUT_DOWN) {
+        if(container.context.isKeyPressed(Input.Keys.S)) {
             dy--;
         }
 
-        if(container.INPUT_LEFT) {
+        if(container.context.isKeyPressed(Input.Keys.A)) {
             dx--;
         }
 
-        if(container.INPUT_RIGHT) {
+        if(container.context.isKeyPressed(Input.Keys.D)) {
             dx++;
         }
 
         container.direction.set(dx, dy);
         container.direction.nor();
 
-        if(container.INPUT_SHIFT) {
-            container.INPUT_SHIFT = false;
+        if(container.context.isKeyJustPressed(Input.Keys.SHIFT_LEFT)) {
             return new PlayerDashState();
         }
 
-        if(container.INPUT_INTERACT) {
+        if(container.context.isKeyJustPressed(Input.Keys.E)) {
             Global.bus.fire(new GameEvent(container, new DialogStart("test_dialog_1")));
         }
 

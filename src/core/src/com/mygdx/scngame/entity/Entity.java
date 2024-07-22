@@ -13,11 +13,9 @@ import com.mygdx.scngame.event.GameEventListener;
 import com.mygdx.scngame.physics.Box;
 
 /**
- * Represents a single 'Entity' within the Game. An Entity is also a {@link InputProcessor input processor} and is
- * expected to be able to handle input events. It is recommended
- *
+ * Represents a single 'Entity' within the Game.
  */
-public abstract class Entity implements Disposable, InputProcessor {
+public abstract class Entity implements Disposable {
     public Vector2 position = new Vector2();
     public Vector2 direction = new Vector2();
 
@@ -25,8 +23,6 @@ public abstract class Entity implements Disposable, InputProcessor {
     public boolean isDead = false;
 
     protected World<Box> world;
-
-    private final Array<InputProcessor> inputListeners = new Array<>();
 
     /**
      * An empty {@link EntityContextAdapter} such that if the context is not set there is still
@@ -58,117 +54,4 @@ public abstract class Entity implements Disposable, InputProcessor {
     public void setWorld(World<Box> world) {
         this.world = world;
     };
-
-    public void addInputListener(InputProcessor listener) {
-        inputListeners.add(listener);
-    }
-
-    public void removeInputListener(InputProcessor listener) {
-        inputListeners.removeValue(listener, false);
-    }
-
-    public void clearInputListeners() {
-        inputListeners.clear();
-    }
-
-    // Propagate input events to all registered listeners
-
-    @Override
-    public boolean keyDown(int i) {
-        boolean handled = false;
-
-        for(InputProcessor listener : inputListeners) {
-            handled = listener.keyDown(i) || handled;
-        }
-
-        return handled;
-    }
-
-    @Override
-    public boolean keyUp(int i) {
-        boolean handled = false;
-
-        for(InputProcessor listener : inputListeners) {
-            handled = listener.keyUp(i) || handled;
-        }
-
-        return handled;
-    }
-
-    @Override
-    public boolean keyTyped(char c) {
-        boolean handled = false;
-
-        for(InputProcessor listener : inputListeners) {
-            handled = listener.keyTyped(c) || handled;
-        }
-
-        return handled;
-    }
-
-    @Override
-    public boolean touchDown(int i, int i1, int i2, int i3) {
-        boolean handled = false;
-
-        for(InputProcessor listener : inputListeners) {
-            handled = listener.touchDown(i, i1, i2, i3) || handled;
-        }
-
-        return handled;
-    }
-
-    @Override
-    public boolean touchUp(int i, int i1, int i2, int i3) {
-        boolean handled = false;
-
-        for(InputProcessor listener : inputListeners) {
-            handled = listener.touchUp(i, i1, i2, i3) || handled;
-        }
-
-        return handled;
-    }
-
-    @Override
-    public boolean touchCancelled(int i, int i1, int i2, int i3) {
-        boolean handled = false;
-
-        for(InputProcessor listener : inputListeners) {
-            handled = listener.touchCancelled(i, i1, i2, i3) || handled;
-        }
-
-        return handled;
-    }
-
-    @Override
-    public boolean touchDragged(int i, int i1, int i2) {
-        boolean handled = false;
-
-        for(InputProcessor listener : inputListeners) {
-            handled = listener.touchDragged(i, i1, i2) || handled;
-        }
-
-        return handled;
-    }
-
-    @Override
-    public boolean mouseMoved(int i, int i1) {
-        boolean handled = false;
-
-        for(InputProcessor listener : inputListeners) {
-            handled = listener.mouseMoved(i, i1) || handled;
-        }
-
-        return handled;
-    }
-
-    @Override
-    public boolean scrolled(float v, float v1) {
-        boolean handled = false;
-
-        for(InputProcessor listener : inputListeners) {
-            handled = listener.scrolled(v, v1) || handled;
-        }
-
-        return handled;
-    }
 }

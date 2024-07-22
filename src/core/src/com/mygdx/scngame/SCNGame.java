@@ -11,6 +11,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.*;
 import com.mygdx.scngame.dialog.Dialog;
+import com.mygdx.scngame.dialog.DialogEnd;
+import com.mygdx.scngame.dialog.DialogStart;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.player.Player;
 import com.mygdx.scngame.event.GameEvent;
@@ -33,6 +35,8 @@ public class SCNGame extends ApplicationAdapter implements GameEventListener {
 	World<Box> world;
 
 	Dialog dialog;
+
+	private boolean pause = false;
 	
 	@Override
 	public void create () {

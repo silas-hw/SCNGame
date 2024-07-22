@@ -13,4 +13,7 @@ public interface EntityContext extends GameEventBus {
     void removeEntity(Entity entity);
     void clearEntities();
     boolean hasEntity(Entity entity);
+
+    boolean isKeyPressed(int keycode);
+    boolean isKeyJustPressed(int keycode);
 }

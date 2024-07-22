@@ -30,6 +30,16 @@ public class EntityContextAdapter implements EntityContext {
     }
 
     @Override
+    public boolean isKeyPressed(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean isKeyJustPressed(int keycode) {
+        return false;
+    }
+
+    @Override
     public void fire(GameEvent event) {
 
     }
