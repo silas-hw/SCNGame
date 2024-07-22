@@ -29,6 +29,11 @@ public class Player extends Entity {
     public void init(World<Box> world, EntityContext context) {
         super.init(world, context);
 
+        if(this._state != null) {
+            this._state.exit();
+            this._state.dispose();
+        }
+
         this._state = new PlayerMoveState();
         this._state.enter(world, this);
     }

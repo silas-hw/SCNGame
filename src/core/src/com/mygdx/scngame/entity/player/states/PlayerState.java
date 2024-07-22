@@ -27,7 +27,7 @@ public class PlayerState extends InputAdapter implements EntityState<Player> {
 
     protected Player container;
 
-    Texture texture;
+    private Texture texture;
 
     public PlayerState() {
         texture = new Texture(Gdx.files.internal("sprites/test.png"));

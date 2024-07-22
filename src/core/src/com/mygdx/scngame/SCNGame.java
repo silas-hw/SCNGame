@@ -37,6 +37,8 @@ public class SCNGame extends ApplicationAdapter implements GameEventListener {
 
 	Dialog dialog;
 
+	Player player;
+
 	private boolean pause = false;
 	
 	@Override
@@ -63,7 +65,7 @@ public class SCNGame extends ApplicationAdapter implements GameEventListener {
 
 		scene = new Scene(viewport, batch, shape, world);
 
-		Player player = new Player();
+		player = new Player();
 		scene.addEntity(player);
 
 		dialog = new Dialog();
@@ -117,6 +119,8 @@ public class SCNGame extends ApplicationAdapter implements GameEventListener {
 
 		if(Gdx.input.isKeyJustPressed(Input.Keys.F)) {
 			world = new World<Box>();
+
+			player.init(world, scene);
 
 			Box wall = new Box();
 			wall.solid = true;
