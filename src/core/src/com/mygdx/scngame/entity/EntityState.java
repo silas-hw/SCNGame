@@ -14,6 +14,6 @@ public interface EntityState<T extends Entity> extends InputProcessor, Disposabl
     void setContainer(T container);
     void setWorld(World<Box> world);
 
-    void enter(World<Box> world, T entity);
+    void enter();
     void exit();
 }

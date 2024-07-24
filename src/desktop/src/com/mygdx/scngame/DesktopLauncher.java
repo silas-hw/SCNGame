@@ -11,6 +11,7 @@ public class DesktopLauncher {
 		config.setForegroundFPS(0);
 		config.useVsync(false);
 		config.setTitle("SCNGame");
+		config.setWindowedMode(1280, 720);
 		new Lwjgl3Application(new SCNGame(), config);
 	}
 }

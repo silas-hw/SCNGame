@@ -14,11 +14,13 @@ import com.mygdx.scngame.physics.DamageBox;
 
 public class PlayerMoveState extends PlayerState {
 
-    private float health = 500f;
-
     private float invisTimer = 0f;
     private final float invisTime = 0.3f;
     private boolean invis = false;
+    
+    public PlayerMoveState(Player container, World<Box> world) {
+        super(container, world);
+    }
 
     @Override
     public EntityState<? super Player> update(float delta) {
@@ -47,7 +49,7 @@ public class PlayerMoveState extends PlayerState {
         container.direction.nor();
 
         if(container.context.isKeyJustPressed(Input.Keys.SHIFT_LEFT)) {
-            return new PlayerDashState();
+            return new PlayerDashState(this.container, this.world);
         }
 
         if(container.context.isKeyJustPressed(Input.Keys.E)) {
@@ -77,7 +79,7 @@ public class PlayerMoveState extends PlayerState {
                 if(col.other.userData instanceof DamageBox) {
                     DamageBox dBox = (DamageBox) col.other.userData;
 
-                    health -= dBox.damage;
+                    container.health -= dBox.damage;
                     invis = true;
                 }
 

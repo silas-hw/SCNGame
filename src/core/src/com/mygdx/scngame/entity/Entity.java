@@ -31,10 +31,13 @@ public abstract class Entity implements Disposable {
     public final static EntityContext NULL_CONTEXT = new EntityContextAdapter();
     public EntityContext context = NULL_CONTEXT;
 
-
-    public void init(World<Box> world, EntityContext context) {
+    public Entity(World<Box> world, EntityContext context) {
         this.world = world;
         this.context = context;
+    }
+
+    public Entity(World<Box> world) {
+        this(world, NULL_CONTEXT);
     }
 
     /**
@@ -55,4 +58,6 @@ public abstract class Entity implements Disposable {
     public void setWorld(World<Box> world) {
         this.world = world;
     };
+
+    public World<Box> getWorld() {return this.world;}
 }

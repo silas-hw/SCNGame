@@ -15,6 +15,10 @@ public class PlayerDashState extends PlayerState {
     private final float dashTime = 0.2f;
     private final float dashDist = 400f;
 
+    public PlayerDashState(Player container, World<Box> world) {
+        super(container, world);
+    }
+
     @Override
     public EntityState<? super Player> update(float delta) {
         super.update(delta);
@@ -23,7 +27,7 @@ public class PlayerDashState extends PlayerState {
         container.position.mulAdd(container.direction, (dashDist/dashTime)*delta);
 
         if(dashTimer >= dashTime) {
-            return new PlayerMoveState();
+            return new PlayerMoveState(this.container, this.world);
         }
 
         Response.Result res = world.move(container.collisionItem, container.position.x, container.position.y, Box.GLOBAL_FILTER);
@@ -37,10 +41,8 @@ public class PlayerDashState extends PlayerState {
     }
 
     @Override
-    public void enter(World<Box> world, Player container) {
-        super.enter(world, container);
+    public void enter() {
         container.collisionItem.userData.response = Response.touch;
-
         dashTimer = 0f;
     }
 

@@ -70,7 +70,6 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Ga
         this.shape = shape;
         this.viewport = viewport;
 
-
         Global.bus.addEventListener(this);
 
         this.world = world;
@@ -119,7 +118,10 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Ga
             entity.context.removeEntity(entity);
         }
 
-        entity.init(this.world, this);
+        entity.context = this;
+
+        // change entity world if it doesn't match the scenes world
+        entity.setWorld(this.world);
 
         this.entities.add(entity);
     }
