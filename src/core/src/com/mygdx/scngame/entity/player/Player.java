@@ -45,7 +45,12 @@ public class Player extends Entity {
     }
 
     @Override
-    public void update(float delta) {
+    public void update(float delta) throws IllegalStateException {
+        if(this.world == null) {
+            System.out.println("uhm,mm");
+            throw new IllegalStateException("World must be set before calling update on Player");
+        }
+
         EntityState<? super Player> newState =  state.update(delta);
 
         if(newState != null) {
