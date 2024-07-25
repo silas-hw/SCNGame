@@ -1,15 +1,12 @@
 package com.mygdx.scngame.entity;
 
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.context.EntityContextAdapter;
 import com.mygdx.scngame.entity.context.EntityContext;
-import com.mygdx.scngame.event.GameEventListener;
 import com.mygdx.scngame.physics.Box;
 
 /**
@@ -18,9 +15,6 @@ import com.mygdx.scngame.physics.Box;
 public abstract class Entity implements Disposable {
     public Vector2 position = new Vector2();
     public Vector2 direction = new Vector2();
-
-    // used by Scene to remove dead entities without coupling Entity to Scene
-    public boolean isDead = false;
 
     protected World<Box> world;
 

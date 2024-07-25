@@ -12,7 +12,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Rect;
 import com.dongbat.jbump.World;
-import com.mygdx.scngame.SCNGame;
 import com.mygdx.scngame.dialog.Dialog;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.player.Player;

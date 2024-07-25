@@ -15,8 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mygdx.scngame.SCNGame;
-import com.mygdx.scngame.entity.player.Player;
 
 public class MainMenuScreen implements Screen {
 
