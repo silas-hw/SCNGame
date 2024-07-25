@@ -106,7 +106,7 @@ public class GameScreen implements Screen {
 
         ScreenUtils.clear(Color.BLACK);
 
-        scene.update(Gdx.graphics.getDeltaTime());
+        scene.update(Math.min(Gdx.graphics.getDeltaTime(), 1/30f));
 
         camera.update();
         batch.setProjectionMatrix(camera.combined);
