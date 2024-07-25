@@ -42,6 +42,13 @@ public abstract class Entity implements Disposable {
      */
     public void draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {}
 
+    /**
+     * Sets the {@link World physics world} for this Entity to use.
+     *
+     * Do not call update without settings the world
+     *
+     * @param world the physics world to set to
+     */
     public void setWorld(World<Box> world) {
         this.world = world;
     };

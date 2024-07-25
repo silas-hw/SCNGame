@@ -35,7 +35,8 @@ public class Player extends Entity {
         hit.response = Response.cross;
         hitbox = new Item<>(hit);
 
-        this.state = new PlayerMoveState(this);
+        this.state = new PlayerMoveState();
+        this.state.setContainer(this);
     }
 
     @Override
@@ -48,7 +49,11 @@ public class Player extends Entity {
 
         if(newState != null) {
             this.state.exit();
+
             this.state = newState;
+
+            this.state.setContainer(this);
+            this.state.setWorld(this.world);
             this.state.enter();
         }
     }
@@ -62,7 +67,7 @@ public class Player extends Entity {
     public void setWorld(World<Box> world) {
         this.state.setWorld(world);
 
-        // if its the first time settings the world, we can now enter the initial state
+        // if it's the first time settings the world, we can now enter the initial state
         if(this.world == null) {
             this.state.enter();
         }
@@ -80,6 +85,6 @@ public class Player extends Entity {
 
     @Override
     public void dispose() {
-
+        this.state.exit();
     }
 }

@@ -15,8 +15,12 @@ public interface EntityContext {
     void clearEntities();
     boolean hasEntity(Entity entity);
 
-    /** sets the world for all held entities */
+    /**
+     * sets the world for all held entities
+     *
+     * */
     void setWorld(World<Box> world);
+
     World<Box> getWorld();
 
     boolean isKeyPressed(int keycode);

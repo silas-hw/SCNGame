@@ -163,6 +163,12 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Ga
         return keysJustPressed[keycode];
     }
 
+    /**
+     * Disposes all held entities as well as the batch and shape renderer if one was not provided.
+     * <p>
+     * If you wish for an entity to persist and not be disposed of when the scene gets disposed,
+     * remove that entity from the scene before disposing.
+     */
     @Override
     public void dispose() {
         for(Entity entity : entities) {

@@ -64,7 +64,6 @@ public class GameScreen implements Screen {
         gameViewport = new ExtendViewport(400, 400, camera);
 
         world = new World<Box>();
-        scene = new Scene(gameViewport, batch, shape, world);
 
         this.player = new Player();
 
@@ -73,6 +72,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
+        scene = new Scene(gameViewport, batch, shape, world);
+
         Box wall = new Box();
         wall.solid = true;
         wall.layer = (byte) 0b10000000;
@@ -172,7 +173,10 @@ public class GameScreen implements Screen {
 
     @Override
     public void hide() {
-        scene.clearEntities();
+        // remove the player, so it doesn't get disposed of
+        // when disposing of the scene
+
+        scene.removeEntity(player);
         scene.dispose();
 
         Global.bus.removeEventListener(dialog);

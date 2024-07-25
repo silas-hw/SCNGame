@@ -3,6 +3,9 @@ package com.mygdx.scngame.entity.player.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.dongbat.jbump.*;
 import com.mygdx.scngame.dialog.DialogStart;
 import com.mygdx.scngame.entity.EntityState;
@@ -12,21 +15,19 @@ import com.mygdx.scngame.event.Global;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.DamageBox;
 
-public class PlayerMoveState extends PlayerState {
+public class PlayerMoveState implements EntityState<Player> {
 
     private float invisTimer = 0f;
     private final float invisTime = 0.3f;
     private boolean invis = false;
     
-    public PlayerMoveState(Player container, World<Box> world) {
-        super(container, world);
-    }
-    public PlayerMoveState(Player container) {super(container);}
+    protected Player container;
+    protected World<Box> world;
+
+    private Texture texture;
 
     @Override
     public EntityState<? super Player> update(float delta) {
-        super.update(delta);
-
         int dx = 0;
         int dy = 0;
 
@@ -50,7 +51,7 @@ public class PlayerMoveState extends PlayerState {
         container.direction.nor();
 
         if(container.context.isKeyJustPressed(Input.Keys.SHIFT_LEFT)) {
-            return new PlayerDashState(this.container, this.world);
+            return new PlayerDashState();
         }
 
         if(container.context.isKeyJustPressed(Input.Keys.E)) {
@@ -88,5 +89,31 @@ public class PlayerMoveState extends PlayerState {
         }
 
         return null;
+    }
+
+    @Override
+    public EntityState<? super Player> draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
+        batch.draw(texture, container.position.x, container.position.y);
+        return null;
+    }
+
+    @Override
+    public void setContainer(Player container) {
+        this.container = container;
+    }
+
+    @Override
+    public void setWorld(World<Box> world) {
+        this.world = world;
+    }
+
+    @Override
+    public void enter() {
+        texture = new Texture(Gdx.files.internal("sprites/test.png"));
+    }
+
+    @Override
+    public void exit() {
+        texture.dispose();
     }
 }
