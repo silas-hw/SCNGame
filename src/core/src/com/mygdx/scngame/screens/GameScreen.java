@@ -21,6 +21,7 @@ import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.DamageBox;
 import com.mygdx.scngame.physics.HitBox;
 import com.mygdx.scngame.scene.Scene;
+import com.mygdx.scngame.settings.Settings;
 
 public class GameScreen implements Screen {
 
@@ -66,7 +67,7 @@ public class GameScreen implements Screen {
         world = new World<Box>();
         scene = new Scene(gameViewport, batch, shape, world);
 
-        this.player = new Player(world, scene);
+        this.player = new Player();
 
         dialog = new Dialog();
     }
@@ -145,12 +146,12 @@ public class GameScreen implements Screen {
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.I)) {
             testScale += 0.1f;
-            dialog.setScale(testScale);
+            Settings.setDialogScale(testScale);
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.K)) {
             testScale -= 0.1f;
-            dialog.setScale(testScale);
+            Settings.setDialogScale(testScale);
         }
     }
 

@@ -21,9 +21,7 @@ public class Player extends Entity {
     public float maxHealth = 500f;
     public float health = maxHealth;
 
-    public Player(World<Box> world, EntityContext context) {
-        super(world, context);
-
+    public Player() {
         Box foot;
         foot = new Box();
         foot.solid = true;
@@ -37,17 +35,12 @@ public class Player extends Entity {
         hit.response = Response.cross;
         hitbox = new Item<>(hit);
 
-        this.world.add(collisionItem, position.x, position.y, 16, 16);
-        this.world.add(hitbox, position.x, position.y, 16, 32);
-
-        this.state = new PlayerMoveState(this, world);
-        this.state.enter();
+        this.state = new PlayerMoveState(this);
     }
 
     @Override
     public void update(float delta) throws IllegalStateException {
         if(this.world == null) {
-            System.out.println("uhm,mm");
             throw new IllegalStateException("World must be set before calling update on Player");
         }
 
@@ -68,6 +61,11 @@ public class Player extends Entity {
     @Override
     public void setWorld(World<Box> world) {
         this.state.setWorld(world);
+
+        // if its the first time settings the world, we can now enter the initial state
+        if(this.world == null) {
+            this.state.enter();
+        }
 
         if(this.world != null) {
             if(this.world.hasItem(collisionItem)) this.world.remove(collisionItem);

@@ -21,6 +21,7 @@ public class PlayerMoveState extends PlayerState {
     public PlayerMoveState(Player container, World<Box> world) {
         super(container, world);
     }
+    public PlayerMoveState(Player container) {super(container);}
 
     @Override
     public EntityState<? super Player> update(float delta) {

@@ -31,14 +31,7 @@ public abstract class Entity implements Disposable {
     public final static EntityContext NULL_CONTEXT = new EntityContextAdapter();
     public EntityContext context = NULL_CONTEXT;
 
-    public Entity(World<Box> world, EntityContext context) {
-        this.world = world;
-        this.context = context;
-    }
-
-    public Entity(World<Box> world) {
-        this(world, NULL_CONTEXT);
-    }
+    public Entity() {};
 
     /**
      * Invoked when the entity is to update its state and handle input
