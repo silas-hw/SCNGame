@@ -17,6 +17,7 @@ import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.scene.Scene;
 import com.mygdx.scngame.screens.GameScreen;
 import com.mygdx.scngame.screens.MainMenuScreen;
+import com.mygdx.scngame.settings.Settings;
 
 public class SCNGame extends Game {
 	public SpriteBatch batch;

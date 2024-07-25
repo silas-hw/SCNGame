@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.scngame.event.GameEvent;
 import com.mygdx.scngame.event.GameEventListener;
 import com.mygdx.scngame.event.Global;
+import com.mygdx.scngame.settings.Settings;
 
 public class Dialog extends InputAdapter implements GameEventListener {
 
@@ -36,8 +37,6 @@ public class Dialog extends InputAdapter implements GameEventListener {
     private final float WIDTH = 600f;
     private final float HEIGHT = 150f;
 
-    private float scale = 2f;
-
     public Dialog() {
         stage = new Stage(new ScreenViewport());
 
@@ -52,6 +51,8 @@ public class Dialog extends InputAdapter implements GameEventListener {
 
         container = new Container<>(label);
         container.center();
+
+        float scale = Settings.getDialogScale();
 
         container.width(WIDTH*scale);
         container.height(HEIGHT*scale);
@@ -68,6 +69,13 @@ public class Dialog extends InputAdapter implements GameEventListener {
 
     public void draw() {
         if(inFocus) {
+            float scale = Settings.getDialogScale();
+
+            container.width(WIDTH * scale);
+            container.height(HEIGHT * scale);
+
+            label.setFontScale(scale);
+
             stage.getCamera().update();
             stage.getBatch().setProjectionMatrix(stage.getCamera().combined);
             stage.draw();
@@ -78,16 +86,6 @@ public class Dialog extends InputAdapter implements GameEventListener {
 
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
-    }
-
-    public void setScale(float scale) {
-        this.scale = scale;
-
-        container.width(WIDTH*scale);
-        container.height(HEIGHT*scale);
-
-        label.setFontScale(scale);
-
     }
 
     @Override
