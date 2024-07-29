@@ -1,0 +1,40 @@
+name: Canary Build
+
+on:
+  push:
+    
+# set version string for build.gradle to use
+env:
+  VERSION: ${{ $(git rev-parse --short "$GITHUB_SHA") }}
+  
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 8
+      uses: actions/setup-java@v4
+      with:
+        java-version: '8'
+        distribution: 'temurin'
+
+    # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
+    # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
+
+    - name: Build with Gradle Wrapper
+      working-directory: ./src
+      run: ./gradlew desktop:dist
+
+    - name: Upload build artifacts
+      continue-on-error: true
+      uses: actions/upload-artifact@v3
+      with:
+        name: CanaryBuild[$(git rev-parse --short "$GITHUB_SHA")]
+        path: |
+          src/desktop/build/libs/desktop-${{ $(git rev-parse --short "$GITHUB_SHA") }}.jar
