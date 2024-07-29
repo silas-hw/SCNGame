@@ -5,7 +5,7 @@ on:
     
 # set version string for build.gradle to use
 env:
-  VERSION: $(git rev-parse --short "$GITHUB_SHA")
+  VERSION: ${{github.run_number}}
   
 jobs:
   build:
@@ -37,4 +37,4 @@ jobs:
       with:
         name: CanaryBuild[$(git rev-parse --short "$GITHUB_SHA")]
         path: |
-          src/desktop/build/libs/desktop-$(git rev-parse --short "$GITHUB_SHA").jar
+          src/desktop/build/libs/desktop-${{github.run_number}}.jar
