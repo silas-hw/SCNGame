@@ -23,6 +23,11 @@ public class SCNGame extends Game {
 	}
 
 	@Override
+	public void resize(int width, int height) {
+		this.getScreen().resize(width, height);
+	}
+
+	@Override
 	public void dispose () {
 		batch.dispose();
 	}

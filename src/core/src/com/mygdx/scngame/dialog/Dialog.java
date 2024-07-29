@@ -3,17 +3,20 @@ package com.mygdx.scngame.dialog;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.scngame.event.GameEvent;
 import com.mygdx.scngame.event.GameEventListener;
 import com.mygdx.scngame.event.Global;
 import com.mygdx.scngame.settings.Settings;
+import com.mygdx.scngame.ui.TiledNinePatch;
 
 public class Dialog extends InputAdapter implements GameEventListener {
 
@@ -31,30 +34,45 @@ public class Dialog extends InputAdapter implements GameEventListener {
 
     private Table root;
 
-    private Container<Label> container;
+    private Container<Container<?>> container;
+    private Container<Label> wrapper;
 
-    private final float WIDTH = 600f;
-    private final float HEIGHT = 150f;
+    private float WIDTH = 600f;
+    private float HEIGHT = 150f;
+
+    TiledNinePatch npatch;
+
+    private float basePatchScale = 2f;
 
     public Dialog() {
         stage = new Stage(new ScreenViewport());
 
         root = new Table();
 
-        root.setDebug(true);
         root.setFillParent(true);
 
         root.pad(20f);
 
         stage.addActor(root);
 
-        container = new Container<>(label);
-        container.center();
+        wrapper = new Container<>(label);
+        wrapper.center();
+
+        wrapper.pad(15f);
+
+        wrapper.fill();
 
         float scale = Settings.getDialogScale();
 
+        container = new Container<>(wrapper);
+
         container.width(WIDTH*scale);
         container.height(HEIGHT*scale);
+
+        npatch = new TiledNinePatch(new Texture(Gdx.files.internal("patch.png")), 8, 8, 8, 8);
+        npatch.scale = basePatchScale;
+
+        container.setBackground(npatch, true);
 
         label.setFillParent(true);
         label.setFontScale(scale);
@@ -63,22 +81,30 @@ public class Dialog extends InputAdapter implements GameEventListener {
 
         root.bottom();
 
-        root.setScale(scale);
+        root.setDebug(true);
     }
 
     public void draw() {
-        if(inFocus) {
-            float scale = Settings.getDialogScale();
-
-            container.width(WIDTH * scale);
-            container.height(HEIGHT * scale);
-
-            label.setFontScale(scale);
-
-            stage.getCamera().update();
-            stage.getBatch().setProjectionMatrix(stage.getCamera().combined);
-            stage.draw();
+        if(!inFocus) {
+            return;
         }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+            WIDTH += 10;
+        }
+
+        float scale = Settings.getDialogScale();
+
+        npatch.scale = basePatchScale * scale;
+
+        container.width(WIDTH * scale);
+        container.height(HEIGHT * scale);
+
+        label.setFontScale(scale);
+
+        stage.getCamera().update();
+        stage.getBatch().setProjectionMatrix(stage.getCamera().combined);
+        stage.draw();
     }
 
     public Viewport getViewport() {return this.stage.getViewport();}
