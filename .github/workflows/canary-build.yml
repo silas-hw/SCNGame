@@ -35,6 +35,6 @@ jobs:
       continue-on-error: true
       uses: actions/upload-artifact@v3
       with:
-        name: CanaryBuild[$(git rev-parse --short "$GITHUB_SHA")]
+        name: CanaryBuild-${{github.run_number}}
         path: |
           src/desktop/build/libs/desktop-${{github.run_number}}.jar
