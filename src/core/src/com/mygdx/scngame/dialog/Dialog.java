@@ -18,6 +18,10 @@ import com.mygdx.scngame.event.Global;
 import com.mygdx.scngame.settings.Settings;
 import com.mygdx.scngame.ui.TiledNinePatch;
 
+/**
+ * Encapsulates the handling of dialog events, including capturing events, drawing dialog boxes, and
+ * firing {@link DialogEnd} events.
+ */
 public class Dialog extends InputAdapter implements GameEventListener {
 
     private boolean inFocus = false;

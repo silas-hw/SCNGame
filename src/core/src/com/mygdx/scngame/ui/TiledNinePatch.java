@@ -109,10 +109,24 @@ public class TiledNinePatch implements Drawable {
                 position.y, 0, 0, bottomRight.getRegionWidth(), bottomRight.getRegionHeight(), scale, scale, 0f);
     }
 
+    /**
+     *
+     * @param width the width respective to the scale. For example, if the scale is 2 and the width is set to
+     *              300, the displayed size when drawn will be 600.
+     *
+     * @author Silas Hayes-Williams
+     */
     public void setWidth(int width) {
         this.width = Math.max(minWidth, width);
     }
 
+    /**
+     *
+     * @param height the height respective to the scale. For example, if the scale is 2 and the height is set to 300,
+     *               the displayed size when drawn will be 600.
+     *
+     * @author Silas Hayes-Willams
+     */
     public void setHeight(int height)   {
         this.height = Math.max(minHeight, height);
     }
@@ -125,6 +139,25 @@ public class TiledNinePatch implements Drawable {
         return this.height;
     }
 
+    /**
+     * Draws the nine patch at a true width and height. The tiles will be scaled according to the scale and the
+     * width and height set such that the nine patch encompasses the width and height provided.
+     *
+     * <p>
+     *     If you set the scale to 2, and call this method with a width of 200 and height of 400, then the tiles
+     *     will be doubled in size but the nine patch itself will be drawn with a width of 200 by 400 pixels.
+     * </p>
+     *
+     * <p>
+     *     Calling this method will change the width, height, and position of the ninepatch.
+     * </p>
+     *
+     * @param batch
+     * @param x
+     * @param y
+     * @param width the true width to draw the nine patch at
+     * @param height the true height to draw the nine patch at
+     */
     @Override
     public void draw(Batch batch, float x, float y, float width, float height) {
         setWidth((int) (width / scale));
