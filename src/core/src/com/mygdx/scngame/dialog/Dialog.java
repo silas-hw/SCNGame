@@ -46,7 +46,7 @@ public class Dialog extends InputAdapter implements GameEventListener {
 
     TiledNinePatch npatch;
 
-    private float basePatchScale = 2f;
+    private float basePatchScale = 3f;
 
     public Dialog() {
         stage = new Stage(new ScreenViewport());
@@ -99,16 +99,18 @@ public class Dialog extends InputAdapter implements GameEventListener {
 
         float scale = Settings.getDialogScale();
 
-        npatch.scale = basePatchScale * scale;
-
         container.width(WIDTH * scale);
         container.height(HEIGHT * scale);
 
-        label.setFontScale(scale);
+        label.setFontScale(easeOutExpo(scale));
 
         stage.getCamera().update();
         stage.getBatch().setProjectionMatrix(stage.getCamera().combined);
         stage.draw();
+    }
+
+    private float easeOutExpo(float x) {
+        return x >= 1 ? x : 1 - (float) Math.pow(2, -10 * x);
     }
 
     public Viewport getViewport() {return this.stage.getViewport();}
