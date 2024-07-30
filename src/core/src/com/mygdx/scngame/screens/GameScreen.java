@@ -114,7 +114,6 @@ public class GameScreen implements Screen {
         batch.setProjectionMatrix(camera.combined);
 
         scene.draw();
-        dialog.draw();
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_BLEND);
@@ -139,6 +138,8 @@ public class GameScreen implements Screen {
         }
 
         shape.end();
+
+        dialog.draw();
 
         Gdx.gl.glDisable(GL20.GL_BLEND);
 

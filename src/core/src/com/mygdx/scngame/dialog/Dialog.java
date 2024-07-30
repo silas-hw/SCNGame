@@ -6,11 +6,10 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.scngame.event.GameEvent;
@@ -18,6 +17,8 @@ import com.mygdx.scngame.event.GameEventListener;
 import com.mygdx.scngame.event.Global;
 import com.mygdx.scngame.settings.Settings;
 import com.mygdx.scngame.ui.TiledNinePatch;
+
+// TODO: encapsulate dialog box UI into its own class
 
 /**
  * Encapsulates the handling of dialog events, including capturing events, drawing dialog boxes, and
@@ -33,14 +34,17 @@ public class Dialog extends InputAdapter implements GameEventListener {
 
     private static Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
 
-    private Label label = new Label(" ", skin);
+    private Label label;
 
     private Stage stage;
 
     private Table root;
 
-    private Container<Container<?>> container;
+    private Container<Table> container;
     private Container<Label> wrapper;
+    private Table inside;
+
+    private Image icon;
 
     private float WIDTH = 600f;
     private float HEIGHT = 150f;
@@ -49,10 +53,13 @@ public class Dialog extends InputAdapter implements GameEventListener {
 
     private float basePatchScale = 3f;
 
+
     public Dialog() {
         stage = new Stage(new ScreenViewport());
 
         root = new Table();
+
+        label = new Label("", skin);
 
         root.setFillParent(true);
 
@@ -62,31 +69,39 @@ public class Dialog extends InputAdapter implements GameEventListener {
 
         wrapper = new Container<>(label);
         wrapper.center();
-
-        wrapper.pad(15f);
-
         wrapper.fill();
+
+        icon = new Image(new Texture("patch.png"));
+        icon.setAlign(Align.center);
+        icon.setScaling(Scaling.fit);
 
         float scale = Settings.getDialogScale();
 
-        container = new Container<>(wrapper);
+        inside = new Table();
+        inside.add(wrapper).grow().colspan(2);
+        inside.add(icon).grow().colspan(1);
+
+        container = new Container<>(inside);
 
         container.width(WIDTH*scale);
         container.height(HEIGHT*scale);
+        container.fill();
 
-        npatch = TiledNinePatch.getInstanceFromDot9(new Texture("patch2.9.png"));
+        npatch = TiledNinePatch.getInstanceFromDot9(new Texture("patch.9.png"));
         npatch.scale = basePatchScale;
 
         container.setBackground(npatch, true);
 
-        label.setFillParent(true);
         label.setFontScale(scale);
+        label.setWrap(true);
+        label.setAlignment(Align.top | Align.left);
 
         root.add(container);
 
         root.bottom();
 
-        root.setDebug(true);
+        stage.setDebugAll(true);
+
     }
 
     public void draw() {
@@ -99,6 +114,15 @@ public class Dialog extends InputAdapter implements GameEventListener {
         }
 
         float scale = Settings.getDialogScale();
+
+        /*
+         *  Yeah, I know I *should* be doing root.getCell()... but that resizes the container and now the wrapper or
+         * label. Even if you set the wrapper and label to fill parent they bloody dont! Or atleast not properly.
+         * They either don't resize at all or resize and drift away from the position of the container.
+         *
+         * Not pleasant, but just leave it as is. This is really a problem with how much of a god shite mess
+         * scene2d.ui is (probably, or I'm just a dumbass. Either could be true).
+         */
 
         container.width(WIDTH * scale);
         container.height(HEIGHT * scale);
@@ -137,7 +161,8 @@ public class Dialog extends InputAdapter implements GameEventListener {
 
         switch(payload.id) {
             case "test_dialog_1":
-                message = "Test Dialog 1";
+                message = "Test Dialog 1 but i add in some extra test to see how wrapping and longer more realistic dialog lengtsh work in game. Might! Aswell? Add" +
+                        "in some!!!! special characters as well &&&**&@#";
                 break;
 
             case "test_dialog_2":
