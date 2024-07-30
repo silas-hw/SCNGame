@@ -14,7 +14,7 @@ public class Settings {
     private final static String PREF_MENU_SCALE = "menuScale";
     private final static String PREF_HUD_SCALE = "hudScale";
 
-    private final static String PREFS_NAME = "scngame.user_settings";
+    private final static String PREFS_NAME = "scngame/user_settings";
 
     private static Preferences prefs;
 
