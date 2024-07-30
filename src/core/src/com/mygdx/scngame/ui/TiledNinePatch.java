@@ -46,6 +46,7 @@ public class TiledNinePatch implements Drawable {
         this.height = minHeight = texture.getHeight() - height;
 
         topLeft = new TextureRegion(texture, 0, 0, x, y);
+
         left = new TextureRegion(texture, 0, y, x, height);
         bottomLeft = new TextureRegion(texture, 0, y + height, x, texture.getHeight() -  y - height);
 
@@ -66,10 +67,10 @@ public class TiledNinePatch implements Drawable {
                 scale, 0f);
 
         int leftHeight = height - bottomLeft.getRegionHeight() - topLeft.getRegionHeight();
-        int i = 0;
-        for(; i < (leftHeight/left.getRegionHeight()); i++) {
+        int leftCount = 0;
+        for(; leftCount < (leftHeight/left.getRegionHeight()); leftCount++) {
             batch.draw(left, position.x, position.y+bottomLeft.getRegionHeight() * scale
-                            + left.getRegionHeight() * i * scale,
+                            + left.getRegionHeight() * leftCount * scale,
                     0, 0, left.getRegionWidth(), left.getRegionHeight(),
                     scale, scale, 0f);
         }
@@ -81,18 +82,19 @@ public class TiledNinePatch implements Drawable {
         if(leftMod > 0) {
             TextureRegion _temp = new TextureRegion(left, 0, left.getRegionHeight()-leftMod, left.getRegionWidth(), leftMod);
             batch.draw(_temp, position.x,
-                    position.y + bottomLeft.getRegionHeight() * scale + left.getRegionHeight() * i * scale,
+                    position.y + bottomLeft.getRegionHeight() * scale + left.getRegionHeight() * leftCount * scale,
                     0, 0, _temp.getRegionWidth(),_temp.getRegionHeight(), scale, scale, 0f);
         }
 
         batch.draw(topLeft, position.x,
-                position.y + bottomLeft.getRegionHeight() * scale + left.getRegionHeight() * i * scale + leftMod * scale,
+                position.y + bottomLeft.getRegionHeight() * scale + left.getRegionHeight() * leftCount * scale + leftMod * scale,
                 0, 0, topLeft.getRegionWidth(), topLeft.getRegionHeight(), scale, scale, 0f);
 
         int bottomWidth = width - bottomLeft.getRegionWidth() - bottomRight.getRegionWidth();
 
-        for(i = 0; i < (bottomWidth / bottom.getRegionWidth()); i++) {
-            batch.draw(bottom, position.x + bottomLeft.getRegionWidth() * scale + bottom.getRegionWidth() * i * scale,
+        int bottomCount;
+        for(bottomCount = 0; bottomCount < (bottomWidth / bottom.getRegionWidth()); bottomCount++) {
+            batch.draw(bottom, position.x + bottomLeft.getRegionWidth() * scale + bottom.getRegionWidth() * bottomCount * scale,
                     position.y, 0, 0, bottom.getRegionWidth(), bottom.getRegionHeight(), scale, scale, 0f);
         }
 
@@ -100,13 +102,53 @@ public class TiledNinePatch implements Drawable {
 
         if(bottomMod > 0) {
             TextureRegion _temp = new TextureRegion(bottom, 0, 0, bottomMod, bottom.getRegionHeight());
-            batch.draw(_temp, position.x + bottomLeft.getRegionWidth() * scale + bottom.getRegionWidth() * i * scale,
+            batch.draw(_temp, position.x + bottomLeft.getRegionWidth() * scale + bottom.getRegionWidth() * bottomCount * scale,
                     position.y, 0, 0, _temp.getRegionWidth(), _temp.getRegionHeight(), scale, scale, 0f);
         }
 
         batch.draw(bottomRight,
-                position.x + bottomLeft.getRegionWidth() * scale + bottom.getRegionWidth() * i * scale + bottomMod * scale,
+                position.x + bottomLeft.getRegionWidth() * scale + bottom.getRegionWidth() * bottomCount * scale + bottomMod * scale,
                 position.y, 0, 0, bottomRight.getRegionWidth(), bottomRight.getRegionHeight(), scale, scale, 0f);
+
+        int topWidth = width - topLeft.getRegionWidth() - topRight.getRegionWidth();
+
+        int topCount;
+        for(topCount = 0; topCount < (topWidth / bottom.getRegionWidth()); topCount++) {
+            batch.draw(top, position.x + topLeft.getRegionWidth() * scale + top.getRegionWidth() * scale * topCount,
+                    position.y + height * scale - top.getRegionHeight() * scale, 0, 0, top.getRegionWidth(), top.getRegionHeight(), scale, scale, 0f);
+        }
+
+        int topMod = topWidth%top.getRegionWidth();
+
+        if(topMod > 0) {
+            TextureRegion _temp = new TextureRegion(top, 0, 0, topMod, top.getRegionHeight());
+            batch.draw(_temp, position.x + topLeft.getRegionWidth() * scale + top.getRegionWidth() * scale * topCount,
+                    position.y + height * scale - top.getRegionHeight() * scale, 0, 0, _temp.getRegionWidth(),
+                    _temp.getRegionHeight(), scale,
+                    scale, 0f);
+        }
+
+        batch.draw(topRight, position.x + width * scale - topRight.getRegionWidth() * scale,
+                position.y + height * scale - topRight.getRegionHeight() * scale, 0, 0, topRight.getRegionWidth(),
+                topRight.getRegionHeight(), scale, scale, 0f);
+
+        int rightHeight = height - topRight.getRegionHeight() - bottomRight.getRegionHeight();
+
+        int rightCount;
+        for(rightCount = 0; rightCount < (rightHeight / bottom.getRegionHeight()); rightCount++) {
+            batch.draw(right, position.x + width * scale - right.getRegionWidth() * scale,
+                    position.y + bottomRight.getRegionHeight() * scale + right.getRegionHeight() * scale * rightCount,
+                    0, 0, right.getRegionWidth(), right.getRegionHeight(), scale, scale, 0f);
+        }
+
+        int rightMod = rightHeight%right.getRegionHeight();
+        if(rightMod > 0) {
+            TextureRegion _temp = new TextureRegion(right, 0, 0, right.getRegionWidth(), rightMod);
+            batch.draw(_temp, position.x + width * scale - right.getRegionWidth() * scale,
+                    position.y + bottomRight.getRegionHeight() * scale + right.getRegionHeight() * scale * rightCount,
+                    0, 0, _temp.getRegionWidth(), _temp.getRegionHeight(), scale, scale,0f);
+
+        }
     }
 
     /**
