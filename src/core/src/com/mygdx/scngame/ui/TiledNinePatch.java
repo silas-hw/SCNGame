@@ -1,5 +1,6 @@
 package com.mygdx.scngame.ui;
 
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -7,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class TiledNinePatch implements Drawable {
-    Texture texture;
+    TextureRegion texture;
 
     TextureRegion topLeft;
     TextureRegion topRight;
@@ -28,6 +29,36 @@ public class TiledNinePatch implements Drawable {
 
     Vector2 position = new Vector2();
 
+    public static TiledNinePatch getInstanceFromDot9(Texture dot9) {
+        dot9.getTextureData().prepare();
+        Pixmap map = dot9.getTextureData().consumePixmap();
+
+        int x = 0;
+        int y = 0;
+        int width = 0;
+        int height = 0;
+
+        while(map.getPixel(x, 0) == 0) {
+            x++;
+        }
+
+        while(map.getPixel(x + width, 0) != 0) {
+            width++;
+        }
+
+        while(map.getPixel(0, y) == 0) {
+            y++;
+        }
+
+        while(map.getPixel(0, y + height) != 0) {
+            height++;
+        }
+
+        System.out.println("Dot9: " + x + " :: " + y + " :: " + width + " :: " + height);
+
+        return new TiledNinePatch(new TextureRegion(dot9, 1, 1, dot9.getWidth()-2, dot9.getHeight()-2), x-1, y-1, width, height);
+    }
+
     /**
      * All coordinates are top-down, as according to how {@link TextureRegion} works
      *
@@ -39,24 +70,24 @@ public class TiledNinePatch implements Drawable {
      *
      * @author Silas Hayes-Williams
      */
-    public TiledNinePatch(Texture texture, int x, int y, int width, int height) {
+    public TiledNinePatch(TextureRegion texture, int x, int y, int width, int height) {
         this.texture = texture;
 
-        this.width = minWidth = texture.getWidth() - width;
-        this.height = minHeight = texture.getHeight() - height;
+        this.width = minWidth = texture.getRegionWidth() - width;
+        this.height = minHeight = texture.getRegionHeight() - height;
 
         topLeft = new TextureRegion(texture, 0, 0, x, y);
 
         left = new TextureRegion(texture, 0, y, x, height);
-        bottomLeft = new TextureRegion(texture, 0, y + height, x, texture.getHeight() -  y - height);
+        bottomLeft = new TextureRegion(texture, 0, y + height, x, texture.getRegionHeight() -  y - height);
 
         top = new TextureRegion(texture, x, 0, width, y);
-        bottom = new TextureRegion(texture, x, y + height, width, texture.getHeight() - y - height);
+        bottom = new TextureRegion(texture, x, y + height, width, texture.getRegionHeight() - y - height);
 
-        topRight = new TextureRegion(texture, x + width, 0, texture.getWidth() -  x - width, y);
-        right = new TextureRegion(texture, x + width, y, texture.getWidth() - x - width, height);
+        topRight = new TextureRegion(texture, x + width, 0, texture.getRegionWidth() -  x - width, y);
+        right = new TextureRegion(texture, x + width, y, texture.getRegionWidth() - x - width, height);
 
-        bottomRight = new TextureRegion(texture, x + width, y + height, texture.getWidth() -  x - width, texture.getHeight() - y - height);
+        bottomRight = new TextureRegion(texture, x + width, y + height, texture.getRegionWidth() -  x - width, texture.getRegionHeight() - y - height);
     }
 
 
@@ -135,7 +166,7 @@ public class TiledNinePatch implements Drawable {
         int rightHeight = height - topRight.getRegionHeight() - bottomRight.getRegionHeight();
 
         int rightCount;
-        for(rightCount = 0; rightCount < (rightHeight / bottom.getRegionHeight()); rightCount++) {
+        for(rightCount = 0; rightCount < (rightHeight / right.getRegionHeight()); rightCount++) {
             batch.draw(right, position.x + width * scale - right.getRegionWidth() * scale,
                     position.y + bottomRight.getRegionHeight() * scale + right.getRegionHeight() * scale * rightCount,
                     0, 0, right.getRegionWidth(), right.getRegionHeight(), scale, scale, 0f);
@@ -149,6 +180,8 @@ public class TiledNinePatch implements Drawable {
                     0, 0, _temp.getRegionWidth(), _temp.getRegionHeight(), scale, scale,0f);
 
         }
+
+
     }
 
     /**

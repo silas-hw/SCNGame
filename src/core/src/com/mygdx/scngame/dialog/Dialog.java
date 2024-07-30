@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -73,7 +74,7 @@ public class Dialog extends InputAdapter implements GameEventListener {
         container.width(WIDTH*scale);
         container.height(HEIGHT*scale);
 
-        npatch = new TiledNinePatch(new Texture(Gdx.files.internal("patch.png")), 8, 8, 8, 8);
+        npatch = TiledNinePatch.getInstanceFromDot9(new Texture("patch2.9.png"));
         npatch.scale = basePatchScale;
 
         container.setBackground(npatch, true);
