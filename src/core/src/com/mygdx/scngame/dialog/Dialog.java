@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.scngame.event.GameEvent;
 import com.mygdx.scngame.event.GameEventListener;
 import com.mygdx.scngame.event.Global;
+import com.mygdx.scngame.settings.Controls;
 import com.mygdx.scngame.settings.Settings;
 import com.mygdx.scngame.ui.TiledNinePatch;
 
@@ -164,8 +165,13 @@ public class Dialog extends InputAdapter implements GameEventListener {
 
         switch(payload.id) {
             case "test_dialog_1":
-                message = "Test Dialog 1 but i add in some extra test to see how wrapping and longer more realistic dialog lengtsh work in game. Might! Aswell? Add" +
-                        "in some!!!! special characters as well &&&**&@#";
+                message = "";
+
+                message += "Well, the controls should be: ";
+                for(Controls c : Controls.values()) {
+                    message += c.toString() + ": ";
+                    message += Input.Keys.toString(c.getKeycode()) + ", ";
+                }
                 break;
 
             case "test_dialog_2":

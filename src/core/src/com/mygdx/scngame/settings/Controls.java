@@ -36,7 +36,5 @@ public enum Controls {
         prefs.flush();
     }
 
-
-
     private final static Preferences prefs = Gdx.app.getPreferences("scngame/controls");
 }
