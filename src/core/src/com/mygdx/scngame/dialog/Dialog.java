@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
@@ -116,7 +117,7 @@ public class Dialog extends InputAdapter implements GameEventListener {
         float scale = Settings.getDialogScale();
 
         /*
-         *  Yeah, I know I *should* be doing root.getCell()... but that resizes the container and now the wrapper or
+         *  Yeah, I know I *should* be doing root.getCell()... but that resizes the container and not the wrapper or
          * label. Even if you set the wrapper and label to fill parent they bloody dont! Or atleast not properly.
          * They either don't resize at all or resize and drift away from the position of the container.
          *
@@ -127,7 +128,9 @@ public class Dialog extends InputAdapter implements GameEventListener {
         container.width(WIDTH * scale);
         container.height(HEIGHT * scale);
 
-        label.setFontScale(easeOutExpo(scale));
+        label.setFontScale(scale);
+        inside.getCell(icon).pad(5 * scale);
+        wrapper.pad(5 * scale);
 
         stage.getCamera().update();
         stage.getBatch().setProjectionMatrix(stage.getCamera().combined);

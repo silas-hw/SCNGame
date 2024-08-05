@@ -14,6 +14,7 @@ import com.mygdx.scngame.event.GameEvent;
 import com.mygdx.scngame.event.Global;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.DamageBox;
+import com.mygdx.scngame.settings.Controls;
 
 public class PlayerMoveState implements EntityState<Player> {
 
@@ -31,26 +32,26 @@ public class PlayerMoveState implements EntityState<Player> {
         int dx = 0;
         int dy = 0;
 
-        if(container.context.isKeyPressed(Input.Keys.W)) {
+        if(container.context.isKeyPressed(Controls.getUpKey())) {
             dy++;
         }
 
-        if(container.context.isKeyPressed(Input.Keys.S)) {
+        if(container.context.isKeyPressed(Controls.getDownKey())) {
             dy--;
         }
 
-        if(container.context.isKeyPressed(Input.Keys.A)) {
+        if(container.context.isKeyPressed(Controls.getLeftKey())) {
             dx--;
         }
 
-        if(container.context.isKeyPressed(Input.Keys.D)) {
+        if(container.context.isKeyPressed(Controls.getRightKey())) {
             dx++;
         }
 
         container.direction.set(dx, dy);
         container.direction.nor();
 
-        if(container.context.isKeyJustPressed(Input.Keys.SHIFT_LEFT)) {
+        if(container.context.isKeyJustPressed(Controls.getDashKey())) {
             return new PlayerDashState();
         }
 

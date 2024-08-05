@@ -1,6 +1,7 @@
 package com.mygdx.scngame.settings;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 
 public class Settings {
@@ -67,6 +68,7 @@ public class Settings {
     }
 
     public static void setDialogScale(float dialogScale) {
+        dialogScale = Math.max(dialogScale, 0.8f);
         getPrefs().putFloat(PREF_DIALOG_SCALE, dialogScale);
         getPrefs().flush();
     }

@@ -100,7 +100,6 @@ public class GameScreen implements Screen {
         Global.bus.addEventListener(dialog);
     }
 
-    private float testScale = 1f;
     @Override
     public void render(float delta) {
         Gdx.graphics.setTitle("" + Gdx.graphics.getFramesPerSecond());
@@ -148,13 +147,11 @@ public class GameScreen implements Screen {
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.I)) {
-            testScale += 0.1f;
-            Settings.setDialogScale(testScale);
+            Settings.setDialogScale(Settings.getDialogScale() + 0.1f);
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.K)) {
-            testScale -= 0.1f;
-            Settings.setDialogScale(testScale);
+            Settings.setDialogScale(Settings.getDialogScale() - 0.1f);
         }
     }
 

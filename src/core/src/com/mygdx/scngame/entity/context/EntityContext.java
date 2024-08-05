@@ -5,8 +5,10 @@ import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.physics.Box;
 
 /**
- * The context for which a {@link Entity entity} may reside within. It is the point of contact
- * between an Entity and external state.
+ * The context for which a {@link Entity entity} may reside within. The context also captures input events
+ * and can provide polling capabilities for its {@link Entity entities}. The idea is that you can wire this up to
+ * some {@link com.badlogic.gdx.InputMultiplexer} to receive input events, allowing for multiplexed inputs (e.g.
+ * between the player and UI elements) whilst still allowing input to be handled via polling.
  */
 public interface EntityContext {
 
@@ -17,8 +19,7 @@ public interface EntityContext {
 
     /**
      * sets the world for all held entities
-     *
-     * */
+     */
     void setWorld(World<Box> world);
 
     World<Box> getWorld();
