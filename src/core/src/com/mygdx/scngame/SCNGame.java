@@ -4,6 +4,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.scngame.screens.MainMenuScreen;
+import com.mygdx.scngame.settings.Controls;
 
 public class SCNGame extends Game {
 	public SpriteBatch batch;

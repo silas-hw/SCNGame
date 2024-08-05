@@ -32,26 +32,26 @@ public class PlayerMoveState implements EntityState<Player> {
         int dx = 0;
         int dy = 0;
 
-        if(container.context.isKeyPressed(Controls.getUpKey())) {
+        if(container.context.isKeyPressed(Controls.UP.getKeycode())) {
             dy++;
         }
 
-        if(container.context.isKeyPressed(Controls.getDownKey())) {
+        if(container.context.isKeyPressed(Controls.DOWN.getKeycode())) {
             dy--;
         }
 
-        if(container.context.isKeyPressed(Controls.getLeftKey())) {
+        if(container.context.isKeyPressed(Controls.LEFT.getKeycode())) {
             dx--;
         }
 
-        if(container.context.isKeyPressed(Controls.getRightKey())) {
+        if(container.context.isKeyPressed(Controls.RIGHT.getKeycode())) {
             dx++;
         }
 
         container.direction.set(dx, dy);
         container.direction.nor();
 
-        if(container.context.isKeyJustPressed(Controls.getDashKey())) {
+        if(container.context.isKeyJustPressed(Controls.DASH.getKeycode())) {
             return new PlayerDashState();
         }
 

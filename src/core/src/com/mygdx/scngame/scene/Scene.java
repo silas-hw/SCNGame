@@ -18,6 +18,7 @@ import com.mygdx.scngame.event.GameEventBus;
 import com.mygdx.scngame.event.GameEventListener;
 import com.mygdx.scngame.event.Global;
 import com.mygdx.scngame.physics.Box;
+import com.mygdx.scngame.settings.Controls;
 
 import java.util.Comparator;
 
