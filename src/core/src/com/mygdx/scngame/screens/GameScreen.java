@@ -8,6 +8,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -40,6 +44,9 @@ public class GameScreen implements Screen {
     Player player;
 
     Dialog dialog;
+
+    TiledMapRenderer mapRenderer;
+    TiledMap tiledMap;
 
     public GameScreen(Game game, SpriteBatch batch, ShapeRenderer shape, Player player) {
         this.game = game;
@@ -76,6 +83,9 @@ public class GameScreen implements Screen {
     public void show() {
         scene = new Scene(gameViewport, batch, shape, world);
 
+        tiledMap = new TmxMapLoader().load("tilemaps/testmap1.tmx");
+        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1f, this.batch);
+
         Box wall = new Box();
         wall.solid = true;
         wall.layer = (byte) 0b10000000;
@@ -110,9 +120,11 @@ public class GameScreen implements Screen {
         scene.update(Math.min(Gdx.graphics.getDeltaTime(), 1/30f));
 
         camera.update();
-        batch.setProjectionMatrix(camera.combined);
+        mapRenderer.setView(camera);
 
+        mapRenderer.render();
         scene.draw();
+        dialog.draw();
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_BLEND);
@@ -137,8 +149,6 @@ public class GameScreen implements Screen {
         }
 
         shape.end();
-
-        dialog.draw();
 
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
@@ -178,6 +188,9 @@ public class GameScreen implements Screen {
 
         scene.removeEntity(player);
         scene.dispose();
+
+        tiledMap.dispose();
+        mapRenderer = null;
 
         Global.bus.removeEventListener(dialog);
 

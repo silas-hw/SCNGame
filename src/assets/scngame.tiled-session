@@ -1,0 +1,19 @@
+{
+    "activeFile": "",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+    },
+    "frame.defaultDuration": 200,
+    "last.imagePath": "D:/silas/Summer Projects 2024/SCNGame/src/assets/tilesets",
+    "openFiles": [
+    ],
+    "project": "scngame.tiled-project",
+    "recentFiles": [
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 8,
+        "width": 8
+    }
+}
