@@ -197,7 +197,7 @@ public class GameScreen implements Screen {
             newDamage.solid = false;
 
             world.add(new Item<>(newDamage), x + offsetX, y + offsetY, width, height);
-        } else if(obj instanceof TiledMapTileMapObject && type.equals("Decor")) {
+        } else if(obj instanceof TiledMapTileMapObject && type.equals("")) {
             TextureRegion texture = ((TextureMapObject) obj).getTextureRegion();
             scene.addEntity(new SpriteEntity(texture, x, y));
 
