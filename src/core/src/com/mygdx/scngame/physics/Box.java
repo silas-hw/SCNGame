@@ -12,10 +12,10 @@ import com.dongbat.jbump.Response;
 public class Box {
 
     /** A binary value representing what layers of other boxes that this box will collide with */
-    public byte mask = 0b00000000;
+    public int mask = 0b00000000;
 
     /** a binary value representing the layers on which the box will be collided with by other boxes */
-    public byte layer =  0b00000000;
+    public int layer =  0b00000000;
 
     /**
      * determines whether a colliding Box will have a hard or soft collision with this Box

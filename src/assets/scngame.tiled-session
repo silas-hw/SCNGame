@@ -3,17 +3,22 @@
     "expandedProjectPaths": [
     ],
     "fileStates": {
+        "tilesets/trees.tsx": {
+            "dynamicWrapping": true
+        }
     },
     "frame.defaultDuration": 200,
-    "last.imagePath": "D:/silas/Summer Projects 2024/SCNGame/src/assets/tilesets",
+    "last.imagePath": "D:/silas/Summer Projects 2024/SCNGame/src/assets/sprites",
     "openFiles": [
     ],
     "project": "scngame.tiled-project",
+    "property.type": "float",
     "recentFiles": [
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
         "height": 8,
         "width": 8
-    }
+    },
+    "tileset.type": 1
 }

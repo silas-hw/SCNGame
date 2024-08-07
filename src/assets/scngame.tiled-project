@@ -10,5 +10,79 @@
     "properties": [
     ],
     "propertyTypes": [
+        {
+            "id": 5,
+            "name": "DamageType",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "DEFAULT",
+                "UNSET (DON'T USE)"
+            ],
+            "valuesAsFlags": false
+        },
+        {
+            "color": "#ff232ca4",
+            "drawFill": true,
+            "id": 1,
+            "members": [
+                {
+                    "name": "CollisionLayer",
+                    "type": "string",
+                    "value": ""
+                },
+                {
+                    "name": "CollisionMask",
+                    "type": "string",
+                    "value": ""
+                },
+                {
+                    "name": "solid",
+                    "type": "bool",
+                    "value": false
+                }
+            ],
+            "name": "Wall",
+            "type": "class",
+            "useAs": [
+                "object",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 4,
+            "members": [
+                {
+                    "name": "CollisionLayer",
+                    "type": "string",
+                    "value": ""
+                },
+                {
+                    "name": "DamageType",
+                    "propertyType": "DamageType",
+                    "type": "string",
+                    "value": "UNSET (DON'T USE)"
+                },
+                {
+                    "name": "damage",
+                    "type": "float",
+                    "value": 0
+                }
+            ],
+            "name": "DamageWall",
+            "type": "class",
+            "useAs": [
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        }
     ]
 }

@@ -25,13 +25,12 @@ public class Player extends Entity {
         Box foot;
         foot = new Box();
         foot.solid = true;
-        foot.mask = (byte) 0b11000000;
-        //foot.layer = (byte) 0b01000000;
+        foot.mask =  0b11000000;
         foot.response = Response.slide;
 
         collisionItem = new Item<>(foot);
         Box hit = new HitBox();
-        hit.mask = (byte) 0b10000000;
+        hit.mask = 0b10000000;
         hit.response = Response.cross;
         hitbox = new Item<>(hit);
 

@@ -5,13 +5,23 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
+import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -21,12 +31,15 @@ import com.dongbat.jbump.World;
 import com.mygdx.scngame.dialog.Dialog;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.player.Player;
+import com.mygdx.scngame.entity.sprite.SpriteEntity;
 import com.mygdx.scngame.event.Global;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.DamageBox;
 import com.mygdx.scngame.physics.HitBox;
 import com.mygdx.scngame.scene.Scene;
 import com.mygdx.scngame.settings.Settings;
+
+import java.util.Iterator;
 
 public class GameScreen implements Screen {
 
@@ -79,6 +92,12 @@ public class GameScreen implements Screen {
         dialog = new Dialog();
     }
 
+    /*
+    Load in any heavy resources here so they can be disposed of when hide is called.
+
+    Also parse the world and add entities to the scene and physics objects to the world
+     */
+
     @Override
     public void show() {
         scene = new Scene(gameViewport, batch, shape, world);
@@ -86,14 +105,19 @@ public class GameScreen implements Screen {
         tiledMap = new TmxMapLoader().load("tilemaps/testmap1.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1f, this.batch);
 
+        for(MapLayer layer : tiledMap.getLayers()) {
+            if(layer instanceof TiledMapTileLayer) parseTileLayer((TiledMapTileLayer) layer);
+            else parseObjectLayer(layer);
+        }
+
         Box wall = new Box();
         wall.solid = true;
-        wall.layer = (byte) 0b10000000;
+        wall.layer = 0b10000000;
 
         world.add(new Item<>(wall), 150, 150, 150, 150);
 
         DamageBox damage = new DamageBox(5f, DamageBox.DamageType.DEFAULT);
-        damage.layer = (byte) 0b10000000;
+        damage.layer = 0b10000000;
 
         world.add(new Item<>(damage), -150, -150, 150, 150);
 
@@ -108,6 +132,67 @@ public class GameScreen implements Screen {
         Gdx.input.setInputProcessor(multiplexer);
 
         Global.bus.addEventListener(dialog);
+    }
+
+    private void parseTileLayer(TiledMapTileLayer layer) {
+        for(int x = 0; x<layer.getWidth(); x++) {
+            for(int y = 0 ; y<layer.getHeight(); y++) {
+                for(MapObject obj : layer.getCell(x, y).getTile().getObjects()) {
+
+                    // offset the object by the tiles position
+                    // this is done because the objects x and y position are stored relative to the tile
+                    // but we want to add it to the world at its absolute position
+
+                    float _x = obj.getProperties().get("x", float.class);
+                    float _y = obj.getProperties().get("y", float.class);
+
+                    obj.getProperties().put("x", _x + x*layer.getTileWidth());
+                    obj.getProperties().put("y", _y + y*layer.getTileHeight());
+
+                    parseMapObject(obj);
+                }
+            }
+        }
+    }
+
+    private void parseObjectLayer(MapLayer layer) {
+        for(MapObject obj : layer.getObjects()){
+            parseMapObject(obj);
+        }
+    }
+
+    private void parseMapObject(MapObject obj) {
+        MapProperties properties = obj.getProperties();
+
+        float x = properties.get("x", float.class);
+        float y = properties.get("y", float.class);
+        float width = properties.get("width", float.class);
+        float height = properties.get("height", float.class);
+
+        String type = obj.getProperties().get("type", String.class);
+        if(type == null) type = "";
+
+        if(type.equals("Wall")) {
+            Box newWall = new Box();
+            newWall.solid = properties.get("solid", boolean.class);
+            newWall.layer = Integer.parseInt(properties.get("CollisionLayer", String.class), 2);
+            newWall.mask = Integer.parseInt(properties.get("CollisionMask", String.class), 2);
+
+            world.add(new Item<>(newWall), x, y, width, height);
+        } else if(type.equals("DamageWall")) {
+            String dtype = properties.get("DamageType", String.class);
+            float damage = properties.get("damage", float.class);
+            DamageBox newDamage = new DamageBox(damage, DamageBox.DamageType.valueOf(dtype));
+
+            newDamage.layer = Integer.parseInt(properties.get("CollisionLayer", String.class), 2);
+            newDamage.solid = false;
+
+            world.add(new Item<>(newDamage), x, y, width, height);
+        } else if(obj instanceof TextureMapObject) {
+            // unfortunately, it seems we can't get embedded collision objects from a sprite object :(
+            TextureRegion texture = ((TextureMapObject) obj).getTextureRegion();
+            scene.addEntity(new SpriteEntity(texture, x, y));
+        }
     }
 
     @Override

@@ -133,8 +133,6 @@ public class Dialog extends InputAdapter implements GameEventListener {
         inside.getCell(icon).pad(5 * scale);
         wrapper.pad(5 * scale);
 
-        stage.getCamera().update();
-        stage.getBatch().setProjectionMatrix(stage.getCamera().combined);
         stage.draw();
     }
 
