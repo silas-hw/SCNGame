@@ -147,6 +147,12 @@ public class GameScreen implements Screen {
         }
     }
 
+    /**
+     *
+     * @param tile
+     * @param x the x position of the tile in pixels
+     * @param y the y position of the tile in pixels
+     */
     public void parseTile(TiledMapTile tile, float x, float y) {
         for(MapObject obj : tile.getObjects()) {
             // offset the object by the tiles position
@@ -178,9 +184,8 @@ public class GameScreen implements Screen {
 
         if(type.equals("Wall")) {
             Box newWall = new Box();
-            newWall.solid = properties.get("solid", boolean.class);
+            newWall.solid = true;
             newWall.layer = Integer.parseInt(properties.get("CollisionLayer", String.class), 2);
-            newWall.mask = Integer.parseInt(properties.get("CollisionMask", String.class), 2);
 
             world.add(new Item<>(newWall), x + offsetX, y + offsetY, width, height);
         } else if(type.equals("DamageWall")) {
@@ -192,7 +197,7 @@ public class GameScreen implements Screen {
             newDamage.solid = false;
 
             world.add(new Item<>(newDamage), x + offsetX, y + offsetY, width, height);
-        } else if(obj instanceof TiledMapTileMapObject) {
+        } else if(obj instanceof TiledMapTileMapObject && type.equals("Decor")) {
             TextureRegion texture = ((TextureMapObject) obj).getTextureRegion();
             scene.addEntity(new SpriteEntity(texture, x, y));
 

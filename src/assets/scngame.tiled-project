@@ -83,6 +83,19 @@
                 "wangset",
                 "project"
             ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 6,
+            "members": [
+            ],
+            "name": "Decor",
+            "type": "class",
+            "useAs": [
+                "object",
+                "project"
+            ]
         }
     ]
 }
