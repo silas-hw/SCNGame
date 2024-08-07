@@ -15,7 +15,7 @@
  <tile id="10" probability="0.33"/>
  <tile id="15">
   <objectgroup draworder="index" id="2">
-   <object id="1" type="Wall" x="0" y="0" width="8" height="8">
+   <object id="1" name="TestSpriteCollider" type="Wall" x="0" y="0" width="8" height="8">
     <properties>
      <property name="CollisionLayer" value="11000000"/>
      <property name="CollisionMask" value="00000000"/>

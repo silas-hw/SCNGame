@@ -3,6 +3,9 @@
     "expandedProjectPaths": [
     ],
     "fileStates": {
+        "tilesets/testset1.tsx": {
+            "dynamicWrapping": false
+        },
         "tilesets/trees.tsx": {
             "dynamicWrapping": true
         }

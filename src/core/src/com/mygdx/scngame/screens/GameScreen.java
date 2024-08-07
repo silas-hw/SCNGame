@@ -14,10 +14,7 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.objects.TextureMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
@@ -107,6 +104,7 @@ public class GameScreen implements Screen {
         tiledMap = new TmxMapLoader().load("tilemaps/testmap1.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1f, this.batch);
 
+        // extract objects and parse them
         for(MapLayer layer : tiledMap.getLayers()) {
             if(layer instanceof TiledMapTileLayer) parseTileLayer((TiledMapTileLayer) layer);
             else parseObjectLayer(layer);
@@ -137,33 +135,37 @@ public class GameScreen implements Screen {
     }
 
     private void parseTileLayer(TiledMapTileLayer layer) {
+        int width = layer.getTileWidth();
+        int height = layer.getTileHeight();
+
         for(int x = 0; x<layer.getWidth(); x++) {
             for(int y = 0 ; y<layer.getHeight(); y++) {
-                for(MapObject obj : layer.getCell(x, y).getTile().getObjects()) {
 
-                    // offset the object by the tiles position
-                    // this is done because the objects x and y position are stored relative to the tile
-                    // but we want to add it to the world at its absolute position
-
-                    float _x = obj.getProperties().get("x", float.class);
-                    float _y = obj.getProperties().get("y", float.class);
-
-                    obj.getProperties().put("x", _x + x*layer.getTileWidth());
-                    obj.getProperties().put("y", _y + y*layer.getTileHeight());
-
-                    parseMapObject(obj);
-                }
+                // the x and y of objects within a tile layer or held by a tile are relative to that tile
+                parseTile(layer.getCell(x, y).getTile(), x * width, y * height);
             }
+        }
+    }
+
+    public void parseTile(TiledMapTile tile, float x, float y) {
+        for(MapObject obj : tile.getObjects()) {
+            // offset the object by the tiles position
+            // this is done because the objects x and y position are stored relative to the tile
+            // but we want to add it to the world at its absolute position
+
+            parseMapObject(obj, x, y);
         }
     }
 
     private void parseObjectLayer(MapLayer layer) {
         for(MapObject obj : layer.getObjects()){
-            parseMapObject(obj);
+
+            // x and y properties in object layers are absolute
+            parseMapObject(obj, 0, 0);
         }
     }
 
-    private void parseMapObject(MapObject obj) {
+    private void parseMapObject(MapObject obj, float offsetX, float offsetY) {
         MapProperties properties = obj.getProperties();
 
         float x = properties.get("x", float.class);
@@ -180,7 +182,7 @@ public class GameScreen implements Screen {
             newWall.layer = Integer.parseInt(properties.get("CollisionLayer", String.class), 2);
             newWall.mask = Integer.parseInt(properties.get("CollisionMask", String.class), 2);
 
-            world.add(new Item<>(newWall), x, y, width, height);
+            world.add(new Item<>(newWall), x + offsetX, y + offsetY, width, height);
         } else if(type.equals("DamageWall")) {
             String dtype = properties.get("DamageType", String.class);
             float damage = properties.get("damage", float.class);
@@ -189,11 +191,13 @@ public class GameScreen implements Screen {
             newDamage.layer = Integer.parseInt(properties.get("CollisionLayer", String.class), 2);
             newDamage.solid = false;
 
-            world.add(new Item<>(newDamage), x, y, width, height);
-        } else if(obj instanceof TextureMapObject) {
-            // unfortunately, it seems we can't get embedded collision objects from a sprite object :(
+            world.add(new Item<>(newDamage), x + offsetX, y + offsetY, width, height);
+        } else if(obj instanceof TiledMapTileMapObject) {
             TextureRegion texture = ((TextureMapObject) obj).getTextureRegion();
             scene.addEntity(new SpriteEntity(texture, x, y));
+
+            // parse the tile held by the tiled map tile object - getting any child objects of that tile
+            parseTile(((TiledMapTileMapObject) obj).getTile(), x,  y);
         }
     }
 
