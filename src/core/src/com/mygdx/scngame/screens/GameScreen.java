@@ -81,7 +81,7 @@ public class GameScreen implements Screen {
     Also parse the world and add entities to the scene and physics objects to the world
      */
 
-    // TODO: create documentation about what different map objects are available and what they do
+    // TODO: update docs to describe PathNode map object
 
     @Override
     public void show() {
