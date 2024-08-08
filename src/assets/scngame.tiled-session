@@ -15,7 +15,7 @@
     "openFiles": [
     ],
     "project": "scngame.tiled-project",
-    "property.type": "float",
+    "property.type": "object",
     "recentFiles": [
     ],
     "tileset.lastUsedFormat": "tsx",

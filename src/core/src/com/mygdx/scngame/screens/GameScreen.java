@@ -4,21 +4,16 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
-import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -30,13 +25,12 @@ import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.player.Player;
 import com.mygdx.scngame.entity.sprite.SpriteEntity;
 import com.mygdx.scngame.event.Global;
+import com.mygdx.scngame.path.PathNodes;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.DamageBox;
 import com.mygdx.scngame.physics.HitBox;
 import com.mygdx.scngame.scene.Scene;
 import com.mygdx.scngame.settings.Settings;
-
-import java.util.Iterator;
 
 public class GameScreen implements Screen {
 
@@ -58,10 +52,14 @@ public class GameScreen implements Screen {
     TiledMapRenderer mapRenderer;
     TiledMap tiledMap;
 
+    PathNodes pathNodes;
+
     public GameScreen(Game game, SpriteBatch batch, ShapeRenderer shape, Player player) {
         this.game = game;
         this.batch = batch;
         this.shape = shape;
+
+        this.pathNodes = new PathNodes();
 
         this.player = player;
 
@@ -69,24 +67,12 @@ public class GameScreen implements Screen {
         gameViewport = new ExtendViewport(400, 400, camera);
 
         world = new World<Box>();
-        scene = new Scene(gameViewport, batch, shape, world);
 
         dialog = new Dialog();
     }
 
     public GameScreen(Game game, SpriteBatch batch, ShapeRenderer shape) {
-        this.game = game;
-        this.batch = batch;
-        this.shape = shape;
-
-        camera = new OrthographicCamera();
-        gameViewport = new ExtendViewport(400, 400, camera);
-
-        world = new World<Box>();
-
-        this.player = new Player();
-
-        dialog = new Dialog();
+        this(game, batch, shape, new Player());
     }
 
     /*
@@ -109,6 +95,8 @@ public class GameScreen implements Screen {
             if(layer instanceof TiledMapTileLayer) parseTileLayer((TiledMapTileLayer) layer);
             else parseObjectLayer(layer);
         }
+
+        System.out.println(pathNodes.toString());
 
         Box wall = new Box();
         wall.solid = true;
@@ -197,6 +185,8 @@ public class GameScreen implements Screen {
             newDamage.solid = false;
 
             world.add(new Item<>(newDamage), x + offsetX, y + offsetY, width, height);
+        } else if(type.equals("PathNode")) {
+            pathNodes.put(obj);
         } else if(obj instanceof TiledMapTileMapObject && type.equals("")) {
             TextureRegion texture = ((TextureMapObject) obj).getTextureRegion();
             scene.addEntity(new SpriteEntity(texture, x, y));
