@@ -15,6 +15,8 @@ tasks.register('run', JavaExec) {
     workingDir = project.assetsDir
     ignoreExitValue = true
 
+    enableAssertions = true;
+
     if (OperatingSystem.current() == OperatingSystem.MAC_OS) {
         // Required to run on macOS
         jvmArgs += "-XstartOnFirstThread"
@@ -29,6 +31,8 @@ tasks.register('debug', JavaExec) {
     workingDir = project.assetsDir
     ignoreExitValue = true
     debug = true
+
+    enableAssertions = true;
 }
 
 tasks.register('dist', Jar) {

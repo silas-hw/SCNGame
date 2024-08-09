@@ -65,8 +65,6 @@ public class Player extends Entity {
         }
 
         hurtbox.update(delta, this.position);
-
-        System.out.println(health.getHealth());
     }
 
     @Override

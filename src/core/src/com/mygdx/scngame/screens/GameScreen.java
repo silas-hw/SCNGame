@@ -14,6 +14,7 @@ import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -23,6 +24,7 @@ import com.dongbat.jbump.World;
 import com.mygdx.scngame.dialog.Dialog;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.player.Player;
+import com.mygdx.scngame.entity.sprite.AnimatedSpriteEntity;
 import com.mygdx.scngame.entity.sprite.SpriteEntity;
 import com.mygdx.scngame.event.Global;
 import com.mygdx.scngame.path.PathNodes;
@@ -188,11 +190,21 @@ public class GameScreen implements Screen {
         } else if(type.equals("PathNode")) {
             pathNodes.put(obj);
         } else if(obj instanceof TiledMapTileMapObject && type.equals("")) {
-            TextureRegion texture = ((TextureMapObject) obj).getTextureRegion();
-            scene.addEntity(new SpriteEntity(texture, x, y));
+            TiledMapTile tile = ((TiledMapTileMapObject) obj).getTile();
+
+            if(tile instanceof AnimatedTiledMapTile) {
+                float interval = (float) ((AnimatedTiledMapTile) tile).getAnimationIntervals()[0]/1000f;
+                scene.addEntity(new AnimatedSpriteEntity(((AnimatedTiledMapTile) tile).getFrameTiles(), interval, x, y));
+
+                System.out.println("Animated Tile! with interval " + interval + " and x " + x + " and y " + y);
+            } else {
+                TextureRegion texture = ((TextureMapObject) obj).getTextureRegion();
+                scene.addEntity(new SpriteEntity(texture, x, y));
+            }
+
 
             // parse the tile held by the tiled map tile object - getting any child objects of that tile
-            parseTile(((TiledMapTileMapObject) obj).getTile(), x,  y);
+            parseTile(tile, x,  y);
         }
     }
 

@@ -13,7 +13,7 @@ public class HurtBox {
     private HealthComponent health;
     private Item<Box> hitbox;
 
-    private World<Box> world;
+    private World<Box> world = null;
 
     private float width;
     private float height;
