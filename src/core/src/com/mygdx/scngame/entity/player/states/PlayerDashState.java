@@ -28,13 +28,6 @@ public class PlayerDashState implements EntityState<Player> {
             return new PlayerMoveState();
         }
 
-        Response.Result res = world.move(container.collisionItem, container.position.x, container.position.y, Box.GLOBAL_FILTER);
-
-        Rect rect1 = world.getRect(container.collisionItem);
-        container.position.x = rect1.x;
-        container.position.y = rect1.y;
-
-        world.move(container.hitbox, container.position.x, container.position.y, Box.GLOBAL_FILTER);
         return null;
     }
 
@@ -57,6 +50,8 @@ public class PlayerDashState implements EntityState<Player> {
     public void enter() {
         container.collisionItem.userData.response = Response.touch;
         dashTimer = 0f;
+
+        container.hurtbox.setTakesDamage(false);
     }
 
     @Override

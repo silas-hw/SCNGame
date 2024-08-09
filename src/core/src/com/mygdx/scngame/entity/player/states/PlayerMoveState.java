@@ -61,34 +61,6 @@ public class PlayerMoveState implements EntityState<Player> {
 
         container.position.mulAdd(container.direction, 500f*delta);
 
-        world.move(container.collisionItem, container.position.x, container.position.y, Box.GLOBAL_FILTER);
-        Rect rect = world.getRect(container.collisionItem);
-        container.position.x = rect.x;
-        container.position.y = rect.y;
-
-        Response.Result res = world.move(container.hitbox, container.position.x, container.position.y, Box.GLOBAL_FILTER);
-
-        if(invis && invisTimer < invisTime) {
-            invisTimer += delta;
-        } else if(invis) {
-            invis = false;
-            invisTimer = 0f;
-        }
-
-        if(!invis) {
-            for(int i = 0; i<res.projectedCollisions.size(); i++) {
-                Collision col = res.projectedCollisions.get(i);
-
-                if(col.other.userData instanceof DamageBox) {
-                    DamageBox dBox = (DamageBox) col.other.userData;
-
-                    container.health -= dBox.damage;
-                    invis = true;
-                }
-
-            }
-        }
-
         return null;
     }
 
@@ -111,6 +83,7 @@ public class PlayerMoveState implements EntityState<Player> {
     @Override
     public void enter() {
         texture = new Texture(Gdx.files.internal("sprites/test.png"));
+        container.hurtbox.setTakesDamage(true);
     }
 
     @Override

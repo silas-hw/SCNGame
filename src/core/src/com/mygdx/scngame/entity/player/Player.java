@@ -3,9 +3,12 @@ package com.mygdx.scngame.entity.player;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.dongbat.jbump.Item;
+import com.dongbat.jbump.Rect;
 import com.dongbat.jbump.Response;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.*;
+import com.mygdx.scngame.entity.component.HealthComponent;
+import com.mygdx.scngame.entity.component.HurtBox;
 import com.mygdx.scngame.entity.context.EntityContext;
 import com.mygdx.scngame.entity.player.states.PlayerMoveState;
 import com.mygdx.scngame.physics.Box;
@@ -18,8 +21,8 @@ public class Player extends Entity {
     public Item<Box> collisionItem;
     public Item<Box> hitbox;
 
-    public float maxHealth = 500f;
-    public float health = maxHealth;
+    public HealthComponent health;
+    public HurtBox hurtbox;
 
     public Player() {
         Box foot;
@@ -29,10 +32,9 @@ public class Player extends Entity {
         foot.response = Response.slide;
 
         collisionItem = new Item<>(foot);
-        Box hit = new HitBox();
-        hit.mask = 0b10000000;
-        hit.response = Response.cross;
-        hitbox = new Item<>(hit);
+
+        health = new HealthComponent(500f);
+        hurtbox = new HurtBox(health, 0b11000000, 16, 32, 5f);
 
         this.state = new PlayerMoveState();
         this.state.setContainer(this);
@@ -46,6 +48,12 @@ public class Player extends Entity {
 
         EntityState<? super Player> newState =  state.update(delta);
 
+        Response.Result res = world.move(collisionItem, position.x, position.y, Box.GLOBAL_FILTER);
+
+        Rect rect = world.getRect(collisionItem);
+        position.x = rect.x;
+        position.y = rect.y;
+
         if(newState != null) {
             this.state.exit();
 
@@ -55,6 +63,10 @@ public class Player extends Entity {
             this.state.setWorld(this.world);
             this.state.enter();
         }
+
+        hurtbox.update(delta, this.position);
+
+        System.out.println(health.getHealth());
     }
 
     @Override
@@ -79,7 +91,8 @@ public class Player extends Entity {
         this.world = world;
 
         this.world.add(collisionItem, position.x, position.y, 16, 16);
-        this.world.add(hitbox, position.x, position.y, 16, 32);
+
+        this.hurtbox.setWorld(world);
     }
 
     @Override
