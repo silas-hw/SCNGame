@@ -60,8 +60,6 @@ public class TiledNinePatch implements Drawable {
             height++;
         }
 
-        System.out.println("Dot9: " + x + " :: " + y + " :: " + width + " :: " + height);
-
         return new TiledNinePatch(new TextureRegion(dot9, 1, 1, dot9.getWidth()-2, dot9.getHeight()-2), x-1, y-1, width, height);
     }
 

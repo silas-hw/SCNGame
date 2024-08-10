@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.dongbat.jbump.*;
+import com.mygdx.scngame.SCNGame;
 import com.mygdx.scngame.dialog.DialogStart;
 import com.mygdx.scngame.entity.EntityState;
 import com.mygdx.scngame.entity.player.Player;
@@ -82,7 +83,7 @@ public class PlayerMoveState implements EntityState<Player> {
 
     @Override
     public void enter() {
-        texture = new Texture(Gdx.files.internal("sprites/test.png"));
+        texture = SCNGame.getAssetManager().get("sprites/test.png");
         container.hurtbox.setTakesDamage(true);
     }
 

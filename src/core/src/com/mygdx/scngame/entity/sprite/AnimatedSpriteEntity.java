@@ -12,7 +12,6 @@ import com.mygdx.scngame.entity.Entity;
 public class AnimatedSpriteEntity extends Entity {
 
     private Animation<TextureRegion> animation;
-    private Vector2 position = new Vector2();
 
     public AnimatedSpriteEntity(Animation<TextureRegion> anim, float x, float y) {
         animation = anim;

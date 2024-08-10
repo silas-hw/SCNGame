@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.scngame.SCNGame;
 import com.mygdx.scngame.event.GameEvent;
 import com.mygdx.scngame.event.GameEventListener;
 import com.mygdx.scngame.event.Global;
@@ -34,7 +35,7 @@ public class Dialog extends InputAdapter implements GameEventListener {
 
     private Viewport view;
 
-    private static Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+    private static Skin skin = SCNGame.getAssetManager().get("skin/uiskin.json");
 
     private Label label;
 
@@ -73,7 +74,9 @@ public class Dialog extends InputAdapter implements GameEventListener {
         wrapper.center();
         wrapper.fill();
 
-        icon = new Image(new Texture("patch.png"));
+        Texture patchTexture = SCNGame.getAssetManager().get("sprites/patch.9.png", Texture.class);
+
+        icon = new Image(patchTexture);
         icon.setAlign(Align.center);
         icon.setScaling(Scaling.fit);
 
@@ -89,7 +92,7 @@ public class Dialog extends InputAdapter implements GameEventListener {
         container.height(HEIGHT*scale);
         container.fill();
 
-        npatch = TiledNinePatch.getInstanceFromDot9(new Texture("patch.9.png"));
+        npatch = TiledNinePatch.getInstanceFromDot9(patchTexture);
         npatch.scale = basePatchScale;
 
         container.setBackground(npatch, true);
