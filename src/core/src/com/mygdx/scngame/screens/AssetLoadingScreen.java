@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+// TODO: load animations and sound files
+
 public class AssetLoadingScreen implements Screen {
 
     private static final String logTag = "AssetLoadingScreen";
