@@ -38,24 +38,22 @@ public class AssetLoadingScreen implements Screen {
     AssetManager assetManager;
 
 
-    // this feels bad. Initialising a whole array just to dump it into a hash set? alas it may be the best
-    // Perhaps doing this in the constructor would be better so the
-    // references to these arrays can be lost and cleaned up by bin man (Java GC)
-    String[] _spriteExtensions = {
+    // this feels very hacky
+    final static String[] _spriteExtensions = {
             "png", "jpg", "jpeg", "gif"
     };
 
-    String[] _tilemapExtensions = {
+    final static String[] _tilemapExtensions = {
             "tmx"
     };
 
-    String[] _skinExtensions = {
+    final static String[] _skinExtensions = {
             "json"
     };
 
-    Set<String> spriteExtensions = new HashSet<>(Arrays.asList(_spriteExtensions));
-    Set<String> tilemapExtensions = new HashSet<>(Arrays.asList(_tilemapExtensions));
-    Set<String> skinExtensions = new HashSet<>(Arrays.asList(_skinExtensions));
+    final static Set<String> spriteExtensions = new HashSet<>(Arrays.asList(_spriteExtensions));
+    final static Set<String> tilemapExtensions = new HashSet<>(Arrays.asList(_tilemapExtensions));
+    final static Set<String> skinExtensions = new HashSet<>(Arrays.asList(_skinExtensions));
 
     @Override
     public void show() {
@@ -67,7 +65,7 @@ public class AssetLoadingScreen implements Screen {
         assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
         loadAssets(assetManager, "tilemaps/", tilemapExtensions, TiledMap.class);
 
-        Gdx.app.log(logTag, "Assets set to load!");
+        Gdx.app.log(logTag, "All assets set to load!");
 
     }
 
