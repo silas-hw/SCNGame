@@ -15,7 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.scngame.SCNGame;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,6 +37,10 @@ public class AssetLoadingScreen implements Screen {
 
     AssetManager assetManager;
 
+
+    // this feels bad. Initialising a whole array just to dump it into a hash set? alas it may be the best
+    // Perhaps doing this in the constructor would be better so the
+    // references to these arrays can be lost and cleaned up by bin man (Java GC)
     String[] _spriteExtensions = {
             "png", "jpg", "jpeg", "gif"
     };
@@ -96,6 +99,8 @@ public class AssetLoadingScreen implements Screen {
             assetManager.load(file.path(), clazz);
         }
     }
+
+    // TODO: inform user of asset loading graphically
 
     @Override
     public void render(float delta) {

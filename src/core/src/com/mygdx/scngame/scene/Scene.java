@@ -2,23 +2,17 @@ package com.mygdx.scngame.scene;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.World;
-import com.mygdx.scngame.dialog.DialogStart;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.context.EntityContext;
-import com.mygdx.scngame.event.GameEvent;
-import com.mygdx.scngame.event.GameEventBus;
-import com.mygdx.scngame.event.GameEventListener;
-import com.mygdx.scngame.event.Global;
+import com.mygdx.scngame.event.DialogEventListener;
+import com.mygdx.scngame.event.GlobalEventBus;
 import com.mygdx.scngame.physics.Box;
-import com.mygdx.scngame.settings.Controls;
 
 import java.util.Comparator;
 
@@ -35,11 +29,11 @@ import java.util.Comparator;
  * This implements an InputProcessor, and stores keyboard input events such that they can
  * be polled locally by its entities, as opposed to globally via {@link com.badlogic.gdx.Input}.
  * Inputs are cleared upon certain events that are expected to pause the main gameplay,
- * such as {@link DialogStart}.
+ * such as starting dialog.
  *
  * @author Silas Hayes-Williams
  */
-public class Scene extends InputAdapter implements Disposable, EntityContext, GameEventListener {
+public class Scene extends InputAdapter implements Disposable, EntityContext, DialogEventListener {
     protected SnapshotArray<Entity> entities;
     protected Comparator<Entity> renderComparator;
 
@@ -71,7 +65,7 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Ga
         this.shape = shape;
         this.viewport = viewport;
 
-        Global.bus.addEventListener(this);
+        GlobalEventBus.getInstance().addDialogListener(this);
 
         this.world = world;
     }
@@ -200,17 +194,20 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Ga
     }
 
     @Override
-    public void notify(GameEvent event) {
-        if(event.getPayload() instanceof DialogStart) {
-            keyJustPressed = false;
-            for(int i = 0; i<keysJustPressed.length; i++) {
-                keysJustPressed[i] = false;
-            }
-
-            for(int i = 0; i<keyPressed.length; i++) {
-                keyPressed[i] = false;
-            }
+    public void onDialogStart(String id) {
+        keyJustPressed = false;
+        for(int i = 0; i<keysJustPressed.length; i++) {
+            keysJustPressed[i] = false;
         }
+
+        for(int i = 0; i<keyPressed.length; i++) {
+            keyPressed[i] = false;
+        }
+    }
+
+    @Override
+    public void onDialogEnd() {
+
     }
 
     public static class YComparator implements Comparator<Entity> {

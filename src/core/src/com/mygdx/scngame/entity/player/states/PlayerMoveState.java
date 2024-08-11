@@ -1,20 +1,15 @@
 package com.mygdx.scngame.entity.player.states;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.dongbat.jbump.*;
 import com.mygdx.scngame.SCNGame;
-import com.mygdx.scngame.dialog.DialogStart;
 import com.mygdx.scngame.entity.EntityState;
 import com.mygdx.scngame.entity.player.Player;
-import com.mygdx.scngame.event.GameEvent;
-import com.mygdx.scngame.event.Global;
+import com.mygdx.scngame.event.GlobalEventBus;
 import com.mygdx.scngame.physics.Box;
-import com.mygdx.scngame.physics.DamageBox;
 import com.mygdx.scngame.settings.Controls;
 
 public class PlayerMoveState implements EntityState<Player> {
@@ -57,7 +52,7 @@ public class PlayerMoveState implements EntityState<Player> {
         }
 
         if(container.context.isKeyJustPressed(Input.Keys.E)) {
-            Global.bus.fire(new GameEvent(container, new DialogStart("test_dialog_1")));
+            GlobalEventBus.getInstance().startDialog("test_dialog_1");
         }
 
         container.position.mulAdd(container.direction, 500f*delta);
@@ -88,7 +83,5 @@ public class PlayerMoveState implements EntityState<Player> {
     }
 
     @Override
-    public void exit() {
-        texture.dispose();
-    }
+    public void exit() {}
 }

@@ -1,22 +1,36 @@
 {
-    "activeFile": "",
+    "activeFile": "tilemaps/testmap1.tmx",
     "expandedProjectPaths": [
+        "tilemaps",
+        "."
     ],
     "fileStates": {
+        "tilemaps/testmap1.tmx": {
+            "scale": 3.5506249999999997,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 120.11969723640205,
+                "y": 79.985917972188
+            }
+        },
         "tilesets/testset1.tsx": {
-            "dynamicWrapping": false
+            "dynamicWrapping": false,
+            "scaleInDock": 8
         },
         "tilesets/trees.tsx": {
-            "dynamicWrapping": true
+            "dynamicWrapping": true,
+            "scaleInDock": 1
         }
     },
     "frame.defaultDuration": 200,
     "last.imagePath": "D:/silas/Summer Projects 2024/SCNGame/src/assets/sprites",
     "openFiles": [
+        "tilemaps/testmap1.tmx"
     ],
     "project": "scngame.tiled-project",
     "property.type": "object",
     "recentFiles": [
+        "tilemaps/testmap1.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

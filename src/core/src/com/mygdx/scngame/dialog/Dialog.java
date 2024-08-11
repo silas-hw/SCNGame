@@ -4,19 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.scngame.SCNGame;
-import com.mygdx.scngame.event.GameEvent;
-import com.mygdx.scngame.event.GameEventListener;
-import com.mygdx.scngame.event.Global;
+import com.mygdx.scngame.event.DialogEventListener;
+import com.mygdx.scngame.event.GlobalEventBus;
 import com.mygdx.scngame.settings.Controls;
 import com.mygdx.scngame.settings.Settings;
 import com.mygdx.scngame.ui.TiledNinePatch;
@@ -25,9 +21,9 @@ import com.mygdx.scngame.ui.TiledNinePatch;
 
 /**
  * Encapsulates the handling of dialog events, including capturing events, drawing dialog boxes, and
- * firing {@link DialogEnd} events.
+ * firing dialog end events.
  */
-public class Dialog extends InputAdapter implements GameEventListener {
+public class Dialog extends InputAdapter implements DialogEventListener {
 
     private boolean inFocus = false;
 
@@ -150,21 +146,10 @@ public class Dialog extends InputAdapter implements GameEventListener {
     }
 
     @Override
-    public void notify(GameEvent event) {
-
-        if(event.getPayload() instanceof DialogEnd) {
-            inFocus = false;
-            return;
-        }
-
-        if(! (event.getPayload() instanceof DialogStart)) {
-            return;
-        }
-
+    public void onDialogStart(String id) {
         inFocus = true;
-        DialogStart payload = (DialogStart) event.getPayload();
 
-        switch(payload.id) {
+        switch(id) {
             case "test_dialog_1":
                 message = "";
 
@@ -188,6 +173,11 @@ public class Dialog extends InputAdapter implements GameEventListener {
     }
 
     @Override
+    public void onDialogEnd() {
+        inFocus = false;
+    }
+
+    @Override
     public boolean keyDown(int keycode) {
         if(!inFocus) {
             return false;
@@ -196,7 +186,7 @@ public class Dialog extends InputAdapter implements GameEventListener {
         switch (keycode) {
             case Input.Keys.E:
                 inFocus = false;
-                Global.bus.fire(new GameEvent(this, new DialogEnd()) );
+                GlobalEventBus.getInstance().endDialog();
                 break;
 
         }

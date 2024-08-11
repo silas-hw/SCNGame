@@ -27,7 +27,7 @@ import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.player.Player;
 import com.mygdx.scngame.entity.sprite.AnimatedSpriteEntity;
 import com.mygdx.scngame.entity.sprite.SpriteEntity;
-import com.mygdx.scngame.event.Global;
+import com.mygdx.scngame.event.GlobalEventBus;
 import com.mygdx.scngame.path.PathNodes;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.DamageBox;
@@ -99,8 +99,6 @@ public class GameScreen implements Screen {
             else parseObjectLayer(layer);
         }
 
-        System.out.println(pathNodes.toString());
-
         Box wall = new Box();
         wall.solid = true;
         wall.layer = 0b10000000;
@@ -122,7 +120,7 @@ public class GameScreen implements Screen {
 
         Gdx.input.setInputProcessor(multiplexer);
 
-        Global.bus.addEventListener(dialog);
+        GlobalEventBus.getInstance().addDialogListener(dialog);
     }
 
     private void parseTileLayer(TiledMapTileLayer layer) {
@@ -197,7 +195,6 @@ public class GameScreen implements Screen {
                 float interval = (float) ((AnimatedTiledMapTile) tile).getAnimationIntervals()[0]/1000f;
                 scene.addEntity(new AnimatedSpriteEntity(((AnimatedTiledMapTile) tile).getFrameTiles(), interval, x, y));
 
-                System.out.println("Animated Tile! with interval " + interval + " and x " + x + " and y " + y);
             } else {
                 TextureRegion texture = ((TextureMapObject) obj).getTextureRegion();
                 scene.addEntity(new SpriteEntity(texture, x, y));
@@ -291,7 +288,7 @@ public class GameScreen implements Screen {
         tiledMap.dispose();
         mapRenderer = null;
 
-        Global.bus.removeEventListener(dialog);
+
 
         Gdx.input.setInputProcessor(null);
     }
