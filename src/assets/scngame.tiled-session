@@ -31,7 +31,7 @@
         "tilesets/testset1.tsx"
     ],
     "project": "scngame.tiled-project",
-    "property.type": "object",
+    "property.type": "BitMask",
     "recentFiles": [
         "tilesets/testset1.tsx",
         "tilemaps/testmap1.tmx"

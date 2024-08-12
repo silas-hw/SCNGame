@@ -16,6 +16,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.scngame.SCNGame;
+import com.mygdx.scngame.map.MyTmxMapLoader;
 import com.mygdx.scngame.screens.data.ScreenData;
 import com.mygdx.scngame.settings.Settings;
 
@@ -79,7 +80,7 @@ public class AssetLoadingScreen implements Screen {
         loadAssets(assetManager, "skin/", skinExtensions, Skin.class);
         loadAssets(assetManager, "music/", audioExtensions, Music.class);
 
-        assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+        assetManager.setLoader(TiledMap.class, new MyTmxMapLoader(new InternalFileHandleResolver()));
         loadAssets(assetManager, "tilemaps/", tilemapExtensions, TiledMap.class);
 
         Gdx.app.log(logTag, "All assets set to load!");

@@ -42,7 +42,7 @@ public class Player extends Entity {
 
         health = new HealthComponent(500f);
         hurtbox = new HurtBox(health, 16, 32, 5f);
-        hurtbox.setCollisionMask(1, true);
+        hurtbox.setCollisionMask(0, true);
 
         this.state = new PlayerMoveState();
         this.state.setContainer(this);
@@ -73,8 +73,6 @@ public class Player extends Entity {
         }
 
         hurtbox.update(delta, this.position);
-
-        System.out.println(health.getHealth());
     }
 
     @Override

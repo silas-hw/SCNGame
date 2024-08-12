@@ -5,7 +5,6 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
@@ -22,7 +21,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Rect;
 import com.dongbat.jbump.World;
-import com.mygdx.scngame.SCNGame;
 import com.mygdx.scngame.dialog.Dialog;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.player.Player;
@@ -35,8 +33,8 @@ import com.mygdx.scngame.physics.DamageBox;
 import com.mygdx.scngame.physics.HitBox;
 import com.mygdx.scngame.scene.Scene;
 import com.mygdx.scngame.screens.data.ScreenData;
-import com.mygdx.scngame.settings.PrefSettings;
-import com.mygdx.scngame.settings.Settings;
+
+import java.util.Iterator;
 
 public class GameScreen implements Screen {
 
@@ -122,8 +120,6 @@ public class GameScreen implements Screen {
         DamageBox damage = new DamageBox(5f, DamageBox.DamageType.DEFAULT);
         damage.setLayer(1, true);
 
-        System.out.println(wall.layer);
-
         world.add(new Item<>(damage), -150, -150, 150, 150);
 
         scene.addEntity(player);
@@ -190,7 +186,10 @@ public class GameScreen implements Screen {
         if(type.equals("Wall")) {
             Box newWall = new Box();
             newWall.solid = true;
-            newWall.layer = Integer.parseInt(properties.get("CollisionLayer", String.class), 2);
+
+            MapProperties collisionLayer = obj.getProperties().get("CollisionLayer", MapProperties.class);
+            setBoxCollisionLayers(collisionLayer, newWall);
+
 
             world.add(new Item<>(newWall), x + offsetX, y + offsetY, width, height);
         } else if(type.equals("DamageWall")) {
@@ -198,8 +197,10 @@ public class GameScreen implements Screen {
             float damage = properties.get("damage", float.class);
             DamageBox newDamage = new DamageBox(damage, DamageBox.DamageType.valueOf(dtype));
 
-            newDamage.layer = Integer.parseInt(properties.get("CollisionLayer", String.class), 2);
             newDamage.solid = false;
+
+            MapProperties collisionLayer = obj.getProperties().get("CollisionLayer", MapProperties.class);
+            setBoxCollisionLayers(collisionLayer, newDamage);
 
             world.add(new Item<>(newDamage), x + offsetX, y + offsetY, width, height);
         } else if(type.equals("PathNode")) {
@@ -219,6 +220,20 @@ public class GameScreen implements Screen {
 
             // parse the tile held by the tiled map tile object - getting any child objects of that tile
             parseTile(tile, x,  y);
+        }
+    }
+
+    /**
+     * Sets the collision layer of a box based on a CollisionLayer map property
+     */
+    private void setBoxCollisionLayers(MapProperties collisionLayer, Box box) {
+        for (Iterator<String> it = collisionLayer.getKeys(); it.hasNext(); ) {
+            String key = it.next();
+
+            if("type".equals(key)) continue;
+
+            boolean set = collisionLayer.get(key, Boolean.class);
+            box.setLayer(Integer.parseInt(key, 10), set);
         }
     }
 
@@ -277,6 +292,10 @@ public class GameScreen implements Screen {
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.K)) {
             screenData.settings().setDialogScale(screenData.settings().getDialogScale() - 0.1f);
+        }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
+            screenData.settings().setMusicVolume(0f);
         }
     }
 

@@ -11,6 +11,58 @@
     ],
     "propertyTypes": [
         {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 9,
+            "members": [
+                {
+                    "name": "0",
+                    "type": "bool",
+                    "value": false
+                },
+                {
+                    "name": "1",
+                    "type": "bool",
+                    "value": false
+                },
+                {
+                    "name": "2",
+                    "type": "bool",
+                    "value": false
+                },
+                {
+                    "name": "3",
+                    "type": "bool",
+                    "value": false
+                },
+                {
+                    "name": "4",
+                    "type": "bool",
+                    "value": false
+                },
+                {
+                    "name": "5",
+                    "type": "bool",
+                    "value": false
+                },
+                {
+                    "name": "6",
+                    "type": "bool",
+                    "value": false
+                },
+                {
+                    "name": "7",
+                    "type": "bool",
+                    "value": false
+                }
+            ],
+            "name": "BitMask",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
             "id": 5,
             "name": "DamageType",
             "storageType": "string",
@@ -28,8 +80,12 @@
             "members": [
                 {
                     "name": "CollisionLayer",
-                    "type": "string",
-                    "value": ""
+                    "propertyType": "BitMask",
+                    "type": "class",
+                    "value": {
+                        "0": false,
+                        "1": false
+                    }
                 },
                 {
                     "name": "DamageType",
@@ -87,18 +143,10 @@
             "members": [
                 {
                     "name": "CollisionLayer",
-                    "type": "string",
-                    "value": ""
-                },
-                {
-                    "name": "CollisionMask",
-                    "type": "string",
-                    "value": ""
-                },
-                {
-                    "name": "solid",
-                    "type": "bool",
-                    "value": false
+                    "propertyType": "BitMask",
+                    "type": "class",
+                    "value": {
+                    }
                 }
             ],
             "name": "Wall",
