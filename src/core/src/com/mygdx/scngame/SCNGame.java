@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.scngame.screens.AssetLoadingScreen;
 import com.mygdx.scngame.screens.MainMenuScreen;
+import com.mygdx.scngame.screens.data.ScreenData;
 import com.mygdx.scngame.settings.Controls;
 import com.mygdx.scngame.settings.PrefSettings;
 
@@ -28,7 +29,14 @@ public class SCNGame extends Game {
 		batch = new SpriteBatch();
 		shape = new ShapeRenderer();
 
-		this.setScreen(new AssetLoadingScreen(this, batch, shape, PrefSettings.getInstance()));
+		ScreenData screenData = new ScreenData(
+				this,
+				batch,
+				shape,
+				PrefSettings.getInstance()
+		);
+
+		this.setScreen(new AssetLoadingScreen(screenData));
 	}
 
 	@Override

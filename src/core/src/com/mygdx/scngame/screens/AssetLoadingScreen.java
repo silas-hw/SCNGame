@@ -16,6 +16,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.scngame.SCNGame;
+import com.mygdx.scngame.screens.data.ScreenData;
 import com.mygdx.scngame.settings.Settings;
 
 import java.util.Arrays;
@@ -34,12 +35,12 @@ public class AssetLoadingScreen implements Screen {
 
     Settings settings;
 
-    public AssetLoadingScreen(Game game, SpriteBatch batch, ShapeRenderer shapeRenderer, Settings settings) {
-        this.game = game;
-        this.batch = batch;
-        this.shapeRenderer = shapeRenderer;
+    public AssetLoadingScreen(ScreenData args) {
+        this.game = args.game();
+        this.batch = args.batch();
+        this.shapeRenderer = args.shapeRenderer();
 
-        this.settings = settings;
+        this.settings = args.settings();
     }
 
     AssetManager assetManager;

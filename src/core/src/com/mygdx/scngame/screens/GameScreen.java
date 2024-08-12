@@ -61,6 +61,11 @@ public class GameScreen implements Screen {
 
     Settings settings;
 
+    // want to avoid large constructors
+    // maybe wrap arguments into a datastructure?
+
+    // ScreenData: game, batch, shape, settings
+    // GameScreenData: player, map id, spawn id
     public GameScreen(Game game, SpriteBatch batch, ShapeRenderer shape, Player player, Settings settings) {
         this.game = game;
         this.batch = batch;
