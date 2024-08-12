@@ -14,26 +14,21 @@ public class SCNGame extends Game {
 	public SpriteBatch batch;
 	public ShapeRenderer shape;
 
-	private static AssetManager assetManager;
-
-	public static final AssetManager getAssetManager() {
-		if(assetManager == null) {
-			assetManager = new AssetManager();
-		}
-
-		return assetManager;
-	}
+	private AssetManager assetManager;
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		shape = new ShapeRenderer();
 
+		assetManager = new AssetManager();
+
 		ScreenData screenData = new ScreenData(
 				this,
 				batch,
 				shape,
-				PrefSettings.getInstance()
+				PrefSettings.getInstance(),
+				assetManager
 		);
 
 		this.setScreen(new AssetLoadingScreen(screenData));
@@ -54,9 +49,7 @@ public class SCNGame extends Game {
 		batch.dispose();
 		shape.dispose();
 
-		if(assetManager != null) {
-			assetManager.clear();
-			assetManager.dispose();
-		}
+		assetManager.clear();
+		assetManager.dispose();
 	}
 }

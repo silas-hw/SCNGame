@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.scngame.SCNGame;
 import com.mygdx.scngame.event.DialogEventListener;
 import com.mygdx.scngame.event.GlobalEventBus;
+import com.mygdx.scngame.screens.data.ScreenData;
 import com.mygdx.scngame.settings.Controls;
 import com.mygdx.scngame.settings.PrefSettings;
 import com.mygdx.scngame.settings.Settings;
@@ -32,7 +33,7 @@ public class Dialog extends InputAdapter implements DialogEventListener {
 
     private Viewport view;
 
-    private static Skin skin = SCNGame.getAssetManager().get("skin/uiskin.json");
+    private static Skin skin;
 
     private Label label;
 
@@ -56,8 +57,10 @@ public class Dialog extends InputAdapter implements DialogEventListener {
     private Settings settings;
 
 
-    public Dialog(Settings settings) {
-        this.settings = settings;
+    public Dialog(ScreenData screenData) {
+        this.settings = screenData.settings();
+        this.skin = screenData.assets().get("skin/uiskin.json", Skin.class);
+
         stage = new Stage(new ScreenViewport());
 
         root = new Table();
@@ -74,7 +77,7 @@ public class Dialog extends InputAdapter implements DialogEventListener {
         wrapper.center();
         wrapper.fill();
 
-        Texture patchTexture = SCNGame.getAssetManager().get("sprites/patch.9.png", Texture.class);
+        Texture patchTexture = screenData.assets().get("sprites/patch.9.png", Texture.class);
 
         icon = new Image(patchTexture);
         icon.setAlign(Align.center);

@@ -35,12 +35,15 @@ public class AssetLoadingScreen implements Screen {
 
     Settings settings;
 
+    ScreenData screenData;
+
     public AssetLoadingScreen(ScreenData args) {
         this.game = args.game();
         this.batch = args.batch();
         this.shapeRenderer = args.shapeRenderer();
 
         this.settings = args.settings();
+        this.screenData = args;
     }
 
     AssetManager assetManager;
@@ -70,7 +73,7 @@ public class AssetLoadingScreen implements Screen {
 
     @Override
     public void show() {
-        assetManager = SCNGame.getAssetManager();
+        assetManager = screenData.assets();
 
         loadAssets(assetManager, "sprites/", spriteExtensions, Texture.class);
         loadAssets(assetManager, "skin/", skinExtensions, Skin.class);
@@ -119,7 +122,7 @@ public class AssetLoadingScreen implements Screen {
         Gdx.app.log(logTag, "Loading assets... " + assetManager.getProgress()*100 + "%");
 
         if(assetManager.isFinished()) {
-            game.setScreen(new MainMenuScreen(game, batch, shapeRenderer, settings));
+            game.setScreen(new MainMenuScreen(screenData));
             return;
         }
 

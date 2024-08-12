@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.scngame.SCNGame;
+import com.mygdx.scngame.screens.data.ScreenData;
 import com.mygdx.scngame.settings.PrefSettings;
 import com.mygdx.scngame.settings.Settings;
 
@@ -32,31 +33,26 @@ public class MainMenuScreen implements Screen {
     OrthographicCamera camera;
 
     Game game;
-    SpriteBatch batch;
-    ShapeRenderer shape;
 
     Music bg;
 
-    Settings settings;
+    ScreenData screenData;
 
 
-    public MainMenuScreen(Game game, SpriteBatch batch, ShapeRenderer shape, Settings settings) {
-        this.game = game;
-
-        this.batch = batch;
-        this.shape = shape;
+    public MainMenuScreen(ScreenData screenData) {
+        this.game = screenData.game();
 
         camera = new OrthographicCamera();
         viewport = new ScreenViewport();
 
-        bg = SCNGame.getAssetManager().get("music/bgtest1.mp3", Music.class);
+        bg = screenData.assets().get("music/bgtest1.mp3", Music.class);
 
-        this.settings = settings;
+        this.screenData = screenData;
     }
 
     @Override
     public void show() {
-        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+        skin = screenData.assets().get("skin/uiskin.json", Skin.class);
 
         label = new Label(" ", skin);
         label.setText("Press E to Start");
@@ -69,7 +65,7 @@ public class MainMenuScreen implements Screen {
 
         stage.addActor(container);
 
-        bg.setVolume(settings.getMusicVolume());
+        bg.setVolume(screenData.settings().getMusicVolume());
         bg.setLooping(true);
         bg.play();
     }
@@ -80,7 +76,7 @@ public class MainMenuScreen implements Screen {
         stage.draw();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            game.setScreen(new GameScreen(game, batch, shape, settings));
+            game.setScreen(new GameScreen(screenData));
         }
     }
 
@@ -101,7 +97,6 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void hide() {
-        skin.dispose();
         stage.dispose();
         bg.stop();
     }

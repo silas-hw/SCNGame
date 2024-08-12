@@ -21,8 +21,6 @@ public class PlayerMoveState implements EntityState<Player> {
     protected Player container;
     protected World<Box> world;
 
-    private Texture texture;
-
     @Override
     public EntityState<? super Player> update(float delta) {
         int dx = 0;
@@ -62,7 +60,7 @@ public class PlayerMoveState implements EntityState<Player> {
 
     @Override
     public EntityState<? super Player> draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
-        batch.draw(texture, container.position.x, container.position.y);
+        batch.draw(container.texture, container.position.x, container.position.y);
         return null;
     }
 
@@ -78,7 +76,6 @@ public class PlayerMoveState implements EntityState<Player> {
 
     @Override
     public void enter() {
-        texture = SCNGame.getAssetManager().get("sprites/test.png");
         container.hurtbox.setTakesDamage(true);
     }
 

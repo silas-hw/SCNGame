@@ -34,6 +34,7 @@ import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.DamageBox;
 import com.mygdx.scngame.physics.HitBox;
 import com.mygdx.scngame.scene.Scene;
+import com.mygdx.scngame.screens.data.ScreenData;
 import com.mygdx.scngame.settings.PrefSettings;
 import com.mygdx.scngame.settings.Settings;
 
@@ -44,9 +45,6 @@ public class GameScreen implements Screen {
 
     OrthographicCamera camera;
     Viewport gameViewport;
-
-    SpriteBatch batch;
-    ShapeRenderer shape;
 
     World<Box> world;
 
@@ -59,17 +57,17 @@ public class GameScreen implements Screen {
 
     PathNodes pathNodes;
 
-    Settings settings;
+    ScreenData screenData;
 
     // want to avoid large constructors
     // maybe wrap arguments into a datastructure?
 
     // ScreenData: game, batch, shape, settings
     // GameScreenData: player, map id, spawn id
-    public GameScreen(Game game, SpriteBatch batch, ShapeRenderer shape, Player player, Settings settings) {
-        this.game = game;
-        this.batch = batch;
-        this.shape = shape;
+    public GameScreen(ScreenData screenData, Player player) {
+        this.game = screenData.game();
+
+        this.screenData = screenData;
 
         this.pathNodes = new PathNodes();
 
@@ -80,13 +78,12 @@ public class GameScreen implements Screen {
 
         world = new World<Box>();
 
-        dialog = new Dialog(PrefSettings.getInstance());
+        dialog = new Dialog(screenData);
 
-        this.settings = settings;
     }
 
-    public GameScreen(Game game, SpriteBatch batch, ShapeRenderer shape, Settings settings) {
-        this(game, batch, shape, new Player(), settings);
+    public GameScreen(ScreenData screenData) {
+        this(screenData, new Player(screenData.assets()));
     }
 
     /*
@@ -101,14 +98,14 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        bg = SCNGame.getAssetManager().get("music/bgtest2.mp3", Music.class);
+        bg = screenData.assets().get("music/bgtest2.mp3", Music.class);
         bg.setLooping(true);
         bg.play();
 
-        scene = new Scene(gameViewport, batch, shape, world);
+        scene = new Scene(gameViewport, screenData.batch(), screenData.shapeRenderer(), world);
 
-        tiledMap = SCNGame.getAssetManager().get("tilemaps/testmap1.tmx");
-        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1f, this.batch);
+        tiledMap = screenData.assets().get("tilemaps/testmap1.tmx");
+        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1f, screenData.batch());
 
         // extract objects and parse them
         for(MapLayer layer : tiledMap.getLayers()) {
@@ -227,7 +224,7 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         Gdx.graphics.setTitle("" + Gdx.graphics.getFramesPerSecond());
 
-        bg.setVolume(settings.getMusicVolume());
+        bg.setVolume(screenData.settings().getMusicVolume());
 
 
         ScreenUtils.clear(Color.BLACK);
@@ -244,6 +241,7 @@ public class GameScreen implements Screen {
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_BLEND);
 
+        ShapeRenderer shape = screenData.shapeRenderer();
         shape.setProjectionMatrix(camera.combined);
         shape.begin(ShapeRenderer.ShapeType.Filled);
 
@@ -268,15 +266,15 @@ public class GameScreen implements Screen {
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.F)) {
-            game.setScreen(new MainMenuScreen(game, batch, shape, settings));
+            game.setScreen(new MainMenuScreen(screenData));
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.I)) {
-            settings.setDialogScale(settings.getDialogScale() + 0.1f);
+            screenData.settings().setDialogScale(screenData.settings().getDialogScale() + 0.1f);
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.K)) {
-            settings.setDialogScale(settings.getDialogScale() - 0.1f);
+            screenData.settings().setDialogScale(screenData.settings().getDialogScale() - 0.1f);
         }
     }
 

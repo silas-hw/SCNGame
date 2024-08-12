@@ -1,5 +1,7 @@
 package com.mygdx.scngame.entity.player;
 
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.dongbat.jbump.Item;
@@ -24,7 +26,11 @@ public class Player extends Entity {
     public HealthComponent health;
     public HurtBox hurtbox;
 
-    public Player() {
+    public Texture texture;
+
+    public Player(AssetManager assets) {
+        texture = assets.get("sprites/test.png", Texture.class);
+
         Box foot;
         foot = new Box();
         foot.solid = true;
