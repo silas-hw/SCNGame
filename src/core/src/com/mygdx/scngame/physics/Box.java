@@ -18,6 +18,36 @@ public class Box {
     public int layer =  0b00000000;
 
     /**
+     *
+     * @param maskIndex the 0th indexed collision layer to set
+     * @param set whether to set or unset the given layer index
+     */
+    public void setMask(int maskIndex, boolean set) {
+        int bitmask = 1 << maskIndex;
+
+        if(set) {
+            mask = mask | bitmask;
+        } else {
+            mask = mask & ~bitmask;
+        }
+    }
+
+    /**
+     *
+     * @param layerIndex the 0th indexed collision layer to set
+     * @param set whether to set or unset the given layer index
+     */
+    public void setLayer(int layerIndex, boolean set) {
+        int bitmask = 1 << layerIndex;
+
+        if(set) {
+            layer = layer | bitmask;
+        } else {
+            layer = layer & ~bitmask;
+        }
+    }
+
+    /**
      * determines whether a colliding Box will have a hard or soft collision with this Box
      * <p>
      * A 'soft' collision will always involve a 'cross' {@link Response}, whereas a 'hard' collision

@@ -26,11 +26,10 @@ public class HurtBox {
 
     private boolean takesDamage = true;
 
-    public HurtBox(HealthComponent health, int collisionMask, float width, float height, float invinceTime) {
+    public HurtBox(HealthComponent health, float width, float height, float invinceTime) {
         this.health = health;
 
         Box hit = new HitBox();
-        hit.mask = collisionMask;
         hit.response = Response.cross;
         hitbox = new Item<>(hit);
 
@@ -40,6 +39,10 @@ public class HurtBox {
         this.invinceTime = invinceTime;
 
         pos = Vector2.Zero;
+    }
+
+    public void setCollisionMask(int maskLayer, boolean set) {
+        hitbox.userData.setMask(maskLayer, set);
     }
 
     public void update(float delta, Vector2 position) {

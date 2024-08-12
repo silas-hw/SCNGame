@@ -115,12 +115,14 @@ public class GameScreen implements Screen {
 
         Box wall = new Box();
         wall.solid = true;
-        wall.layer = 0b10000000;
+        wall.setLayer(0, true);
 
         world.add(new Item<>(wall), 150, 150, 150, 150);
 
         DamageBox damage = new DamageBox(5f, DamageBox.DamageType.DEFAULT);
-        damage.layer = 0b10000000;
+        damage.setLayer(1, true);
+
+        System.out.println(wall.layer);
 
         world.add(new Item<>(damage), -150, -150, 150, 150);
 

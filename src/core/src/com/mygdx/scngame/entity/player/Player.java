@@ -34,13 +34,15 @@ public class Player extends Entity {
         Box foot;
         foot = new Box();
         foot.solid = true;
-        foot.mask =  0b11000000;
+        foot.setMask(0, true);
+        foot.setLayer(0, true);
         foot.response = Response.slide;
 
         collisionItem = new Item<>(foot);
 
         health = new HealthComponent(500f);
-        hurtbox = new HurtBox(health, 0b11000000, 16, 32, 5f);
+        hurtbox = new HurtBox(health, 16, 32, 5f);
+        hurtbox.setCollisionMask(1, true);
 
         this.state = new PlayerMoveState();
         this.state.setContainer(this);
@@ -71,6 +73,8 @@ public class Player extends Entity {
         }
 
         hurtbox.update(delta, this.position);
+
+        System.out.println(health.getHealth());
     }
 
     @Override
