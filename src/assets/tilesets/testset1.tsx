@@ -12,7 +12,14 @@
    <frame tileid="2" duration="200"/>
   </animation>
  </tile>
- <tile id="10" probability="0.33"/>
+ <tile id="10" probability="0.7">
+  <animation>
+   <frame tileid="10" duration="400"/>
+   <frame tileid="11" duration="400"/>
+   <frame tileid="12" duration="400"/>
+   <frame tileid="11" duration="400"/>
+  </animation>
+ </tile>
  <tile id="15">
   <objectgroup draworder="index" id="2">
    <object id="1" name="TestSpriteCollider" type="Wall" x="0" y="0" width="8" height="8">
@@ -24,8 +31,9 @@
    </object>
   </objectgroup>
  </tile>
- <tile id="40" probability="0.333"/>
- <tile id="41" probability="0.333"/>
+ <tile id="40" probability="0.1"/>
+ <tile id="41" probability="0.1"/>
+ <tile id="42" probability="0.1"/>
  <wangsets>
   <wangset name="path1" type="corner" tile="-1">
    <wangcolor name="dirt" color="#ff0000" tile="-1" probability="1"/>
@@ -47,6 +55,7 @@
    <wangtile tileid="32" wangid="0,1,0,2,0,1,0,1"/>
    <wangtile tileid="40" wangid="0,1,0,1,0,1,0,1"/>
    <wangtile tileid="41" wangid="0,1,0,1,0,1,0,1"/>
+   <wangtile tileid="42" wangid="0,1,0,1,0,1,0,1"/>
   </wangset>
  </wangsets>
 </tileset>
