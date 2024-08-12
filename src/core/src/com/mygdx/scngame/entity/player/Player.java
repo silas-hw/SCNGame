@@ -28,6 +28,14 @@ public class Player extends Entity {
 
     public Texture texture;
 
+    public final int WIDTH = 16;
+    public final int HEIGHT = 16;
+
+    public float speed = 100;
+
+    // from center of body, so account for half of width/height
+    public final float interactDistance = 14f;
+
     public Player(AssetManager assets) {
         texture = assets.get("sprites/test.png", Texture.class);
 

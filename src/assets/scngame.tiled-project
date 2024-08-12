@@ -162,6 +162,25 @@
                 "wangset",
                 "project"
             ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 10,
+            "members": [
+                {
+                    "name": "DialogID",
+                    "type": "string",
+                    "value": "unset"
+                }
+            ],
+            "name": "Sign",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile",
+                "project"
+            ]
         }
     ]
 }

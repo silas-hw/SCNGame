@@ -31,6 +31,7 @@ import com.mygdx.scngame.path.PathNodes;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.DamageBox;
 import com.mygdx.scngame.physics.HitBox;
+import com.mygdx.scngame.physics.InteractBox;
 import com.mygdx.scngame.scene.Scene;
 import com.mygdx.scngame.screens.data.ScreenData;
 
@@ -111,17 +112,6 @@ public class GameScreen implements Screen {
             else parseObjectLayer(layer);
         }
 
-        Box wall = new Box();
-        wall.solid = true;
-        wall.setLayer(0, true);
-
-        world.add(new Item<>(wall), 150, 150, 150, 150);
-
-        DamageBox damage = new DamageBox(5f, DamageBox.DamageType.DEFAULT);
-        damage.setLayer(1, true);
-
-        world.add(new Item<>(damage), -150, -150, 150, 150);
-
         scene.addEntity(player);
 
         scene.setWorld(world);
@@ -143,7 +133,9 @@ public class GameScreen implements Screen {
             for(int y = 0 ; y<layer.getHeight(); y++) {
 
                 // the x and y of objects within a tile layer or held by a tile are relative to that tile
-                parseTile(layer.getCell(x, y).getTile(), x * width, y * height);
+                // also, if a tile is empty then the cell is null!
+                TiledMapTileLayer.Cell cell = layer.getCell(x, y);
+                if(cell != null) parseTile(cell.getTile(), x * width, y * height);
             }
         }
     }
@@ -203,6 +195,17 @@ public class GameScreen implements Screen {
             setBoxCollisionLayers(collisionLayer, newDamage);
 
             world.add(new Item<>(newDamage), x + offsetX, y + offsetY, width, height);
+        } else if(type.equals("Sign")) {
+            String dialogID = properties.get("DialogID", String.class);
+
+            InteractBox box = new InteractBox() {
+                @Override
+                public void interact() {
+                    GlobalEventBus.getInstance().startDialog(dialogID);
+                }
+            };
+
+            world.add(new Item<>(box), x + offsetX, y + offsetY, width, height);
         } else if(type.equals("PathNode")) {
             pathNodes.put(obj);
         } else if(obj instanceof TiledMapTileMapObject && type.equals("")) {
@@ -265,7 +268,7 @@ public class GameScreen implements Screen {
         for(Item item : world.getItems()) {
             Rect rec = world.getRect(item);
 
-            if(item.userData instanceof Entity) {
+            if(item.userData instanceof InteractBox) {
                 shape.setColor(255/256f, 140/256f, 0, 0.4f);
             } else if(item.userData instanceof HitBox) {
                 shape.setColor(36/256f, 122/256f, 227/256f, 0.4f);

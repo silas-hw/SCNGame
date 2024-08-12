@@ -34,6 +34,20 @@
  <tile id="40" probability="0.1"/>
  <tile id="41" probability="0.1"/>
  <tile id="42" probability="0.1"/>
+ <tile id="60">
+  <objectgroup draworder="index" id="3">
+   <object id="2" type="Wall" x="0" y="0" width="8" height="8">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+       <property name="1" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
+ </tile>
  <wangsets>
   <wangset name="path1" type="corner" tile="-1">
    <wangcolor name="dirt" color="#ff0000" tile="-1" probability="1"/>

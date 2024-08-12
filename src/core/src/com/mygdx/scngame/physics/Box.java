@@ -85,6 +85,9 @@ public class Box {
 
         @Override
         public Response filter(Item item, Item other) {
+            if(item == null) return null;
+            if(other == null) return Response.cross;
+
             // if not a Box, escape
             if(!(item.userData instanceof Box) || !(other.userData instanceof Box)) {
                 return null;
