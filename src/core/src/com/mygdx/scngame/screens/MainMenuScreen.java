@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -17,6 +18,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.scngame.SCNGame;
+import com.mygdx.scngame.settings.PrefSettings;
+import com.mygdx.scngame.settings.Settings;
 
 public class MainMenuScreen implements Screen {
 
@@ -31,8 +35,12 @@ public class MainMenuScreen implements Screen {
     SpriteBatch batch;
     ShapeRenderer shape;
 
+    Music bg;
 
-    public MainMenuScreen(Game game, SpriteBatch batch, ShapeRenderer shape) {
+    Settings settings;
+
+
+    public MainMenuScreen(Game game, SpriteBatch batch, ShapeRenderer shape, Settings settings) {
         this.game = game;
 
         this.batch = batch;
@@ -40,6 +48,10 @@ public class MainMenuScreen implements Screen {
 
         camera = new OrthographicCamera();
         viewport = new ScreenViewport();
+
+        bg = SCNGame.getAssetManager().get("music/bgtest1.mp3", Music.class);
+
+        this.settings = settings;
     }
 
     @Override
@@ -56,6 +68,10 @@ public class MainMenuScreen implements Screen {
         stage.setViewport(viewport);
 
         stage.addActor(container);
+
+        bg.setVolume(settings.getMusicVolume());
+        bg.setLooping(true);
+        bg.play();
     }
 
     @Override
@@ -64,7 +80,7 @@ public class MainMenuScreen implements Screen {
         stage.draw();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            game.setScreen(new GameScreen(game, batch, shape));
+            game.setScreen(new GameScreen(game, batch, shape, settings));
         }
     }
 
@@ -87,6 +103,7 @@ public class MainMenuScreen implements Screen {
     public void hide() {
         skin.dispose();
         stage.dispose();
+        bg.stop();
     }
 
     @Override

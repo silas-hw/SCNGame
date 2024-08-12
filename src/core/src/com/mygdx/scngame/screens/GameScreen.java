@@ -1,6 +1,7 @@
 package com.mygdx.scngame.screens;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -34,6 +35,7 @@ import com.mygdx.scngame.physics.DamageBox;
 import com.mygdx.scngame.physics.HitBox;
 import com.mygdx.scngame.scene.Scene;
 import com.mygdx.scngame.settings.PrefSettings;
+import com.mygdx.scngame.settings.Settings;
 
 public class GameScreen implements Screen {
 
@@ -57,7 +59,9 @@ public class GameScreen implements Screen {
 
     PathNodes pathNodes;
 
-    public GameScreen(Game game, SpriteBatch batch, ShapeRenderer shape, Player player) {
+    Settings settings;
+
+    public GameScreen(Game game, SpriteBatch batch, ShapeRenderer shape, Player player, Settings settings) {
         this.game = game;
         this.batch = batch;
         this.shape = shape;
@@ -72,10 +76,12 @@ public class GameScreen implements Screen {
         world = new World<Box>();
 
         dialog = new Dialog(PrefSettings.getInstance());
+
+        this.settings = settings;
     }
 
-    public GameScreen(Game game, SpriteBatch batch, ShapeRenderer shape) {
-        this(game, batch, shape, new Player());
+    public GameScreen(Game game, SpriteBatch batch, ShapeRenderer shape, Settings settings) {
+        this(game, batch, shape, new Player(), settings);
     }
 
     /*
@@ -86,8 +92,14 @@ public class GameScreen implements Screen {
 
     // TODO: update docs to describe PathNode map object
 
+    Music bg;
+
     @Override
     public void show() {
+        bg = SCNGame.getAssetManager().get("music/bgtest2.mp3", Music.class);
+        bg.setLooping(true);
+        bg.play();
+
         scene = new Scene(gameViewport, batch, shape, world);
 
         tiledMap = SCNGame.getAssetManager().get("tilemaps/testmap1.tmx");
@@ -210,6 +222,8 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         Gdx.graphics.setTitle("" + Gdx.graphics.getFramesPerSecond());
 
+        bg.setVolume(settings.getMusicVolume());
+
 
         ScreenUtils.clear(Color.BLACK);
 
@@ -249,15 +263,15 @@ public class GameScreen implements Screen {
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.F)) {
-            game.setScreen(new MainMenuScreen(game, batch, shape));
+            game.setScreen(new MainMenuScreen(game, batch, shape, settings));
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.I)) {
-            PrefSettings.getInstance().setDialogScale(PrefSettings.getInstance().getDialogScale() + 0.1f);
+            settings.setDialogScale(settings.getDialogScale() + 0.1f);
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.K)) {
-            PrefSettings.getInstance().setDialogScale(PrefSettings.getInstance().getDialogScale() - 0.1f);
+            settings.setDialogScale(settings.getDialogScale() - 0.1f);
         }
     }
 
@@ -287,6 +301,8 @@ public class GameScreen implements Screen {
 
         tiledMap.dispose();
         mapRenderer = null;
+
+        bg.stop();
 
 
 

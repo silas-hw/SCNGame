@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.scngame.screens.AssetLoadingScreen;
 import com.mygdx.scngame.screens.MainMenuScreen;
 import com.mygdx.scngame.settings.Controls;
+import com.mygdx.scngame.settings.PrefSettings;
 
 public class SCNGame extends Game {
 	public SpriteBatch batch;
@@ -27,7 +28,7 @@ public class SCNGame extends Game {
 		batch = new SpriteBatch();
 		shape = new ShapeRenderer();
 
-		this.setScreen(new AssetLoadingScreen(this, batch, shape));
+		this.setScreen(new AssetLoadingScreen(this, batch, shape, PrefSettings.getInstance()));
 	}
 
 	@Override

@@ -42,6 +42,8 @@ public class PrefSettings implements Settings {
     }
 
     public void setSfxVol(float sfxVol) {
+        if(sfxVol < 0f) return;
+
         getPrefs().putFloat(PREF_SFX_VOL, sfxVol);
         getPrefs().flush();
     }
@@ -51,6 +53,8 @@ public class PrefSettings implements Settings {
     }
 
     public void setMusicVolume(float musicVolume) {
+        if(musicVolume < 0f) return;
+
         getPrefs().putFloat(PREF_MUSIC_VOL, musicVolume);
         getPrefs().flush();
     }

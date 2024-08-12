@@ -1,10 +1,12 @@
 package com.mygdx.scngame.screens;
 
+import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -14,6 +16,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.scngame.SCNGame;
+import com.mygdx.scngame.settings.Settings;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -29,10 +32,14 @@ public class AssetLoadingScreen implements Screen {
     SpriteBatch batch;
     ShapeRenderer shapeRenderer;
 
-    public AssetLoadingScreen(Game game, SpriteBatch batch, ShapeRenderer shapeRenderer) {
+    Settings settings;
+
+    public AssetLoadingScreen(Game game, SpriteBatch batch, ShapeRenderer shapeRenderer, Settings settings) {
         this.game = game;
         this.batch = batch;
         this.shapeRenderer = shapeRenderer;
+
+        this.settings = settings;
     }
 
     AssetManager assetManager;
@@ -51,9 +58,14 @@ public class AssetLoadingScreen implements Screen {
             "json"
     };
 
+    final static String[] _audioExtensions = {
+            "mp3", "wav"
+    };
+
     final static Set<String> spriteExtensions = new HashSet<>(Arrays.asList(_spriteExtensions));
     final static Set<String> tilemapExtensions = new HashSet<>(Arrays.asList(_tilemapExtensions));
     final static Set<String> skinExtensions = new HashSet<>(Arrays.asList(_skinExtensions));
+    final static Set<String> audioExtensions = new HashSet<>(Arrays.asList(_audioExtensions));
 
     @Override
     public void show() {
@@ -61,6 +73,7 @@ public class AssetLoadingScreen implements Screen {
 
         loadAssets(assetManager, "sprites/", spriteExtensions, Texture.class);
         loadAssets(assetManager, "skin/", skinExtensions, Skin.class);
+        loadAssets(assetManager, "music/", audioExtensions, Music.class);
 
         assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
         loadAssets(assetManager, "tilemaps/", tilemapExtensions, TiledMap.class);
@@ -105,7 +118,7 @@ public class AssetLoadingScreen implements Screen {
         Gdx.app.log(logTag, "Loading assets... " + assetManager.getProgress()*100 + "%");
 
         if(assetManager.isFinished()) {
-            game.setScreen(new MainMenuScreen(game, batch, shapeRenderer));
+            game.setScreen(new MainMenuScreen(game, batch, shapeRenderer, settings));
             return;
         }
 
