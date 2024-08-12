@@ -32,6 +32,12 @@ public class Box {
         }
     }
 
+    public void setMasks(int[] maskIndices, boolean set) {
+        for(int index : maskIndices) {
+            setMask(index, set);
+        }
+    }
+
     /**
      *
      * @param layerIndex the 0th indexed collision layer to set
@@ -44,6 +50,12 @@ public class Box {
             layer = layer | bitmask;
         } else {
             layer = layer & ~bitmask;
+        }
+    }
+
+    public void setLayers(int[] layerIndices, boolean set) {
+        for(int index : layerIndices) {
+            setLayer(index, set);
         }
     }
 
