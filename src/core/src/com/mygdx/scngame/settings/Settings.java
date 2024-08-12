@@ -1,93 +1,31 @@
 package com.mygdx.scngame.settings;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Preferences;
+/**
+ * Defines an interface for retrieving general configuration settings. Most of the time,
+ * {@link PrefSettings} will be used to retrieve and store settings in a persistent file.
+ *
+ * Using an interface with dependency injection into sub-systems that require access to settings, however.
+ * allows those sub-systems to be tested with mock data.
+ */
+public interface Settings {
+    float getSfxVol();
+    void setSfxVol(float sfxVol);
 
-public class Settings {
+    float getMusicVolume();
+    void setMusicVolume(float musicVolume);
 
-    private final static String PREF_SFX_VOL = "sfxVol";
-    private final static String PREF_MUSIC_VOL = "musicVol";
-    private final static String PREF_SFX_ON = "sfxOn";
-    private final static String PREF_MUSIC_ON = "musicOn";
+    boolean isSfxOn();
+    void setSfxOn(boolean sfxOn);
 
-    private final static String PREF_DIALOG_SCALE = "dialogScale";
-    private final static String PREF_MENU_SCALE = "menuScale";
-    private final static String PREF_HUD_SCALE = "hudScale";
+    boolean isMusicOn();
+    void setMusicOn(boolean musicOn);
 
-    private final static String PREFS_NAME = "scngame/user_settings";
+    float getDialogScale();
+    void setDialogScale(float dialogScale);
 
-    private static Preferences prefs;
+    float getMenuScale();
+    void setMenuScale(float menuScale);
 
-    private static Preferences getPrefs() {
-        if(prefs == null) {
-            prefs = Gdx.app.getPreferences(PREFS_NAME);
-        }
-
-        return prefs;
-    };
-
-    public static float getSfxVol() {
-        return getPrefs().getFloat(PREF_SFX_VOL, 1.0f);
-    }
-
-    public static void setSfxVol(float sfxVol) {
-        getPrefs().putFloat(PREF_SFX_VOL, sfxVol);
-        getPrefs().flush();
-    }
-
-    public static float getMusicVolume() {
-        return getPrefs().getFloat(PREF_MUSIC_VOL, 1.0f);
-    }
-
-    public static void setMusicVolume(float musicVolume) {
-        getPrefs().putFloat(PREF_MUSIC_VOL, musicVolume);
-        getPrefs().flush();
-    }
-
-    public static boolean isSfxOn() {
-        return getPrefs().getBoolean(PREF_SFX_ON, true);
-    }
-
-    public static void setSfxOn(boolean sfxOn) {
-        getPrefs().putBoolean(PREF_SFX_ON, sfxOn);
-        getPrefs().flush();
-    }
-
-    public static boolean isMusicOn() {
-        return getPrefs().getBoolean(PREF_MUSIC_ON, true);
-    }
-
-    public static void setMusicOn(boolean musicOn) {
-        getPrefs().putBoolean(PREF_MUSIC_ON, musicOn);
-        getPrefs().flush();
-    }
-
-    public static float getDialogScale() {
-        return getPrefs().getFloat(PREF_DIALOG_SCALE, 1.0f);
-    }
-
-    public static void setDialogScale(float dialogScale) {
-        dialogScale = Math.max(dialogScale, 0.8f);
-        getPrefs().putFloat(PREF_DIALOG_SCALE, dialogScale);
-        getPrefs().flush();
-    }
-
-    public static float getMenuScale() {
-        return getPrefs().getFloat(PREF_MENU_SCALE, 1.0f);
-    }
-
-    public static void setMenuScale(float menuScale) {
-        getPrefs().putFloat(PREF_MENU_SCALE, menuScale);
-        getPrefs().flush();
-    }
-
-    public static float getHudScale() {
-        return getPrefs().getFloat(PREF_HUD_SCALE, 1.0f);
-    }
-
-    public static void setHudScale(float hudScale) {
-        getPrefs().putFloat(PREF_HUD_SCALE, hudScale);
-        getPrefs().flush();
-    }
+    float getHudScale();
+    void setHudScale(float hudScale);
 }

@@ -14,6 +14,7 @@ import com.mygdx.scngame.SCNGame;
 import com.mygdx.scngame.event.DialogEventListener;
 import com.mygdx.scngame.event.GlobalEventBus;
 import com.mygdx.scngame.settings.Controls;
+import com.mygdx.scngame.settings.PrefSettings;
 import com.mygdx.scngame.settings.Settings;
 import com.mygdx.scngame.ui.TiledNinePatch;
 
@@ -52,8 +53,11 @@ public class Dialog extends InputAdapter implements DialogEventListener {
 
     private float basePatchScale = 3f;
 
+    private Settings settings;
 
-    public Dialog() {
+
+    public Dialog(Settings settings) {
+        this.settings = settings;
         stage = new Stage(new ScreenViewport());
 
         root = new Table();
@@ -76,7 +80,7 @@ public class Dialog extends InputAdapter implements DialogEventListener {
         icon.setAlign(Align.center);
         icon.setScaling(Scaling.fit);
 
-        float scale = Settings.getDialogScale();
+        float scale = settings.getDialogScale();
 
         inside = new Table();
         inside.add(wrapper).grow().colspan(2);
@@ -114,7 +118,7 @@ public class Dialog extends InputAdapter implements DialogEventListener {
             WIDTH += 10;
         }
 
-        float scale = Settings.getDialogScale();
+        float scale = settings.getDialogScale();
 
         /*
          *  Yeah, I know I *should* be doing root.getCell()... but that resizes the container and not the wrapper or

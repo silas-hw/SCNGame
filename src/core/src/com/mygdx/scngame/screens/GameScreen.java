@@ -33,7 +33,7 @@ import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.DamageBox;
 import com.mygdx.scngame.physics.HitBox;
 import com.mygdx.scngame.scene.Scene;
-import com.mygdx.scngame.settings.Settings;
+import com.mygdx.scngame.settings.PrefSettings;
 
 public class GameScreen implements Screen {
 
@@ -71,7 +71,7 @@ public class GameScreen implements Screen {
 
         world = new World<Box>();
 
-        dialog = new Dialog();
+        dialog = new Dialog(PrefSettings.getInstance());
     }
 
     public GameScreen(Game game, SpriteBatch batch, ShapeRenderer shape) {
@@ -253,11 +253,11 @@ public class GameScreen implements Screen {
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.I)) {
-            Settings.setDialogScale(Settings.getDialogScale() + 0.1f);
+            PrefSettings.getInstance().setDialogScale(PrefSettings.getInstance().getDialogScale() + 0.1f);
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.K)) {
-            Settings.setDialogScale(Settings.getDialogScale() - 0.1f);
+            PrefSettings.getInstance().setDialogScale(PrefSettings.getInstance().getDialogScale() - 0.1f);
         }
     }
 
