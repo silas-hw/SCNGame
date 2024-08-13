@@ -17,19 +17,30 @@
             "scale": 3,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 110.83333333333331,
-                "y": 80.99999999999999
+                "x": 119.83333333333331,
+                "y": 79.83333333333331
             }
         },
         "tilemaps/untitled.tmx": {
             "expandedObjectLayers": [
                 2
             ],
-            "scale": 5.5,
+            "scale": 2,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 125.72727272727272,
-                "y": 140.36363636363637
+                "x": 215.25,
+                "y": 265
+            }
+        },
+        "tilemaps/untitled2.tmx": {
+            "expandedObjectLayers": [
+                2
+            ],
+            "scale": 1,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 375.5,
+                "y": 363
             }
         },
         "tilesets/testset1.tsx": {
@@ -45,11 +56,11 @@
     },
     "frame.defaultDuration": 400,
     "last.imagePath": "D:/silas/Summer Projects 2024/SCNGame/src/assets/sprites",
-    "map.height": 50,
+    "map.height": 70,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 8,
     "map.tileWidth": 8,
-    "map.width": 50,
+    "map.width": 70,
     "openFiles": [
         "tilemaps/testmap1.tmx",
         "tilesets/testset1.tsx",

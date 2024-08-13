@@ -164,6 +164,11 @@ public class MapObjectLoader {
             world.add(new Item<>(box), x + offsetX, y + offsetY, width, height);
         } else if(type.equals("PathNode")) {
             pathNodes.put(obj);
+        } else if(type.equals("SpawnLocation")) {
+            String spawnID = properties.get("SpawnID", String.class);
+            Vector2 spawnLocation = new Vector2(x, y);
+
+            spawnLocations.put(spawnID, spawnLocation);
         } else if(obj instanceof TiledMapTileMapObject && type.equals("")) {
             TiledMapTile tile = ((TiledMapTileMapObject) obj).getTile();
 

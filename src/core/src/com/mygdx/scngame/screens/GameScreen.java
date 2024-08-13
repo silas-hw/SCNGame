@@ -16,6 +16,7 @@ import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -28,6 +29,7 @@ import com.mygdx.scngame.entity.player.Player;
 import com.mygdx.scngame.entity.sprite.AnimatedSpriteEntity;
 import com.mygdx.scngame.entity.sprite.SpriteEntity;
 import com.mygdx.scngame.event.GlobalEventBus;
+import com.mygdx.scngame.event.MapChangeEventListener;
 import com.mygdx.scngame.map.MapObjectLoader;
 import com.mygdx.scngame.path.PathNodes;
 import com.mygdx.scngame.physics.Box;
@@ -38,8 +40,9 @@ import com.mygdx.scngame.scene.Scene;
 import com.mygdx.scngame.screens.data.ScreenData;
 
 import java.util.Iterator;
+import java.util.Map;
 
-public class GameScreen implements Screen {
+public class GameScreen implements Screen, MapChangeEventListener {
 
     Game game;
     Scene scene;
@@ -63,12 +66,15 @@ public class GameScreen implements Screen {
     private int MAP_WIDTH;
     private int MAP_HEIGHT;
 
+    final String mapPath;
+    final String spawnID;
+
     // want to avoid large constructors
     // maybe wrap arguments into a datastructure?
 
     // ScreenData: game, batch, shape, settings
     // GameScreenData: player, map id, spawn id
-    public GameScreen(ScreenData screenData, Player player) {
+    public GameScreen(ScreenData screenData, Player player, String mapPath, String spawnID) {
         this.game = screenData.game();
 
         this.screenData = screenData;
@@ -84,10 +90,13 @@ public class GameScreen implements Screen {
 
         dialog = new Dialog(screenData);
 
+        this.mapPath = mapPath;
+        this.spawnID = spawnID;
+
     }
 
     public GameScreen(ScreenData screenData) {
-        this(screenData, new Player(screenData.assets()));
+        this(screenData, new Player(screenData.assets()),  "tilemaps/untitled.tmx", "test_spawn");
     }
 
     /*
@@ -108,13 +117,26 @@ public class GameScreen implements Screen {
 
         scene = new Scene(gameViewport, screenData.batch(), screenData.shapeRenderer(), world);
 
-        tiledMap = screenData.assets().get("tilemaps/untitled.tmx");
+        tiledMap = screenData.assets().get(mapPath);
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1f, screenData.batch());
 
         MAP_HEIGHT = tiledMap.getProperties().get("height", Integer.class) * tiledMap.getProperties().get("tileheight", Integer.class);
         MAP_WIDTH = tiledMap.getProperties().get("width", Integer.class) * tiledMap.getProperties().get("tilewidth", Integer.class);
 
-        new MapObjectLoader(tiledMap, this.world, this.scene, this.pathNodes);
+        MapObjectLoader mapObjects = new MapObjectLoader(tiledMap, this.world, this.scene, this.pathNodes);
+
+        Map<String, Vector2> spawnLocations = mapObjects.getSpawnLocations();
+
+        Vector2 spawnLocation = spawnLocations.get(spawnID);
+
+        if(spawnLocation != null) {
+            player.position.x = spawnLocation.x;
+            player.position.y = spawnLocation.y;
+        } else {
+            player.position.x = 0;
+            player.position.y = 0;
+        }
+
 
         scene.addEntity(player);
 
@@ -127,6 +149,7 @@ public class GameScreen implements Screen {
         Gdx.input.setInputProcessor(multiplexer);
 
         GlobalEventBus.getInstance().addDialogListener(dialog);
+        GlobalEventBus.getInstance().addMapChangeListener(this);
     }
 
     @Override
@@ -186,7 +209,7 @@ public class GameScreen implements Screen {
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.F)) {
-            game.setScreen(new MainMenuScreen(screenData));
+            GlobalEventBus.getInstance().changeMap("tilemaps/untitled2.tmx", "test_spawn");
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.I)) {
@@ -231,6 +254,8 @@ public class GameScreen implements Screen {
 
         bg.stop();
 
+        GlobalEventBus.getInstance().removeDialogListener(dialog);
+        GlobalEventBus.getInstance().removeMapChangeListener(this);
 
 
         Gdx.input.setInputProcessor(null);
@@ -239,5 +264,12 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
 
+    }
+
+    @Override
+    public void onMapChange(String mapPath, String spawnID) {
+        if(mapPath == this.mapPath) return;
+
+        game.setScreen(new GameScreen(this.screenData, this.player, mapPath, spawnID));
     }
 }

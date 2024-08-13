@@ -139,6 +139,43 @@
         {
             "color": "#ffa0a0a4",
             "drawFill": true,
+            "id": 10,
+            "members": [
+                {
+                    "name": "DialogID",
+                    "type": "string",
+                    "value": "unset"
+                }
+            ],
+            "name": "Sign",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 11,
+            "members": [
+                {
+                    "name": "SpawnID",
+                    "type": "string",
+                    "value": "unset"
+                }
+            ],
+            "name": "SpawnLocation",
+            "type": "class",
+            "useAs": [
+                "object",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
             "id": 7,
             "members": [
                 {
@@ -160,25 +197,6 @@
                 "tileset",
                 "wangcolor",
                 "wangset",
-                "project"
-            ]
-        },
-        {
-            "color": "#ffa0a0a4",
-            "drawFill": true,
-            "id": 10,
-            "members": [
-                {
-                    "name": "DialogID",
-                    "type": "string",
-                    "value": "unset"
-                }
-            ],
-            "name": "Sign",
-            "type": "class",
-            "useAs": [
-                "object",
-                "tile",
                 "project"
             ]
         }

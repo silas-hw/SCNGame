@@ -42,4 +42,22 @@ public class GlobalEventBus {
             listener.onDialogEnd();
         }
     }
+
+    private final Array<MapChangeEventListener> mapChangeListeners = new Array<>();
+
+    public void addMapChangeListener(MapChangeEventListener listener) {
+        Gdx.app.log(tag, "Adding map listener: " + listener);
+        mapChangeListeners.add(listener);
+    }
+
+    public void removeMapChangeListener(MapChangeEventListener listener) {
+        Gdx.app.log(tag, "Removing map listener: " + listener);
+        mapChangeListeners.removeValue(listener, true);
+    }
+
+    public void changeMap(String mapPath, String spawnID) {
+        for(MapChangeEventListener listener : mapChangeListeners) {
+            listener.onMapChange(mapPath, spawnID);
+        }
+    }
 }
