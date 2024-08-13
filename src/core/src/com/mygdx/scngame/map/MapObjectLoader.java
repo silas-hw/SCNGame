@@ -169,6 +169,20 @@ public class MapObjectLoader {
             Vector2 spawnLocation = new Vector2(x, y);
 
             spawnLocations.put(spawnID, spawnLocation);
+        } else if(type.equals("Door")) {
+            String mapPath = properties.get("Map", String.class);
+            String spawnID = properties.get("SpawnID", String.class);
+
+            InteractBox box = new InteractBox() {
+
+                @Override
+                public void interact() {
+                    GlobalEventBus.getInstance().changeMap(mapPath, spawnID);
+                }
+            };
+
+            world.add(new Item<>(box), x + offsetX, y + offsetY, width, height);
+
         } else if(obj instanceof TiledMapTileMapObject && type.equals("")) {
             TiledMapTile tile = ((TiledMapTileMapObject) obj).getTile();
 

@@ -96,7 +96,7 @@ public class GameScreen implements Screen, MapChangeEventListener {
     }
 
     public GameScreen(ScreenData screenData) {
-        this(screenData, new Player(screenData.assets()),  "tilemaps/untitled.tmx", "test_spawn");
+        this(screenData, new Player(screenData.assets()),  "untitled.tmx", "test_spawn");
     }
 
     /*
@@ -117,8 +117,9 @@ public class GameScreen implements Screen, MapChangeEventListener {
 
         scene = new Scene(gameViewport, screenData.batch(), screenData.shapeRenderer(), world);
 
-        tiledMap = screenData.assets().get(mapPath);
-        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1f, screenData.batch());
+        Gdx.app.log("GameScreen", "setting map to tilemaps/" + mapPath);
+        tiledMap = screenData.assets().get("tilemaps/" + mapPath);
+        this.mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1f, screenData.batch());
 
         MAP_HEIGHT = tiledMap.getProperties().get("height", Integer.class) * tiledMap.getProperties().get("tileheight", Integer.class);
         MAP_WIDTH = tiledMap.getProperties().get("width", Integer.class) * tiledMap.getProperties().get("tilewidth", Integer.class);
@@ -247,16 +248,17 @@ public class GameScreen implements Screen, MapChangeEventListener {
         // when disposing of the scene
 
         scene.removeEntity(player);
-        scene.dispose();
 
-        tiledMap.dispose();
-        mapRenderer = null;
+        // note to self: hide can be called in the middle of a render call (in fact, it almost always will)
+        // so disposing of things being currently rendered is a *bad* idea
+
+        // with everything using an asset manager now, it shouldn't be that bad however
+        scene.dispose();
 
         bg.stop();
 
         GlobalEventBus.getInstance().removeDialogListener(dialog);
         GlobalEventBus.getInstance().removeMapChangeListener(this);
-
 
         Gdx.input.setInputProcessor(null);
     }
@@ -269,6 +271,8 @@ public class GameScreen implements Screen, MapChangeEventListener {
     @Override
     public void onMapChange(String mapPath, String spawnID) {
         if(mapPath == this.mapPath) return;
+
+        Gdx.app.log("GameScreen", "Changing map to: " + mapPath + " with spawnID: " + spawnID);
 
         game.setScreen(new GameScreen(this.screenData, this.player, mapPath, spawnID));
     }
