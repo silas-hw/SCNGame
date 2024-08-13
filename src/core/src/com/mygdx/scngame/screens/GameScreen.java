@@ -28,6 +28,7 @@ import com.mygdx.scngame.entity.player.Player;
 import com.mygdx.scngame.entity.sprite.AnimatedSpriteEntity;
 import com.mygdx.scngame.entity.sprite.SpriteEntity;
 import com.mygdx.scngame.event.GlobalEventBus;
+import com.mygdx.scngame.map.MapObjectLoader;
 import com.mygdx.scngame.path.PathNodes;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.DamageBox;
@@ -113,11 +114,7 @@ public class GameScreen implements Screen {
         MAP_HEIGHT = tiledMap.getProperties().get("height", Integer.class) * tiledMap.getProperties().get("tileheight", Integer.class);
         MAP_WIDTH = tiledMap.getProperties().get("width", Integer.class) * tiledMap.getProperties().get("tilewidth", Integer.class);
 
-        // extract objects and parse them
-        for(MapLayer layer : tiledMap.getLayers()) {
-            if(layer instanceof TiledMapTileLayer) parseTileLayer((TiledMapTileLayer) layer);
-            else parseObjectLayer(layer);
-        }
+        new MapObjectLoader(tiledMap, this.world, this.scene, this.pathNodes);
 
         scene.addEntity(player);
 
@@ -130,121 +127,6 @@ public class GameScreen implements Screen {
         Gdx.input.setInputProcessor(multiplexer);
 
         GlobalEventBus.getInstance().addDialogListener(dialog);
-    }
-
-    private void parseTileLayer(TiledMapTileLayer layer) {
-        int width = layer.getTileWidth();
-        int height = layer.getTileHeight();
-
-        for(int x = 0; x<layer.getWidth(); x++) {
-            for(int y = 0 ; y<layer.getHeight(); y++) {
-
-                // the x and y of objects within a tile layer or held by a tile are relative to that tile
-                // also, if a tile is empty then the cell is null!
-                TiledMapTileLayer.Cell cell = layer.getCell(x, y);
-                if(cell != null) parseTile(cell.getTile(), x * width, y * height);
-            }
-        }
-    }
-
-    /**
-     *
-     * @param tile
-     * @param x the x position of the tile in pixels
-     * @param y the y position of the tile in pixels
-     */
-    public void parseTile(TiledMapTile tile, float x, float y) {
-        for(MapObject obj : tile.getObjects()) {
-            // offset the object by the tiles position
-            // this is done because the objects x and y position are stored relative to the tile
-            // but we want to add it to the world at its absolute position
-
-            parseMapObject(obj, x, y);
-        }
-    }
-
-    private void parseObjectLayer(MapLayer layer) {
-        for(MapObject obj : layer.getObjects()){
-
-            // x and y properties in object layers are absolute
-            parseMapObject(obj, 0, 0);
-        }
-    }
-
-    private void parseMapObject(MapObject obj, float offsetX, float offsetY) {
-        MapProperties properties = obj.getProperties();
-
-        float x = properties.get("x", float.class);
-        float y = properties.get("y", float.class);
-        float width = properties.get("width", float.class);
-        float height = properties.get("height", float.class);
-
-        String type = obj.getProperties().get("type", String.class);
-        if(type == null) type = "";
-
-        if(type.equals("Wall")) {
-            Box newWall = new Box();
-            newWall.solid = true;
-
-            MapProperties collisionLayer = obj.getProperties().get("CollisionLayer", MapProperties.class);
-            setBoxCollisionLayers(collisionLayer, newWall);
-
-
-            world.add(new Item<>(newWall), x + offsetX, y + offsetY, width, height);
-        } else if(type.equals("DamageWall")) {
-            String dtype = properties.get("DamageType", String.class);
-            float damage = properties.get("damage", float.class);
-            DamageBox newDamage = new DamageBox(damage, DamageBox.DamageType.valueOf(dtype));
-
-            newDamage.solid = false;
-
-            MapProperties collisionLayer = obj.getProperties().get("CollisionLayer", MapProperties.class);
-            setBoxCollisionLayers(collisionLayer, newDamage);
-
-            world.add(new Item<>(newDamage), x + offsetX, y + offsetY, width, height);
-        } else if(type.equals("Sign")) {
-            String dialogID = properties.get("DialogID", String.class);
-
-            InteractBox box = new InteractBox() {
-                @Override
-                public void interact() {
-                    GlobalEventBus.getInstance().startDialog(dialogID);
-                }
-            };
-
-            world.add(new Item<>(box), x + offsetX, y + offsetY, width, height);
-        } else if(type.equals("PathNode")) {
-            pathNodes.put(obj);
-        } else if(obj instanceof TiledMapTileMapObject && type.equals("")) {
-            TiledMapTile tile = ((TiledMapTileMapObject) obj).getTile();
-
-            if(tile instanceof AnimatedTiledMapTile) {
-                float interval = (float) ((AnimatedTiledMapTile) tile).getAnimationIntervals()[0]/1000f;
-                scene.addEntity(new AnimatedSpriteEntity(((AnimatedTiledMapTile) tile).getFrameTiles(), interval, x, y));
-
-            } else {
-                TextureRegion texture = ((TextureMapObject) obj).getTextureRegion();
-                scene.addEntity(new SpriteEntity(texture, x, y));
-            }
-
-
-            // parse the tile held by the tiled map tile object - getting any child objects of that tile
-            parseTile(tile, x,  y);
-        }
-    }
-
-    /**
-     * Sets the collision layer of a box based on a CollisionLayer map property
-     */
-    private void setBoxCollisionLayers(MapProperties collisionLayer, Box box) {
-        for (Iterator<String> it = collisionLayer.getKeys(); it.hasNext(); ) {
-            String key = it.next();
-
-            if("type".equals(key)) continue;
-
-            boolean set = collisionLayer.get(key, Boolean.class);
-            box.setLayer(Integer.parseInt(key, 10), set);
-        }
     }
 
     @Override
