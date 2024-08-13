@@ -37,11 +37,13 @@ public class Player extends Entity {
     public final float interactDistance = 14f;
 
     public Player(AssetManager assets) {
-        texture = assets.get("sprites/test.png", Texture.class);
+        texture = assets.get("sprites/wizardguy.png", Texture.class);
 
         Box foot;
         foot = new Box();
         foot.solid = true;
+
+        // players collision mask is set to true for layer 0!!!
         foot.setMask(0, true);
         foot.setLayer(0, true);
         foot.response = Response.slide;

@@ -15,6 +15,7 @@ import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -58,6 +59,9 @@ public class GameScreen implements Screen {
 
     ScreenData screenData;
 
+    private int MAP_WIDTH;
+    private int MAP_HEIGHT;
+
     // want to avoid large constructors
     // maybe wrap arguments into a datastructure?
 
@@ -73,7 +77,7 @@ public class GameScreen implements Screen {
         this.player = player;
 
         camera = new OrthographicCamera();
-        gameViewport = new ExtendViewport(400, 400, camera);
+        gameViewport = new ExtendViewport(200, 200, camera);
 
         world = new World<Box>();
 
@@ -103,8 +107,11 @@ public class GameScreen implements Screen {
 
         scene = new Scene(gameViewport, screenData.batch(), screenData.shapeRenderer(), world);
 
-        tiledMap = screenData.assets().get("tilemaps/testmap1.tmx");
+        tiledMap = screenData.assets().get("tilemaps/untitled.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1f, screenData.batch());
+
+        MAP_HEIGHT = tiledMap.getProperties().get("height", Integer.class) * tiledMap.getProperties().get("tileheight", Integer.class);
+        MAP_WIDTH = tiledMap.getProperties().get("width", Integer.class) * tiledMap.getProperties().get("tilewidth", Integer.class);
 
         // extract objects and parse them
         for(MapLayer layer : tiledMap.getLayers()) {
@@ -250,6 +257,17 @@ public class GameScreen implements Screen {
         ScreenUtils.clear(Color.BLACK);
 
         scene.update(Math.min(Gdx.graphics.getDeltaTime(), 1/30f));
+
+        float worldWidth = gameViewport.getWorldWidth();
+        float worldHeight = gameViewport.getWorldHeight();
+
+        float widthLimit = Math.max(MAP_WIDTH - worldWidth/2, worldWidth/2);
+        float heightLimit = Math.max(MAP_HEIGHT - worldHeight/2, worldHeight/2);
+
+        camera.position.x = MathUtils.clamp(player.position.x + player.WIDTH/2,
+                worldWidth/2, widthLimit);
+        camera.position.y = MathUtils.clamp(player.position.y + player.HEIGHT/2,
+                worldHeight/2, heightLimit);
 
         camera.update();
         mapRenderer.setView(camera);

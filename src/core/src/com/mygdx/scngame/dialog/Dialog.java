@@ -168,7 +168,7 @@ public class Dialog extends InputAdapter implements DialogEventListener {
                 break;
 
             case "test_dialog_2":
-                message = "Test Dialog 2";
+                message = "casper is stinkyyyyyy";
                 break;
 
             default:

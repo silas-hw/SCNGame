@@ -13,7 +13,7 @@ public class PlayerDashState implements EntityState<Player> {
 
     private float dashTimer = 0f;
     private final float dashTime = 0.2f;
-    private final float dashDist = 400f;
+    private final float dashDist = 50f;
 
     protected Player container;
     protected World<Box> world;
