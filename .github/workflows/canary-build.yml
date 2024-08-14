@@ -37,5 +37,5 @@ jobs:
       with:
         name: CanaryBuild-${{github.run_number}}
         path: |
-          src/desktop/build/libs/desktop-${{github.run_number}}.jar |
-          src/assets
+          src/desktop/build/libs/desktop-${{github.run_number}}.jar
+          src/assets/*
