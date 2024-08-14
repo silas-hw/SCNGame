@@ -50,7 +50,8 @@ jobs:
       with:
         name: Desktop JAR
         path: |
-          src/desktop/build/libs/desktop-${{ github.ref_name }}.jar
+          src/desktop/build/libs/desktop-${{ github.ref_name }}.jar |
+          src/assets
 
     - name: Release
       uses: softprops/action-gh-release@v2
