@@ -48,7 +48,7 @@ jobs:
       continue-on-error: true
       uses: actions/upload-artifact@v3
       with:
-        name: SCNGame Artifact Test
+        name: Desktop JAR
         path: |
           src/desktop/build/libs/desktop-${{ github.ref_name }}.jar
 
