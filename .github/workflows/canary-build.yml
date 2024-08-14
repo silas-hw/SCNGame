@@ -40,3 +40,12 @@ jobs:
           src/desktop/build/libs/desktop-${{github.run_number}}.jar
           src/assets/*
           docs/SCNGame/temp.txt
+
+    - name: Upload assets
+      continue-on-error: true
+      uses: actions/upload-artifact@v3
+      with:
+        name: CanaryBuild-${{github.run_number}}
+        path: |
+          src/assets/*
+
