@@ -39,4 +39,4 @@ jobs:
         path: |
           src/desktop/build/libs/desktop-${{github.run_number}}.jar
           src/assets/*
-          docs/temp.txt
+          docs/SCNGame/temp.txt
