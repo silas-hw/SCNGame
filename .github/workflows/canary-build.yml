@@ -5,7 +5,7 @@ on:
     
 # set version string for build.gradle to use
 env:
-  VERSION: ${{github.run_number}}
+  VERSION: canary-${{github.run_number}}
   
 jobs:
   build:
@@ -38,14 +38,3 @@ jobs:
         name: CanaryBuild-${{github.run_number}}
         path: |
           src/desktop/build/libs/desktop-${{github.run_number}}.jar
-          src/assets/*
-          docs/SCNGame/temp.txt
-
-    - name: Upload assets
-      continue-on-error: true
-      uses: actions/upload-artifact@v3
-      with:
-        name: CanaryBuild-${{github.run_number}}
-        path: |
-          src/assets/*
-
