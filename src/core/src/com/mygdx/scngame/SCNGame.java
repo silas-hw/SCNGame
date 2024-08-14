@@ -11,6 +11,8 @@ import com.mygdx.scngame.settings.Controls;
 import com.mygdx.scngame.settings.PrefSettings;
 
 public class SCNGame extends Game {
+	String logTag = "MAIN GAME CLASS";
+
 	public SpriteBatch batch;
 	public ShapeRenderer shape;
 
@@ -18,6 +20,11 @@ public class SCNGame extends Game {
 	
 	@Override
 	public void create () {
+		String version = getClass().getPackage().getImplementationVersion();
+		if(version == null || version.isEmpty()) version = "DEVELOPMENT";
+
+		Gdx.app.log(logTag, "Version num: " + version);
+
 		batch = new SpriteBatch();
 		shape = new ShapeRenderer();
 
