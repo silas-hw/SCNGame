@@ -37,14 +37,18 @@ tasks.register('debug', JavaExec) {
 
 tasks.register('dist', Jar) {
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+
     manifest {
         attributes 'Main-Class': project.mainClassName
+        attributes 'Implementation-Version': 'desktop-' + version
     }
     dependsOn configurations.runtimeClasspath
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
     with jar
+
+
 }
 
 

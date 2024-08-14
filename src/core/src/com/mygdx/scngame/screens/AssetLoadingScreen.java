@@ -20,9 +20,13 @@ import com.mygdx.scngame.map.MyTmxMapLoader;
 import com.mygdx.scngame.screens.data.ScreenData;
 import com.mygdx.scngame.settings.Settings;
 
+import java.net.URL;
+import java.security.CodeSource;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 // TODO: load animations and sound files
 
@@ -96,7 +100,49 @@ public class AssetLoadingScreen implements Screen {
 
         Gdx.app.log(logTag, "Loading " + clazz.getSimpleName() + "s in directory <" + directory + ">");
 
+        /*
+        This is really not fucking ideal. So classpath directories simply cannot be listed by libgdx. And
+        internal files when packed to a JAR (such as when you build with desktop:dist) end up being classpath files!
+        So instead we have to do some butt fuckery to dynamically find out what assets are available to load
+        by getting the source jar and unzipping it. Good job this is only done once! I would seriously
+        consider some other approach in some more demanding game for which assets need to be hotswapped between
+        screens
+         */
+
+        // TODO: clean this mess up
+        boolean classpathFile = false;
+        try {
+            CodeSource src = SCNGame.class.getProtectionDomain().getCodeSource();
+            if(src != null) {
+                URL jar = src.getLocation();
+                ZipInputStream zip = new ZipInputStream(jar.openStream());
+                for(ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip.getNextEntry()) {
+                    String name = entry.getName();
+                    if(name.startsWith(directory)) {
+                        FileHandle file = Gdx.files.internal(name);
+
+                        if(file.extension() == "") continue;
+
+                        if(extensions != null && !extensions.contains(file.extension())) continue;
+
+                        Gdx.app.log(logTag, "Loading asset: " + file.path() + ", " + file.extension());
+
+                        assetManager.load(file.path(), clazz);
+
+                        classpathFile = true;
+                    }
+                }
+            }
+        } catch(Exception e) {
+
+        }
+
+        if(classpathFile) {
+            return;
+        }
+
         Array<FileHandle> files = new Array<>(Gdx.files.internal(directory).list());
+        Gdx.app.log(logTag, "" + files.size + " files to load");
         while(files.notEmpty()) {
             FileHandle file = files.pop();
             if(file.isDirectory()) {
