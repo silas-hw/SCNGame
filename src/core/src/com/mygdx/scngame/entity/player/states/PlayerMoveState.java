@@ -33,6 +33,8 @@ public class PlayerMoveState implements EntityState<Player> {
 
     private Direction facing = Direction.LEFT;
 
+    Vector2 rayStart = new Vector2();
+    Vector2 rayEnd = new Vector2();
 
     @Override
     public EntityState<? super Player> update(float delta) {
@@ -66,35 +68,37 @@ public class PlayerMoveState implements EntityState<Player> {
             return new PlayerDashState();
         }
 
+        rayStart.y = container.position.y + container.HEIGHT/2;
+        rayStart.x = container.position.x + container.WIDTH/2;
+        rayEnd.x = rayStart.x;
+        rayEnd.y = rayStart.y;
+
+        switch(facing) {
+            case UP:
+                rayEnd.y += container.interactDistance;
+                break;
+
+            case DOWN:
+                rayEnd.y += -container.interactDistance;
+                break;
+
+            case LEFT:
+                rayEnd.x += -container.interactDistance;
+                break;
+
+            case RIGHT:
+                rayEnd.x += container.interactDistance;
+                break;
+
+        }
+
         if(container.context.isKeyJustPressed(Controls.INTERACT.getKeycode())) {
             // query world for interact boxes
-            float y = container.position.y + container.HEIGHT/2;
-            float x = container.position.x + container.WIDTH/2;
-            float dirX = x;
-            float dirY = y;
 
-            switch(facing) {
-                case UP:
-                    dirY += container.interactDistance;
-                    break;
-
-                case DOWN:
-                    dirY += -container.interactDistance;
-                    break;
-
-                case LEFT:
-                    dirX += -container.interactDistance;
-                    break;
-
-                    case RIGHT:
-                        dirX += container.interactDistance;
-                        break;
-
-            }
             ArrayList<Item> arr = new ArrayList<>();
 
             // ray cast from center of body
-            world.querySegment(x, y, dirX, dirY, InteractBox.INTERACT_FILTER, arr);
+            world.querySegment(rayStart.x, rayStart.y, rayEnd.x, rayEnd.y, InteractBox.INTERACT_FILTER, arr);
 
             if(arr.size() > 0) {
                 InteractBox interactBox = (InteractBox) arr.get(0).userData;
@@ -117,6 +121,16 @@ public class PlayerMoveState implements EntityState<Player> {
 
         // draw debug ray cast line
 
+        batch.end();
+
+        shape.begin(ShapeRenderer.ShapeType.Filled);
+        shape.setColor(Color.WHITE);
+
+        shape.rectLine(rayStart, rayEnd, 1);
+
+        shape.end();
+
+        batch.begin();
 
         return null;
     }
