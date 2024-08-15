@@ -17,8 +17,10 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Rect;
@@ -38,6 +40,7 @@ import com.mygdx.scngame.physics.HitBox;
 import com.mygdx.scngame.physics.InteractBox;
 import com.mygdx.scngame.scene.Scene;
 import com.mygdx.scngame.screens.data.ScreenData;
+import com.mygdx.scngame.viewport.PixelPerfectExtendViewport;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -69,6 +72,8 @@ public class GameScreen implements Screen, MapChangeEventListener {
     final String mapPath;
     final String spawnID;
 
+    ScreenViewport screenViewport;
+
     // want to avoid large constructors
     // maybe wrap arguments into a datastructure?
 
@@ -84,7 +89,7 @@ public class GameScreen implements Screen, MapChangeEventListener {
         this.player = player;
 
         camera = new OrthographicCamera();
-        gameViewport = new ExtendViewport(200, 200, camera);
+        gameViewport = new PixelPerfectExtendViewport(200, 200, camera);
 
         world = new World<Box>();
 
@@ -92,6 +97,8 @@ public class GameScreen implements Screen, MapChangeEventListener {
 
         this.mapPath = mapPath;
         this.spawnID = spawnID;
+
+        screenViewport = new ScreenViewport();
 
     }
 
@@ -153,16 +160,31 @@ public class GameScreen implements Screen, MapChangeEventListener {
         GlobalEventBus.getInstance().addMapChangeListener(this);
     }
 
+    float transitionAlpha = 1f;
+    boolean fadeIn = true;
+
+    float waitTime = 0.3f;
+
+    String nextMap = "";
+    String nextSpawn = "";
+
+
     @Override
     public void render(float delta) {
-        Gdx.graphics.setTitle("" + Gdx.graphics.getFramesPerSecond());
-
-        bg.setVolume(screenData.settings().getMusicVolume());
-
 
         ScreenUtils.clear(Color.BLACK);
+        bg.setVolume(screenData.settings().getMusicVolume());
 
-        scene.update(Math.min(Gdx.graphics.getDeltaTime(), 1/30f));
+        // give some waiting time before doing anything.
+        if(waitTime > 0f) {
+            waitTime -= delta;
+            return;
+        }
+
+        Gdx.graphics.setTitle("" + Gdx.graphics.getFramesPerSecond());
+
+        if(fadeIn) scene.update(Math.min(Gdx.graphics.getDeltaTime(), 1/30f));
+
 
         float worldWidth = gameViewport.getWorldWidth();
         float worldHeight = gameViewport.getWorldHeight();
@@ -176,16 +198,50 @@ public class GameScreen implements Screen, MapChangeEventListener {
                 worldHeight/2, heightLimit);
 
         camera.update();
+
+        gameViewport.apply();
+
         mapRenderer.setView(camera);
 
         mapRenderer.render();
         scene.draw();
         dialog.draw();
 
+        ShapeRenderer shape = screenData.shapeRenderer();
+
+        if(transitionAlpha > 0f && fadeIn) {
+            transitionAlpha -= delta * 2;
+        } else if(transitionAlpha < 1f && !fadeIn) {
+            transitionAlpha += delta * 2;
+        }
+
+        // if a next map has been set and we've finished fading out, switch screen
+        if(!nextMap.isEmpty() && transitionAlpha >=  1f && !fadeIn) {
+            game.setScreen(new GameScreen(screenData, player, nextMap, nextSpawn));
+        }
+
+        screenViewport.apply();
+        shape.setProjectionMatrix(screenViewport.getCamera().combined);
+
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_BLEND);
 
-        ShapeRenderer shape = screenData.shapeRenderer();
+        shape.begin(ShapeRenderer.ShapeType.Filled);
+        shape.setColor(0, 0, 0, transitionAlpha);
+        shape.rect(0, 0, screenViewport.getScreenWidth(), screenViewport.getScreenHeight());
+
+        shape.end();
+
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+
+
+        if(!Boolean.getBoolean("debugRender")) return;
+
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_BLEND);
+
+        gameViewport.apply();
+
         shape.setProjectionMatrix(camera.combined);
         shape.begin(ShapeRenderer.ShapeType.Filled);
 
@@ -229,6 +285,7 @@ public class GameScreen implements Screen, MapChangeEventListener {
     @Override
     public void resize(int width, int height) {
         gameViewport.update(width, height);
+        screenViewport.update(width, height, true);
         dialog.resize(width, height);
     }
 
@@ -274,6 +331,8 @@ public class GameScreen implements Screen, MapChangeEventListener {
 
         Gdx.app.log("GameScreen", "Changing map to: " + mapPath + " with spawnID: " + spawnID);
 
-        game.setScreen(new GameScreen(this.screenData, this.player, mapPath, spawnID));
+        nextMap = mapPath;
+        nextSpawn = spawnID;
+        fadeIn = false;
     }
 }

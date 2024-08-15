@@ -33,6 +33,22 @@ tasks.register('debug', JavaExec) {
     debug = true
 
     enableAssertions = true;
+
+    // set debug flag
+    jvmArgs += "-DdebugRender=true"
+}
+
+tasks.register('debugRender', JavaExec) {
+    dependsOn classes
+    mainClass = project.mainClassName
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    workingDir = project.assetsDir
+
+    enableAssertions = true;
+
+    // set debug flag
+    jvmArgs += "-DdebugRender=true"
 }
 
 tasks.register('dist', Jar) {

@@ -139,6 +139,7 @@ public class Dialog extends InputAdapter implements DialogEventListener {
         inside.getCell(icon).pad(5 * scale);
         wrapper.pad(5 * scale);
 
+        stage.getViewport().apply();
         stage.draw();
     }
 

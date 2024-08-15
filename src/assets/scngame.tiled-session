@@ -51,10 +51,10 @@
         "tilesets/trees.tsx": {
             "dynamicWrapping": true,
             "scaleInDock": 1,
-            "scaleInEditor": 5.5
+            "scaleInEditor": 11
         }
     },
-    "frame.defaultDuration": 400,
+    "frame.defaultDuration": 270,
     "last.imagePath": "D:/silas/Summer Projects 2024/SCNGame/src/assets/sprites",
     "map.height": 70,
     "map.lastUsedFormat": "tmx",
@@ -70,9 +70,9 @@
     "project": "scngame.tiled-project",
     "property.type": "string",
     "recentFiles": [
+        "tilesets/trees.tsx",
         "tilemaps/testmap1.tmx",
         "tilesets/testset1.tsx",
-        "tilesets/trees.tsx",
         "tilemaps/untitled.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",

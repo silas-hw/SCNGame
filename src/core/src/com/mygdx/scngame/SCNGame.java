@@ -2,8 +2,12 @@ package com.mygdx.scngame;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.scngame.screens.AssetLoadingScreen;
 import com.mygdx.scngame.screens.MainMenuScreen;
 import com.mygdx.scngame.screens.data.ScreenData;

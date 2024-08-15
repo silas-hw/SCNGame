@@ -65,6 +65,8 @@ public class MainMenuScreen implements Screen {
 
         stage.addActor(container);
 
+        Gdx.app.log("MainMenu", "Music volume currently set to: " + screenData.settings().getMusicVolume());
+
         bg.setVolume(screenData.settings().getMusicVolume());
         bg.setLooping(true);
         bg.play();

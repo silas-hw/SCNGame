@@ -107,9 +107,16 @@ public class PlayerMoveState implements EntityState<Player> {
         return null;
     }
 
+
+
     @Override
     public EntityState<? super Player> draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
         batch.draw(container.texture, container.position.x, container.position.y);
+
+        if(!Boolean.getBoolean("debugRender")) return null;
+
+        // draw debug ray cast line
+
 
         return null;
     }
