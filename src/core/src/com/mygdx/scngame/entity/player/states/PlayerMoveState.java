@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.dongbat.jbump.*;
 import com.mygdx.scngame.SCNGame;
@@ -115,6 +116,7 @@ public class PlayerMoveState implements EntityState<Player> {
 
     @Override
     public EntityState<? super Player> draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
+
         batch.draw(container.texture, container.position.x, container.position.y);
 
         if(!Boolean.getBoolean("debugRender")) return null;

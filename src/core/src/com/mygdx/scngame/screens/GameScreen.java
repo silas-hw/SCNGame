@@ -89,7 +89,7 @@ public class GameScreen implements Screen, MapChangeEventListener {
         this.player = player;
 
         camera = new OrthographicCamera();
-        gameViewport = new PixelPerfectExtendViewport(200, 200, camera);
+        gameViewport = new PixelPerfectExtendViewport(150, 150, camera);
 
         world = new World<Box>();
 
