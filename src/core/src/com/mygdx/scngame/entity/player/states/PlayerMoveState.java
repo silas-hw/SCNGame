@@ -109,6 +109,11 @@ public class PlayerMoveState implements EntityState<Player> {
 
         container.position.mulAdd(container.direction, container.speed*delta);
 
+        if(container.direction.isZero()) {
+            container.position.x = MathUtils.round(container.position.x);
+            container.position.y = MathUtils.round(container.position.y);
+        }
+
         return null;
     }
 
@@ -116,6 +121,7 @@ public class PlayerMoveState implements EntityState<Player> {
 
     @Override
     public EntityState<? super Player> draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
+
 
         batch.draw(container.texture, container.position.x, container.position.y);
 

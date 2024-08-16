@@ -5,31 +5,20 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.MapProperties;
-import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.maps.tiled.*;
-import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Rect;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.dialog.Dialog;
-import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.player.Player;
-import com.mygdx.scngame.entity.sprite.AnimatedSpriteEntity;
-import com.mygdx.scngame.entity.sprite.SpriteEntity;
 import com.mygdx.scngame.event.GlobalEventBus;
 import com.mygdx.scngame.event.MapChangeEventListener;
 import com.mygdx.scngame.map.MapObjectLoader;
@@ -40,9 +29,8 @@ import com.mygdx.scngame.physics.HitBox;
 import com.mygdx.scngame.physics.InteractBox;
 import com.mygdx.scngame.scene.Scene;
 import com.mygdx.scngame.screens.data.ScreenData;
-import com.mygdx.scngame.viewport.PixelPerfectExtendViewport;
+import com.mygdx.scngame.viewport.PixelFitScaling;
 
-import java.util.Iterator;
 import java.util.Map;
 
 public class GameScreen implements Screen, MapChangeEventListener {
@@ -89,7 +77,7 @@ public class GameScreen implements Screen, MapChangeEventListener {
         this.player = player;
 
         camera = new OrthographicCamera();
-        gameViewport = new PixelPerfectExtendViewport(150, 150, camera);
+        gameViewport = new ScalingViewport(new PixelFitScaling(), 300, 300, camera);
 
         world = new World<Box>();
 
