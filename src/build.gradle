@@ -27,7 +27,13 @@ task writeAllAssetsToFile {
 }
 
 def versionFromEnv = System.getenv("VERSION")
-def versionStr = versionFromEnv ?: ""
+def versionStr = versionFromEnv ?: "DEVELOPMENT"
+
+def assetsFolder = new File("${project.rootDir}/assets/")
+def versionFile = new File(assetsFolder, "version.info")
+
+versionFile.delete();
+versionFile.append(versionStr);
 
 allprojects {
     apply plugin: "eclipse"
@@ -76,4 +82,5 @@ project(":core") {
     }
 
     compileJava.dependsOn writeAllAssetsToFile
+
 }

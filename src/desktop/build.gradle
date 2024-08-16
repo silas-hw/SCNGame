@@ -51,6 +51,8 @@ tasks.register('debugRender', JavaExec) {
     jvmArgs += "-DdebugRender=true"
 }
 
+
+
 tasks.register('dist', Jar) {
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 
@@ -63,8 +65,6 @@ tasks.register('dist', Jar) {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
     with jar
-
-
 }
 
 

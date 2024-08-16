@@ -25,9 +25,7 @@ public class SCNGame extends Game {
 	
 	@Override
 	public void create () {
-		String version = getClass().getPackage().getImplementationVersion();
-		if(version == null || version.isEmpty()) version = "DEVELOPMENT";
-
+		String version = Gdx.files.internal("version.info").readString();
 		Gdx.app.log(logTag, "Version num: " + version);
 
 		batch = new SpriteBatch();
