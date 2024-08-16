@@ -11,9 +11,8 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ScalingViewport;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Rect;
 import com.dongbat.jbump.World;
@@ -39,7 +38,7 @@ public class GameScreen implements Screen, MapChangeEventListener {
     Scene scene;
 
     OrthographicCamera camera;
-    Viewport gameViewport;
+    ExtendViewport gameViewport;
 
     World<Box> world;
 
@@ -77,7 +76,8 @@ public class GameScreen implements Screen, MapChangeEventListener {
         this.player = player;
 
         camera = new OrthographicCamera();
-        gameViewport = new ScalingViewport(new PixelFitScaling(), 300, 300, camera);
+        gameViewport = new ExtendViewport(200, 200, camera);
+        gameViewport.setScaling(new PixelFitScaling());
 
         world = new World<Box>();
 

@@ -13,7 +13,7 @@ public class PixelFitScaling extends Scaling {
 
         // make the source width slighty bigger so it has integer dimensions
         // ensuring there is an exact mapping for pixels
-        int scale = (int) Math.ceil(targetRatio < sourceRatio ? targetWidth / sourceWidth : targetHeight / sourceHeight);
+        int scale = (int) Math.ceil(targetRatio > sourceRatio ? targetWidth / sourceWidth : targetHeight / sourceHeight);
         temp.x = sourceWidth * scale;
         temp.y = sourceHeight * scale;
         return temp;
