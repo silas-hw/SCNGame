@@ -160,7 +160,7 @@ public class GameScreen implements Screen, MapChangeEventListener {
     @Override
     public void render(float delta) {
 
-        ScreenUtils.clear(Color.BLACK);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         bg.setVolume(screenData.settings().getMusicVolume());
 
         // give some waiting time before doing anything.
@@ -180,9 +180,9 @@ public class GameScreen implements Screen, MapChangeEventListener {
         float widthLimit = Math.max(MAP_WIDTH - worldWidth/2, worldWidth/2);
         float heightLimit = Math.max(MAP_HEIGHT - worldHeight/2, worldHeight/2);
 
-        camera.position.x = MathUtils.clamp(player.position.x + player.WIDTH/2,
+        camera.position.x = MathUtils.clamp(player.position.x + player.WIDTH/2f,
                 worldWidth/2, widthLimit);
-        camera.position.y = MathUtils.clamp(player.position.y + player.HEIGHT/2,
+        camera.position.y = MathUtils.clamp(player.position.y + player.HEIGHT/2f,
                 worldHeight/2, heightLimit);
 
         camera.update();

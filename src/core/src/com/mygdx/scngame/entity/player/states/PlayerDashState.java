@@ -33,6 +33,12 @@ public class PlayerDashState implements EntityState<Player> {
 
     @Override
     public EntityState<? super Player> draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
+        batch.setColor(0.9f, 0.4f, 0.4f, 0.8f);
+
+        batch.draw(container.texture, container.position.x, container.position.y);
+
+        batch.setColor(1.0f, 1.0f, 1.0f, 1f);
+
         return null;
     }
 
