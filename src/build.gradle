@@ -14,6 +14,18 @@ buildscript {
     }
 }
 
+task writeAllAssetsToFile {
+    doLast {
+        def assetsFolder = new File("${project.rootDir}/assets/")
+        def assetsFile = new File(assetsFolder, "assets.txt")
+        assetsFile.delete()
+
+        fileTree(assetsFolder).collect {assetsFolder.relativePath(it) }.each {
+            assetsFile.append(it + "\0")
+        }
+    }
+}
+
 def versionFromEnv = System.getenv("VERSION")
 def versionStr = versionFromEnv ?: ""
 
@@ -62,4 +74,6 @@ project(":core") {
         api "com.github.tommyettinger:jbump:1.0.1"
         
     }
+
+    compileJava.dependsOn writeAllAssetsToFile
 }
