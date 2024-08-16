@@ -1,5 +1,9 @@
 package com.mygdx.scngame.physics;
 
+import com.badlogic.gdx.graphics.Color;
+
+import java.awt.*;
+
 /**
  * Used by the physics engine to apply damage to an entity. An entity can detect its own
  * collision with a DamageBox and determine how to apply the damage to itself.
@@ -17,5 +21,7 @@ public class DamageBox extends Box {
     public DamageBox(float damage, DamageType type) {
         this.damage = damage;
         this.type = type;
+
+        super.setDebugColor(Color.RED);
     }
 }

@@ -1,5 +1,6 @@
 package com.mygdx.scngame.physics;
 
+import com.badlogic.gdx.graphics.Color;
 import com.dongbat.jbump.CollisionFilter;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Response;
@@ -10,6 +11,16 @@ import com.dongbat.jbump.Response;
  * This class makes uses of masks and layers to allow for more efficient collision filtering.
  */
 public class Box {
+    private Color DEBUG_COLOR = Color.WHITE;
+
+    public Color getDebugColor() {
+        return this.DEBUG_COLOR;
+    }
+
+    // package private so other boxes can set their debug color
+    void setDebugColor(Color debugColor) {
+        this.DEBUG_COLOR = debugColor;
+    }
 
     /** A binary value representing what layers of other boxes that this box will collide with */
     private int mask = 0b00000000;

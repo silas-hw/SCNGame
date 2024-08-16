@@ -10,7 +10,6 @@ import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dongbat.jbump.Item;
@@ -23,9 +22,6 @@ import com.mygdx.scngame.event.MapChangeEventListener;
 import com.mygdx.scngame.map.MapObjectLoader;
 import com.mygdx.scngame.path.PathNodes;
 import com.mygdx.scngame.physics.Box;
-import com.mygdx.scngame.physics.DamageBox;
-import com.mygdx.scngame.physics.HitBox;
-import com.mygdx.scngame.physics.InteractBox;
 import com.mygdx.scngame.scene.Scene;
 import com.mygdx.scngame.screens.data.ScreenData;
 import com.mygdx.scngame.viewport.PixelFitScaling;
@@ -33,7 +29,6 @@ import com.mygdx.scngame.viewport.PixelFitScaling;
 import java.util.Map;
 
 public class GameScreen implements Screen, MapChangeEventListener {
-
     Game game;
     Scene scene;
 
@@ -61,11 +56,6 @@ public class GameScreen implements Screen, MapChangeEventListener {
 
     ScreenViewport screenViewport;
 
-    // want to avoid large constructors
-    // maybe wrap arguments into a datastructure?
-
-    // ScreenData: game, batch, shape, settings
-    // GameScreenData: player, map id, spawn id
     public GameScreen(ScreenData screenData, Player player, String mapPath, String spawnID) {
         this.game = screenData.game();
 
@@ -87,18 +77,11 @@ public class GameScreen implements Screen, MapChangeEventListener {
         this.spawnID = spawnID;
 
         screenViewport = new ScreenViewport();
-
     }
 
     public GameScreen(ScreenData screenData) {
         this(screenData, new Player(screenData.assets()),  "untitled.tmx", "test_spawn");
     }
-
-    /*
-    Load in any heavy resources here so they can be disposed of when hide is called.
-
-    Also parse the world and add entities to the scene and physics objects to the world
-     */
 
     // TODO: update docs to describe PathNode map object
 
@@ -133,7 +116,6 @@ public class GameScreen implements Screen, MapChangeEventListener {
             player.position.y = 0;
         }
 
-
         scene.addEntity(player);
 
         scene.setWorld(world);
@@ -159,7 +141,6 @@ public class GameScreen implements Screen, MapChangeEventListener {
 
     @Override
     public void render(float delta) {
-
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         bg.setVolume(screenData.settings().getMusicVolume());
 
@@ -172,7 +153,6 @@ public class GameScreen implements Screen, MapChangeEventListener {
         Gdx.graphics.setTitle("" + Gdx.graphics.getFramesPerSecond());
 
         if(fadeIn) scene.update(Math.min(Gdx.graphics.getDeltaTime(), 1/30f));
-
 
         float worldWidth = gameViewport.getWorldWidth();
         float worldHeight = gameViewport.getWorldHeight();
@@ -233,41 +213,20 @@ public class GameScreen implements Screen, MapChangeEventListener {
         shape.setProjectionMatrix(camera.combined);
         shape.begin(ShapeRenderer.ShapeType.Filled);
 
+        // for some godforsaken reason you can't get boxed Items from the world so i have
+        // to instanceof check them myself
         for(Item item : world.getItems()) {
             Rect rec = world.getRect(item);
+            Color col = Color.WHITE;
 
-            if(item.userData instanceof InteractBox) {
-                shape.setColor(255/256f, 140/256f, 0, 0.4f);
-            } else if(item.userData instanceof HitBox) {
-                shape.setColor(36/256f, 122/256f, 227/256f, 0.4f);
-            } else if(item.userData instanceof DamageBox) {
-                shape.setColor(227/256f, 36/256f, 36/256f, 0.4f);
-            } else {
-                shape.setColor(1, 1, 1, 0.4f);
-            }
-
+            if(item.userData instanceof Box) col = ((Box) item.userData).getDebugColor();
+            shape.setColor(col.r, col.g, col.b, 0.4f);
             shape.rect(rec.x, rec.y, rec.w, rec.h);
         }
 
         shape.end();
 
         Gdx.gl.glDisable(GL20.GL_BLEND);
-
-        if(Gdx.input.isKeyJustPressed(Input.Keys.F)) {
-            GlobalEventBus.getInstance().changeMap("tilemaps/untitled2.tmx", "test_spawn");
-        }
-
-        if(Gdx.input.isKeyJustPressed(Input.Keys.I)) {
-            screenData.settings().setDialogScale(screenData.settings().getDialogScale() + 0.1f);
-        }
-
-        if(Gdx.input.isKeyJustPressed(Input.Keys.K)) {
-            screenData.settings().setDialogScale(screenData.settings().getDialogScale() - 0.1f);
-        }
-
-        if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            screenData.settings().setMusicVolume(0f);
-        }
     }
 
     @Override
@@ -278,14 +237,10 @@ public class GameScreen implements Screen, MapChangeEventListener {
     }
 
     @Override
-    public void pause() {
-
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-
-    }
+    public void resume() {}
 
     @Override
     public void hide() {
@@ -309,9 +264,7 @@ public class GameScreen implements Screen, MapChangeEventListener {
     }
 
     @Override
-    public void dispose() {
-
-    }
+    public void dispose() {}
 
     @Override
     public void onMapChange(String mapPath, String spawnID) {
