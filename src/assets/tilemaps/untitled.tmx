@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="8" tileheight="8" infinite="0" nextlayerid="3" nextobjectid="40">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="8" tileheight="8" infinite="0" nextlayerid="3" nextobjectid="42">
  <tileset firstgid="1" source="../tilesets/testset2.tsx"/>
  <tileset firstgid="101" source="../tilesets/testset1.tsx"/>
  <tileset firstgid="201" source="../tilesets/trees.tsx"/>
@@ -113,5 +113,11 @@
   <object id="28" gid="201" x="40" y="504" width="16" height="32"/>
   <object id="29" gid="201" x="80" y="528" width="16" height="32"/>
   <object id="30" gid="201" x="40" y="552" width="16" height="32"/>
+  <object id="40" gid="202" x="240" y="384" width="16" height="16"/>
+  <object id="41" type="Sign" x="240" y="376" width="16" height="8">
+   <properties>
+    <property name="DialogID" value="test_dialog_1"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>
