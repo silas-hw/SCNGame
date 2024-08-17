@@ -4,20 +4,21 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
-import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.World;
+import com.mygdx.scngame.controls.ActionListener;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.context.EntityContext;
 import com.mygdx.scngame.event.DialogEventListener;
 import com.mygdx.scngame.event.GlobalEventBus;
 import com.mygdx.scngame.physics.Box;
-import com.mygdx.scngame.settings.Controls;
+import com.mygdx.scngame.controls.Controls;
 
+import java.util.Arrays;
 import java.util.Comparator;
 
 /**
@@ -37,7 +38,7 @@ import java.util.Comparator;
  *
  * @author Silas Hayes-Williams
  */
-public class Scene extends InputAdapter implements Disposable, EntityContext, DialogEventListener, ControllerListener {
+public class Scene extends InputAdapter implements Disposable, EntityContext, DialogEventListener, ActionListener {
     protected SnapshotArray<Entity> entities;
     protected Comparator<Entity> renderComparator;
 
@@ -47,15 +48,11 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
 
     public float alpha = 1.0f;
 
-    private boolean keyJustPressed;
-    private final boolean[] keyPressed = new boolean[Input.Keys.MAX_KEYCODE + 1];
-    private final boolean[] keysJustPressed = new boolean[Input.Keys.MAX_KEYCODE + 1];
-
-    private boolean controllerJustPressed;
-    private final boolean[] controllerPressed = new boolean[Controls.ControllerButtons.values().length];
-    private final boolean[] controllersJustPressed = new boolean[Controls.ControllerButtons.values().length];
-
     private World<Box> world;
+
+    private boolean actionJustPressed = false;
+    private final boolean[] actionsPressed = new boolean[Controls.Actions.values().length];
+    private final boolean[] actionsJustPressed = new boolean[Controls.Actions.values().length];
 
     // if the scene created its own batch. Used to determine whether to dispose of the batch and shape renderer
     private boolean ownsBatch = false;
@@ -87,17 +84,10 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
 
         entities.end();
 
-        if(keyJustPressed) {
-            keyJustPressed = false;
-            for(int i = 0; i<keysJustPressed.length; i++) {
-                keysJustPressed[i] = false;
-            }
-        }
-
-        if(controllerJustPressed) {
-            controllerJustPressed = false;
-            for(int i = 0; i<controllersJustPressed.length; i++) {
-                controllersJustPressed[i] = false;
+        if(actionJustPressed) {
+            actionJustPressed = false;
+            for(int i = 0; i<actionsJustPressed.length; i++) {
+                actionsJustPressed[i] = false;
             }
         }
     }
@@ -164,25 +154,13 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
     }
 
     @Override
-    public boolean isKeyPressed(int keycode) {
-        return keyPressed[keycode];
+    public boolean isActionPressed(Controls.Actions action) {
+        return actionsPressed[action.ordinal()];
     }
 
     @Override
-    public boolean isKeyJustPressed(int keycode) {
-        return keysJustPressed[keycode];
-    }
-
-    @Override
-    public boolean isActionPressed(Controls control) {
-        int controlIndex = control.getControllerButton().ordinal();
-        return keyPressed[control.getKeycode()] || controllerPressed[controlIndex];
-    }
-
-    @Override
-    public boolean isActionJustPressed(Controls control) {
-        int controlIndex = control.getControllerButton().ordinal();
-        return keysJustPressed[control.getKeycode()] || controllersJustPressed[controlIndex];
+    public boolean isActionJustPressed(Controls.Actions action) {
+        return actionsJustPressed[action.ordinal()];
     }
 
     /**
@@ -206,39 +184,9 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
     }
 
     @Override
-    public boolean keyDown(int i) {
-        keyJustPressed = true;
-        keysJustPressed[i] = true;
-        keyPressed[i] = true;
-
-        return true;
-    }
-
-    @Override
-    public boolean keyUp(int i) {
-        keyPressed[i] = false;
-        return true;
-    }
-
-    @Override
     public void onDialogStart(String id) {
-        keyJustPressed = false;
-        int i;
-        for(i = 0; i<keysJustPressed.length; i++) {
-            keysJustPressed[i] = false;
-        }
-
-        for(i = 0; i<keyPressed.length; i++) {
-            keyPressed[i] = false;
-        }
-
-        for(i = 0; i<controllersJustPressed.length; i++) {
-            controllersJustPressed[i] = false;
-        }
-
-        for(i = 0; i< controllerPressed.length; i++) {
-            controllerPressed[i] = false;
-        }
+        Arrays.fill(actionsJustPressed, false);
+        Arrays.fill(actionsPressed, false);
     }
 
     @Override
@@ -246,67 +194,17 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
     }
 
     @Override
-    public void connected(Controller controller) {
-
-    }
-
-    @Override
-    public void disconnected(Controller controller) {
-
-    }
-
-    @Override
-    public boolean buttonDown(Controller controller, int i) {
-        if(i < 0) return false;
-
-        Controls.ControllerButtons button = Controls.getControllerButton(controller, i);
-
-        controllersJustPressed[button.ordinal()] = true;
-        controllerJustPressed = true;
-
-        controllerPressed[button.ordinal()] = true;
-
+    public boolean actionDown(Controls.Actions action) {
+        actionJustPressed = true;
+        actionsJustPressed[action.ordinal()] = true;
+        actionsPressed[action.ordinal()] = true;
         return true;
     }
 
     @Override
-    public boolean buttonUp(Controller controller, int i) {
-        if(i < 0) return false;
-
-        Controls.ControllerButtons button = Controls.getControllerButton(controller, i);
-        controllerPressed[button.ordinal()] = false;
-
+    public boolean actionUp(Controls.Actions action) {
+        actionsPressed[action.ordinal()] = false;
         return true;
-    }
-
-    private static final float axisThreshold = 0.6f;
-    @Override
-    public boolean axisMoved(Controller controller, int i, float v) {
-        int leftIndex = Controls.LEFT.getControllerButton().ordinal();
-        int rightIndex = Controls.RIGHT.getControllerButton().ordinal();
-        int upIndex = Controls.UP.getControllerButton().ordinal();
-        int downIndex = Controls.DOWN.getControllerButton().ordinal();
-
-        if(i == controller.getMapping().axisLeftX) {
-            if(v < axisThreshold && v > -axisThreshold) {
-                controllerPressed[leftIndex] = false;
-                controllerPressed[rightIndex] = false;
-            } else if(v > axisThreshold) {
-                controllerPressed[rightIndex] = true;
-            } else {
-                controllerPressed[leftIndex] = true;
-            }
-        } else if(i == controller.getMapping().axisLeftY) {
-            if(v < axisThreshold && v > -axisThreshold) {
-                controllerPressed[upIndex] = false;
-                controllerPressed[downIndex] = false;
-            } else if(v > axisThreshold) {
-                controllerPressed[downIndex] = true;
-            } else {
-                controllerPressed[upIndex] = true;
-            }
-        }
-        return false;
     }
 
     public static class YComparator implements Comparator<Entity> {

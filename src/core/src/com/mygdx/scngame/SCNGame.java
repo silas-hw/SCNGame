@@ -2,20 +2,12 @@ package com.mygdx.scngame;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.controllers.Controller;
-import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.mygdx.scngame.controls.Controls;
 import com.mygdx.scngame.screens.AssetLoadingScreen;
-import com.mygdx.scngame.screens.MainMenuScreen;
 import com.mygdx.scngame.screens.data.ScreenData;
-import com.mygdx.scngame.settings.Controls;
 import com.mygdx.scngame.settings.PrefSettings;
 
 public class SCNGame extends Game {
@@ -30,6 +22,9 @@ public class SCNGame extends Game {
 	public void create () {
 		String version = Gdx.files.internal("version.info").readString();
 		Gdx.app.log(logTag, "Version num: " + version);
+
+		Gdx.input.setInputProcessor(Controls.getInstance());
+		Controllers.addListener(Controls.getInstance());
 
 		batch = new SpriteBatch();
 		shape = new ShapeRenderer();

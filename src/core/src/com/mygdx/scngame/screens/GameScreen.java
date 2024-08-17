@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Rect;
 import com.dongbat.jbump.World;
+import com.mygdx.scngame.controls.Controls;
 import com.mygdx.scngame.dialog.Dialog;
 import com.mygdx.scngame.entity.player.Player;
 import com.mygdx.scngame.event.GlobalEventBus;
@@ -97,10 +98,6 @@ public class GameScreen implements Screen, MapChangeEventListener {
 
         scene = new Scene(gameViewport, screenData.batch(), screenData.shapeRenderer(), world);
 
-        Controllers.addListener(dialog);
-        Controllers.addListener(scene);
-
-
         Gdx.app.log("GameScreen", "setting map to tilemaps/" + mapPath);
         tiledMap = screenData.assets().get("tilemaps/" + mapPath);
         this.mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1f, screenData.batch());
@@ -126,11 +123,8 @@ public class GameScreen implements Screen, MapChangeEventListener {
 
         scene.setWorld(world);
 
-        InputMultiplexer multiplexer = new InputMultiplexer();
-        multiplexer.addProcessor(dialog);
-        multiplexer.addProcessor(scene);
-
-        Gdx.input.setInputProcessor(multiplexer);
+        Controls.getInstance().addActionListener(dialog);
+        Controls.getInstance().addActionListener(scene);
 
         GlobalEventBus.getInstance().addDialogListener(dialog);
         GlobalEventBus.getInstance().addMapChangeListener(this);
@@ -269,10 +263,8 @@ public class GameScreen implements Screen, MapChangeEventListener {
         GlobalEventBus.getInstance().removeDialogListener(dialog);
         GlobalEventBus.getInstance().removeMapChangeListener(this);
 
-        Gdx.input.setInputProcessor(null);
-
-        Controllers.removeListener(scene);
-        Controllers.removeListener(dialog);
+        Controls.getInstance().removeActionListener(dialog);
+        Controls.getInstance().removeActionListener(scene);
     }
 
     @Override

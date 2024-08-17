@@ -59,8 +59,6 @@ public class PlayerDashState implements EntityState<Player> {
         dashTimer = 0f;
 
         container.hurtbox.setTakesDamage(false);
-
-        Controllers.getCurrent().startVibration(100, 0.9f);
     }
 
     @Override

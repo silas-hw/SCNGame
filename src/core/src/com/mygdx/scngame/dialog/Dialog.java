@@ -12,12 +12,11 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mygdx.scngame.SCNGame;
+import com.mygdx.scngame.controls.ActionListener;
 import com.mygdx.scngame.event.DialogEventListener;
 import com.mygdx.scngame.event.GlobalEventBus;
 import com.mygdx.scngame.screens.data.ScreenData;
-import com.mygdx.scngame.settings.Controls;
-import com.mygdx.scngame.settings.PrefSettings;
+import com.mygdx.scngame.controls.Controls;
 import com.mygdx.scngame.settings.Settings;
 import com.mygdx.scngame.ui.TiledNinePatch;
 
@@ -27,7 +26,7 @@ import com.mygdx.scngame.ui.TiledNinePatch;
  * Encapsulates the handling of dialog events, including capturing events, drawing dialog boxes, and
  * firing dialog end events.
  */
-public class Dialog extends InputAdapter implements DialogEventListener, ControllerListener {
+public class Dialog implements DialogEventListener, ActionListener {
 
     private boolean inFocus = false;
 
@@ -164,7 +163,7 @@ public class Dialog extends InputAdapter implements DialogEventListener, Control
                 message = "";
 
                 message += "Well, the controls should be: ";
-                for(Controls c : Controls.values()) {
+                for(Controls.Actions c : Controls.Actions.values()) {
                     message += c.toString() + ": ";
                     message += Input.Keys.toString(c.getKeycode()) + " OR " + c.getControllerButton().name() + ", ";
                 }
@@ -187,54 +186,24 @@ public class Dialog extends InputAdapter implements DialogEventListener, Control
         inFocus = false;
     }
 
-    @Override
-    public boolean keyDown(int keycode) {
-        if(!inFocus) {
-            return false;
-        }
-
-        if(keycode == Controls.INTERACT.getKeycode()) {
-            inFocus = false;
-            GlobalEventBus.getInstance().endDialog();
-        };
-
-
-        return true;
-    }
 
     @Override
-    public boolean keyUp(int keycode) {
-        return inFocus;
-    }
-
-    @Override
-    public void connected(Controller controller) {
-
-    }
-
-    @Override
-    public void disconnected(Controller controller) {
-
-    }
-
-    @Override
-    public boolean buttonDown(Controller controller, int buttonCode) {
+    public boolean actionDown(Controls.Actions action) {
         if(!inFocus) return false;
 
-        if(Controls.INTERACT.getControllerButton() == Controls.getControllerButton(controller, buttonCode)) {
-            inFocus = false;
-            GlobalEventBus.getInstance().endDialog();
+        switch(action) {
+            case INTERACT:
+                inFocus = false;
+                GlobalEventBus.getInstance().endDialog();
         }
+
         return true;
     }
 
     @Override
-    public boolean buttonUp(Controller controller, int buttonCode) {
-        return inFocus;
-    }
+    public boolean actionUp(Controls.Actions action) {
+        if(!inFocus) return false;
 
-    @Override
-    public boolean axisMoved(Controller controller, int axisCode, float value) {
-        return inFocus;
+        return true;
     }
 }
