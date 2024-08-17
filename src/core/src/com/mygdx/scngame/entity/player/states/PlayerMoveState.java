@@ -1,15 +1,11 @@
 package com.mygdx.scngame.entity.player.states;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.dongbat.jbump.*;
-import com.mygdx.scngame.SCNGame;
 import com.mygdx.scngame.entity.EntityState;
 import com.mygdx.scngame.entity.player.Player;
 import com.mygdx.scngame.event.GlobalEventBus;
@@ -42,22 +38,22 @@ public class PlayerMoveState implements EntityState<Player> {
         int dx = 0;
         int dy = 0;
 
-        if(container.context.isKeyPressed(Controls.UP.getKeycode())) {
+        if(container.context.isActionPressed(Controls.UP)) {
             dy++;
             facing = Direction.UP;
         }
 
-        if(container.context.isKeyPressed(Controls.DOWN.getKeycode())) {
+        if(container.context.isActionPressed(Controls.DOWN)) {
             dy--;
             facing = Direction.DOWN;
         }
 
-        if(container.context.isKeyPressed(Controls.LEFT.getKeycode())) {
+        if(container.context.isActionPressed(Controls.LEFT)) {
             dx--;
             facing = Direction.LEFT;
         }
 
-        if(container.context.isKeyPressed(Controls.RIGHT.getKeycode())) {
+        if(container.context.isActionPressed(Controls.RIGHT)) {
             dx++;
             facing = Direction.RIGHT;
         }
@@ -65,7 +61,7 @@ public class PlayerMoveState implements EntityState<Player> {
         container.direction.set(dx, dy);
         container.direction.nor();
 
-        if(container.context.isKeyJustPressed(Controls.DASH.getKeycode())) {
+        if(container.context.isActionJustPressed(Controls.DASH)) {
             return new PlayerDashState();
         }
 
@@ -93,7 +89,7 @@ public class PlayerMoveState implements EntityState<Player> {
 
         }
 
-        if(container.context.isKeyJustPressed(Controls.INTERACT.getKeycode())) {
+        if(container.context.isActionJustPressed(Controls.INTERACT)) {
             // query world for interact boxes
 
             ArrayList<Item> arr = new ArrayList<>();

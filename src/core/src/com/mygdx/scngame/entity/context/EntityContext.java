@@ -3,6 +3,7 @@ package com.mygdx.scngame.entity.context;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.physics.Box;
+import com.mygdx.scngame.settings.Controls;
 
 /**
  * The context for which a {@link Entity entity} may reside within. The context also captures input events
@@ -26,4 +27,6 @@ public interface EntityContext {
 
     boolean isKeyPressed(int keycode);
     boolean isKeyJustPressed(int keycode);
+    boolean isActionPressed(Controls control);
+    boolean isActionJustPressed(Controls control);
 }

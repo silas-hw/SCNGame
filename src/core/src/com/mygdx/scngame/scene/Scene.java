@@ -2,6 +2,9 @@ package com.mygdx.scngame.scene;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.ControllerListener;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Disposable;
@@ -13,6 +16,7 @@ import com.mygdx.scngame.entity.context.EntityContext;
 import com.mygdx.scngame.event.DialogEventListener;
 import com.mygdx.scngame.event.GlobalEventBus;
 import com.mygdx.scngame.physics.Box;
+import com.mygdx.scngame.settings.Controls;
 
 import java.util.Comparator;
 
@@ -33,7 +37,7 @@ import java.util.Comparator;
  *
  * @author Silas Hayes-Williams
  */
-public class Scene extends InputAdapter implements Disposable, EntityContext, DialogEventListener {
+public class Scene extends InputAdapter implements Disposable, EntityContext, DialogEventListener, ControllerListener {
     protected SnapshotArray<Entity> entities;
     protected Comparator<Entity> renderComparator;
 
@@ -44,8 +48,12 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
     public float alpha = 1.0f;
 
     private boolean keyJustPressed;
-    public boolean[] keyPressed = new boolean[Input.Keys.MAX_KEYCODE + 1];
-    public boolean[] keysJustPressed = new boolean[Input.Keys.MAX_KEYCODE + 1];
+    private final boolean[] keyPressed = new boolean[Input.Keys.MAX_KEYCODE + 1];
+    private final boolean[] keysJustPressed = new boolean[Input.Keys.MAX_KEYCODE + 1];
+
+    private boolean controllerJustPressed;
+    private final boolean[] controllerPressed = new boolean[Controls.ControllerButtons.values().length];
+    private final boolean[] controllersJustPressed = new boolean[Controls.ControllerButtons.values().length];
 
     private World<Box> world;
 
@@ -83,6 +91,13 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
             keyJustPressed = false;
             for(int i = 0; i<keysJustPressed.length; i++) {
                 keysJustPressed[i] = false;
+            }
+        }
+
+        if(controllerJustPressed) {
+            controllerJustPressed = false;
+            for(int i = 0; i<controllersJustPressed.length; i++) {
+                controllersJustPressed[i] = false;
             }
         }
     }
@@ -158,6 +173,18 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
         return keysJustPressed[keycode];
     }
 
+    @Override
+    public boolean isActionPressed(Controls control) {
+        int controlIndex = control.getControllerButton().ordinal();
+        return keyPressed[control.getKeycode()] || controllerPressed[controlIndex];
+    }
+
+    @Override
+    public boolean isActionJustPressed(Controls control) {
+        int controlIndex = control.getControllerButton().ordinal();
+        return keysJustPressed[control.getKeycode()] || controllersJustPressed[controlIndex];
+    }
+
     /**
      * Disposes all held entities as well as the batch and shape renderer if one was not provided.
      * <p>
@@ -196,18 +223,90 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
     @Override
     public void onDialogStart(String id) {
         keyJustPressed = false;
-        for(int i = 0; i<keysJustPressed.length; i++) {
+        int i;
+        for(i = 0; i<keysJustPressed.length; i++) {
             keysJustPressed[i] = false;
         }
 
-        for(int i = 0; i<keyPressed.length; i++) {
+        for(i = 0; i<keyPressed.length; i++) {
             keyPressed[i] = false;
+        }
+
+        for(i = 0; i<controllersJustPressed.length; i++) {
+            controllersJustPressed[i] = false;
+        }
+
+        for(i = 0; i< controllerPressed.length; i++) {
+            controllerPressed[i] = false;
         }
     }
 
     @Override
     public void onDialogEnd() {
+    }
 
+    @Override
+    public void connected(Controller controller) {
+
+    }
+
+    @Override
+    public void disconnected(Controller controller) {
+
+    }
+
+    @Override
+    public boolean buttonDown(Controller controller, int i) {
+        if(i < 0) return false;
+
+        Controls.ControllerButtons button = Controls.getControllerButton(controller, i);
+
+        controllersJustPressed[button.ordinal()] = true;
+        controllerJustPressed = true;
+
+        controllerPressed[button.ordinal()] = true;
+
+        return true;
+    }
+
+    @Override
+    public boolean buttonUp(Controller controller, int i) {
+        if(i < 0) return false;
+
+        Controls.ControllerButtons button = Controls.getControllerButton(controller, i);
+        controllerPressed[button.ordinal()] = false;
+
+        return true;
+    }
+
+    private static final float axisThreshold = 0.6f;
+    @Override
+    public boolean axisMoved(Controller controller, int i, float v) {
+        int leftIndex = Controls.LEFT.getControllerButton().ordinal();
+        int rightIndex = Controls.RIGHT.getControllerButton().ordinal();
+        int upIndex = Controls.UP.getControllerButton().ordinal();
+        int downIndex = Controls.DOWN.getControllerButton().ordinal();
+
+        if(i == controller.getMapping().axisLeftX) {
+            if(v < axisThreshold && v > -axisThreshold) {
+                controllerPressed[leftIndex] = false;
+                controllerPressed[rightIndex] = false;
+            } else if(v > axisThreshold) {
+                controllerPressed[rightIndex] = true;
+            } else {
+                controllerPressed[leftIndex] = true;
+            }
+        } else if(i == controller.getMapping().axisLeftY) {
+            if(v < axisThreshold && v > -axisThreshold) {
+                controllerPressed[upIndex] = false;
+                controllerPressed[downIndex] = false;
+            } else if(v > axisThreshold) {
+                controllerPressed[downIndex] = true;
+            } else {
+                controllerPressed[upIndex] = true;
+            }
+        }
+        return false;
     }
 
     public static class YComparator implements Comparator<Entity> {

@@ -2,6 +2,8 @@ package com.mygdx.scngame.screens;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -94,6 +96,10 @@ public class GameScreen implements Screen, MapChangeEventListener {
         bg.play();
 
         scene = new Scene(gameViewport, screenData.batch(), screenData.shapeRenderer(), world);
+
+        Controllers.addListener(dialog);
+        Controllers.addListener(scene);
+
 
         Gdx.app.log("GameScreen", "setting map to tilemaps/" + mapPath);
         tiledMap = screenData.assets().get("tilemaps/" + mapPath);
@@ -264,6 +270,9 @@ public class GameScreen implements Screen, MapChangeEventListener {
         GlobalEventBus.getInstance().removeMapChangeListener(this);
 
         Gdx.input.setInputProcessor(null);
+
+        Controllers.removeListener(scene);
+        Controllers.removeListener(dialog);
     }
 
     @Override

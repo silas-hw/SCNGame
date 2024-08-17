@@ -1,5 +1,6 @@
 package com.mygdx.scngame.entity.player.states;
 
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.dongbat.jbump.Rect;
@@ -58,6 +59,8 @@ public class PlayerDashState implements EntityState<Player> {
         dashTimer = 0f;
 
         container.hurtbox.setTakesDamage(false);
+
+        Controllers.getCurrent().startVibration(100, 0.9f);
     }
 
     @Override

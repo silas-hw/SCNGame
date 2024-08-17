@@ -3,6 +3,7 @@ package com.mygdx.scngame.entity.context;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.physics.Box;
+import com.mygdx.scngame.settings.Controls;
 
 /**
  * A convenience implementation of {@link EntityContext entity context} so you can implement
@@ -46,6 +47,16 @@ public class EntityContextAdapter implements EntityContext {
 
     @Override
     public boolean isKeyJustPressed(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean isActionPressed(Controls control) {
+        return false;
+    }
+
+    @Override
+    public boolean isActionJustPressed(Controls control) {
         return false;
     }
 }
