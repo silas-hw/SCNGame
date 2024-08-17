@@ -210,23 +210,26 @@ public class GameScreen implements Screen, MapChangeEventListener {
 
         gameViewport.apply();
 
-        shape.setProjectionMatrix(camera.combined);
-        shape.begin(ShapeRenderer.ShapeType.Filled);
+        drawWorld(ShapeRenderer.ShapeType.Filled, shape, 0.6f);
+        drawWorld(ShapeRenderer.ShapeType.Line, shape, 1f);
 
-        // for some godforsaken reason you can't get boxed Items from the world so i have
-        // to instanceof check them myself
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+    }
+
+    private void drawWorld(ShapeRenderer.ShapeType shapeType, ShapeRenderer shape, float alpha) {
+        shape.setProjectionMatrix(camera.combined);
+        shape.begin(shapeType);
+
         for(Item item : world.getItems()) {
             Rect rec = world.getRect(item);
             Color col = Color.WHITE;
 
             if(item.userData instanceof Box) col = ((Box) item.userData).getDebugColor();
-            shape.setColor(col.r, col.g, col.b, 0.4f);
+            shape.setColor(col.r, col.g, col.b, alpha);
             shape.rect(rec.x, rec.y, rec.w, rec.h);
         }
 
         shape.end();
-
-        Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
     @Override

@@ -364,8 +364,6 @@
    <wangtile tileid="35" wangid="0,3,0,2,0,2,0,3"/>
    <wangtile tileid="36" wangid="0,3,0,3,0,2,0,3"/>
    <wangtile tileid="37" wangid="0,3,0,2,0,3,0,3"/>
-   <wangtile tileid="38" wangid="0,3,0,3,0,3,0,3"/>
-   <wangtile tileid="39" wangid="0,3,0,3,0,3,0,3"/>
   </wangset>
  </wangsets>
 </tileset>

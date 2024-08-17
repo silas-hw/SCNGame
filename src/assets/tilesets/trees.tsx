@@ -6,18 +6,6 @@
   <objectgroup draworder="index" id="2">
    <object id="1" name="TreeTrunk" type="Wall" x="0" y="23" width="16" height="9">
     <properties>
-     <property name="CollisionLayer" value="11000000"/>
-     <property name="CollisionMask" value="00000000"/>
-     <property name="solid" type="bool" value="true"/>
-    </properties>
-   </object>
-  </objectgroup>
- </tile>
- <tile id="1">
-  <image width="16" height="16" source="../sprites/sign.png"/>
-  <objectgroup draworder="index" id="2">
-   <object id="1" type="Wall" x="0" y="0" width="16" height="16">
-    <properties>
      <property name="CollisionLayer" type="class" propertytype="BitMask">
       <properties>
        <property name="0" type="bool" value="true"/>
@@ -25,9 +13,18 @@
      </property>
     </properties>
    </object>
-   <object id="2" type="Sign" x="0" y="3.0625" width="16" height="12.9375">
+  </objectgroup>
+ </tile>
+ <tile id="1">
+  <image width="16" height="16" source="../sprites/sign.png"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="3" width="16" height="13">
     <properties>
-     <property name="DialogID" value="test_dialog_1"/>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
     </properties>
    </object>
   </objectgroup>
