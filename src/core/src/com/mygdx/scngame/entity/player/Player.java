@@ -91,7 +91,9 @@ public class Player extends Entity {
     }
 
     @Override
-    public void setWorld(World<Box> world) {
+    public void setWorld(World<Box> world) throws IllegalArgumentException {
+        if(world == null) throw new IllegalArgumentException("World cannot be null");
+
         this.state.setWorld(world);
 
         // if it's the first time settings the world, we can now enter the initial state
