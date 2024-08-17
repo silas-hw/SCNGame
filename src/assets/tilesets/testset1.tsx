@@ -18,6 +18,24 @@
   </animation>
  </tile>
  <tile id="16">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="3" y="0" width="5" height="8">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+       <property name="1" type="bool" value="false"/>
+       <property name="2" type="bool" value="false"/>
+       <property name="3" type="bool" value="false"/>
+       <property name="4" type="bool" value="false"/>
+       <property name="5" type="bool" value="false"/>
+       <property name="6" type="bool" value="false"/>
+       <property name="7" type="bool" value="false"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
   <animation>
    <frame tileid="16" duration="300"/>
    <frame tileid="46" duration="300"/>
@@ -26,6 +44,24 @@
   </animation>
  </tile>
  <tile id="17">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="0" width="5" height="8">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+       <property name="1" type="bool" value="false"/>
+       <property name="2" type="bool" value="false"/>
+       <property name="3" type="bool" value="false"/>
+       <property name="4" type="bool" value="false"/>
+       <property name="5" type="bool" value="false"/>
+       <property name="6" type="bool" value="false"/>
+       <property name="7" type="bool" value="false"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
   <animation>
    <frame tileid="17" duration="300"/>
    <frame tileid="47" duration="300"/>
@@ -34,6 +70,17 @@
   </animation>
  </tile>
  <tile id="18">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="3" y="3" width="5" height="5">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
   <animation>
    <frame tileid="18" duration="300"/>
    <frame tileid="48" duration="300"/>
@@ -42,6 +89,17 @@
   </animation>
  </tile>
  <tile id="19">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="3" width="5" height="5">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
   <animation>
    <frame tileid="19" duration="300"/>
    <frame tileid="49" duration="300"/>
@@ -50,6 +108,24 @@
   </animation>
  </tile>
  <tile id="25">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="3" width="8" height="5">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+       <property name="1" type="bool" value="false"/>
+       <property name="2" type="bool" value="false"/>
+       <property name="3" type="bool" value="false"/>
+       <property name="4" type="bool" value="false"/>
+       <property name="5" type="bool" value="false"/>
+       <property name="6" type="bool" value="false"/>
+       <property name="7" type="bool" value="false"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
   <animation>
    <frame tileid="25" duration="300"/>
    <frame tileid="55" duration="300"/>
@@ -58,6 +134,40 @@
   </animation>
  </tile>
  <tile id="26">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="3" y="0" width="5" height="8">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+       <property name="1" type="bool" value="false"/>
+       <property name="2" type="bool" value="false"/>
+       <property name="3" type="bool" value="false"/>
+       <property name="4" type="bool" value="false"/>
+       <property name="5" type="bool" value="false"/>
+       <property name="6" type="bool" value="false"/>
+       <property name="7" type="bool" value="false"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+   <object id="2" type="Wall" x="0" y="3" width="3" height="5">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+       <property name="1" type="bool" value="false"/>
+       <property name="2" type="bool" value="false"/>
+       <property name="3" type="bool" value="false"/>
+       <property name="4" type="bool" value="false"/>
+       <property name="5" type="bool" value="false"/>
+       <property name="6" type="bool" value="false"/>
+       <property name="7" type="bool" value="false"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
   <animation>
    <frame tileid="26" duration="300"/>
    <frame tileid="56" duration="300"/>
@@ -66,6 +176,40 @@
   </animation>
  </tile>
  <tile id="27">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="0" width="5" height="8">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+       <property name="1" type="bool" value="false"/>
+       <property name="2" type="bool" value="false"/>
+       <property name="3" type="bool" value="false"/>
+       <property name="4" type="bool" value="false"/>
+       <property name="5" type="bool" value="false"/>
+       <property name="6" type="bool" value="false"/>
+       <property name="7" type="bool" value="false"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+   <object id="2" type="Wall" x="5" y="3" width="3" height="5">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+       <property name="1" type="bool" value="false"/>
+       <property name="2" type="bool" value="false"/>
+       <property name="3" type="bool" value="false"/>
+       <property name="4" type="bool" value="false"/>
+       <property name="5" type="bool" value="false"/>
+       <property name="6" type="bool" value="false"/>
+       <property name="7" type="bool" value="false"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
   <animation>
    <frame tileid="27" duration="300"/>
    <frame tileid="57" duration="300"/>
@@ -74,6 +218,17 @@
   </animation>
  </tile>
  <tile id="28">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="3" y="0" width="5" height="5">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
   <animation>
    <frame tileid="28" duration="300"/>
    <frame tileid="58" duration="300"/>
@@ -82,6 +237,17 @@
   </animation>
  </tile>
  <tile id="29">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="0" width="5" height="5">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
   <animation>
    <frame tileid="29" duration="300"/>
    <frame tileid="59" duration="300"/>
@@ -90,6 +256,17 @@
   </animation>
  </tile>
  <tile id="35">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="0" width="8" height="5">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
   <animation>
    <frame tileid="35" duration="300"/>
    <frame tileid="65" duration="300"/>
@@ -98,6 +275,26 @@
   </animation>
  </tile>
  <tile id="36">
+  <objectgroup draworder="index" id="2">
+   <object id="3" type="Wall" x="0" y="0" width="8" height="4">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+   <object id="4" type="Wall" x="4" y="4" width="4" height="4">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
   <animation>
    <frame tileid="36" duration="300"/>
    <frame tileid="66" duration="300"/>
@@ -106,6 +303,26 @@
   </animation>
  </tile>
  <tile id="37">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="0" width="4" height="8">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+   <object id="2" type="Wall" x="4" y="0" width="4" height="4">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
   <animation>
    <frame tileid="37" duration="300"/>
    <frame tileid="67" duration="300"/>

@@ -30,7 +30,7 @@ public class HurtBox {
         this.health = health;
 
         Box hit = new HitBox();
-        hit.response = Response.cross;
+        hit.internalFilter = Box.CROSS_FILTER;
         hitbox = new Item<>(hit);
 
         this.width = width;

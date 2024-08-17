@@ -46,12 +46,12 @@ public class Player extends Entity {
         // players collision mask is set to true for layer 0!!!
         foot.setMask(0, true);
         foot.setLayer(0, true);
-        foot.response = Response.slide;
+        foot.internalFilter = Box.SLIDE_FILTER;
 
         collisionItem = new Item<>(foot);
 
         health = new HealthComponent(500f);
-        hurtbox = new HurtBox(health, 16, 32, 5f);
+        hurtbox = new HurtBox(health, WIDTH, HEIGHT, 5f);
         hurtbox.setCollisionMask(0, true);
 
         this.state = new PlayerMoveState();
@@ -106,7 +106,7 @@ public class Player extends Entity {
 
         this.world = world;
 
-        this.world.add(collisionItem, position.x, position.y, 16, 16);
+        this.world.add(collisionItem, position.x, position.y, WIDTH, HEIGHT/2);
 
         this.hurtbox.setWorld(world);
     }

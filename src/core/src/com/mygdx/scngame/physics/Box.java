@@ -78,8 +78,40 @@ public class Box {
      */
     public boolean solid = false;
 
-    /** The response returned if this Box has a hard collision with another Box */
-    public Response response = Response.cross;
+    /** The filter used if a collision occurs with a solid object whose layer matches this box's mask */
+    public CollisionFilter internalFilter = CROSS_FILTER;
+
+    public static final CollisionFilter CROSS_FILTER = new CollisionFilter() {
+
+        @Override
+        public Response filter(Item item, Item other) {
+            return Response.cross;
+        }
+    };
+
+    public static final CollisionFilter SLIDE_FILTER = new CollisionFilter() {
+
+        @Override
+        public Response filter(Item item, Item other) {
+            return Response.slide;
+        }
+    };
+
+    public static final CollisionFilter BOUNCE_FILTER = new CollisionFilter() {
+
+        @Override
+        public Response filter(Item item, Item other) {
+            return Response.bounce;
+        }
+    };
+
+    public static final CollisionFilter TOUCH_FILTER = new CollisionFilter() {
+
+        @Override
+        public Response filter(Item item, Item other) {
+            return Response.touch;
+        }
+    };
 
     public static final CollisionFilter GLOBAL_FILTER = new globalFilter();
 
@@ -112,7 +144,7 @@ public class Box {
                 return null;
             }
 
-            if(otherBox.solid) return box.response;
+            if(otherBox.solid) return box.internalFilter.filter(item, other);
             return Response.cross;
         }
     }

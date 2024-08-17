@@ -54,7 +54,7 @@ public class PlayerDashState implements EntityState<Player> {
 
     @Override
     public void enter() {
-        container.collisionItem.userData.response = Response.touch;
+        container.collisionItem.userData.internalFilter = Box.TOUCH_FILTER;
         dashTimer = 0f;
 
         container.hurtbox.setTakesDamage(false);
@@ -62,6 +62,6 @@ public class PlayerDashState implements EntityState<Player> {
 
     @Override
     public void exit() {
-        container.collisionItem.userData.response = Response.slide;
+        container.collisionItem.userData.internalFilter = Box.SLIDE_FILTER;
     }
 }

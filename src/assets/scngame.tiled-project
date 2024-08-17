@@ -197,7 +197,7 @@
             ]
         },
         {
-            "color": "#ffa0a0a4",
+            "color": "#fff9f9ff",
             "drawFill": true,
             "id": 7,
             "members": [
@@ -212,14 +212,7 @@
             "name": "Wall",
             "type": "class",
             "useAs": [
-                "property",
-                "map",
-                "layer",
                 "object",
-                "tile",
-                "tileset",
-                "wangcolor",
-                "wangset",
                 "project"
             ]
         }

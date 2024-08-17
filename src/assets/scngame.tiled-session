@@ -36,8 +36,8 @@
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 250,
-                "y": 463
+                "x": 280,
+                "y": 280
             }
         },
         "tilesets/set1.tsx": {
