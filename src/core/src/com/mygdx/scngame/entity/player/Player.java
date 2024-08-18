@@ -2,7 +2,9 @@ package com.mygdx.scngame.entity.player;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Rect;
@@ -27,6 +29,7 @@ public class Player extends Entity {
     public HurtBox hurtbox;
 
     public Texture texture;
+    public Animation<TextureAtlas.AtlasRegion> anim;
 
     public final int WIDTH = 16;
     public final int HEIGHT = 16;
@@ -38,6 +41,9 @@ public class Player extends Entity {
 
     public Player(AssetManager assets) {
         texture = assets.get("sprites/wizardguy.png", Texture.class);
+
+        TextureAtlas atlas = assets.get("animations/animation_atlas.atlas", TextureAtlas.class);
+        anim = new Animation<>(0.3f, atlas.findRegions("testanim"), Animation.PlayMode.LOOP);
 
         Box foot;
         foot = new Box();

@@ -1,0 +1,34 @@
+
+animation_atlas.png
+size: 32, 128
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+testanim
+  rotate: false
+  xy: 2, 70
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: 0
+testanim
+  rotate: false
+  xy: 2, 70
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: 2
+testanim
+  rotate: false
+  xy: 2, 36
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: 1
+testanim
+  rotate: false
+  xy: 2, 2
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: 3

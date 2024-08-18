@@ -11,6 +11,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -25,6 +26,7 @@ import java.net.URL;
 import java.security.CodeSource;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -101,21 +103,24 @@ public class AssetLoadingScreen implements Screen {
         for(String filePath : assetMap) {
             String extension = Gdx.files.internal(filePath).extension();
 
-            if(filePath.startsWith("sprites/") && spriteExtensions.contains(extension)) {
+            if (filePath.startsWith("sprites/") && spriteExtensions.contains(extension)) {
                 assetManager.load(filePath, Texture.class);
                 Gdx.app.log(logTag, filePath + " set to load as Sprite");
-            } else if(filePath.startsWith("tilemaps/") && tilemapExtensions.contains(extension)) {
+            } else if (filePath.startsWith("tilemaps/") && tilemapExtensions.contains(extension)) {
                 assetManager.load(filePath, TiledMap.class);
                 Gdx.app.log(logTag, filePath + " set to load as TiledMap (tmx)");
-            } else if(filePath.startsWith("skin/") && skinExtensions.contains(extension)) {
+            } else if (filePath.startsWith("skin/") && skinExtensions.contains(extension)) {
                 assetManager.load(filePath, Skin.class);
                 Gdx.app.log(logTag, filePath + " set to load as Skin");
-            } else if(filePath.startsWith("music/") && audioExtensions.contains(extension)) {
+            } else if (filePath.startsWith("music/") && audioExtensions.contains(extension)) {
                 assetManager.load(filePath, Music.class);
                 Gdx.app.log(logTag, filePath + " set to load as Music");
-            } else if(filePath.startsWith("sfx/") && audioExtensions.contains(extension)) {
+            } else if (filePath.startsWith("sfx/") && audioExtensions.contains(extension)) {
                 assetManager.load(filePath, Sound.class);
                 Gdx.app.log(logTag, filePath + " set to load as Sound");
+            } else if (filePath.startsWith("animations/") && extension.equals("atlas")) {
+                assetManager.load(filePath, TextureAtlas.class);
+                Gdx.app.log(logTag, filePath + "set to load as TextureAtlas");
             } else {
                 Gdx.app.log(logTag, filePath + " IGNORED");
                 Gdx.app.debug(logTag, "Warning: file may have been placed in incorrect directory");

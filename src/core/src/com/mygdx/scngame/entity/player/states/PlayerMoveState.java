@@ -2,6 +2,7 @@ package com.mygdx.scngame.entity.player.states;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -32,8 +33,10 @@ public class PlayerMoveState implements EntityState<Player> {
     Vector2 rayStart = new Vector2();
     Vector2 rayEnd = new Vector2();
 
+    private float stateTime = 0f;
     @Override
     public EntityState<? super Player> update(float delta) {
+        stateTime += delta;
         int dx = 0;
         int dy = 0;
 
@@ -116,7 +119,8 @@ public class PlayerMoveState implements EntityState<Player> {
 
     @Override
     public EntityState<? super Player> draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
-        batch.draw(container.texture, container.position.x, container.position.y);
+        TextureAtlas.AtlasRegion text = container.anim.getKeyFrame(stateTime, true);
+        batch.draw(text, container.position.x, container.position.y);
 
         // draw debug ray cast line
         if(!Boolean.getBoolean("debugRender")) return null;
