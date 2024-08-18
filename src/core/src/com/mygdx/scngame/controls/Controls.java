@@ -10,6 +10,9 @@ import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.ControllerMapping;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Converts keycodes and controller codes into {@link Actions} for use by sub-systems.
  */
@@ -55,6 +58,14 @@ public class Controls implements InputProcessor, ControllerListener {
             prefs.putString(this + "-controller", controllerButton.name());
         }
 
+        public static List<Actions> fromKeycode(int keycode) {
+            return Arrays.stream(Actions.values()).filter(e -> e.getKeycode() == keycode).toList();
+        }
+
+        public static List<Actions> fromControllerButton(ControllerButtons controllerButton) {
+            return Arrays.stream(Actions.values()).filter(e -> e.getControllerButton() == controllerButton).toList();
+        }
+
         private final static Preferences prefs = Gdx.app.getPreferences("scngame/controls");
     }
 
@@ -80,19 +91,14 @@ public class Controls implements InputProcessor, ControllerListener {
 
     @Override
     public boolean keyDown(int keycode) {
-        Actions action = null;
+        List<Actions> actions = Actions.fromKeycode(keycode);
 
-        for(Actions val : Actions.values()) {
-            if (val.getKeycode() == keycode) {
-                action = val;
-                break;
+        if(actions.isEmpty()) return false;
+
+        for(Actions action : actions) {
+            for(ActionListener listener : listeners) {
+                if(listener.actionDown(action)) break;
             }
-        }
-
-        if(action == null) return false;
-
-        for(ActionListener listener : listeners) {
-            if(listener.actionDown(action)) break;
         }
 
         return true;
@@ -100,18 +106,14 @@ public class Controls implements InputProcessor, ControllerListener {
 
     @Override
     public boolean keyUp(int keycode) {
-        Actions action = null;
+        List<Actions> actions = Actions.fromKeycode(keycode);
 
-        for(Actions val : Actions.values()) {
-            if (val.getKeycode() == keycode) {
-                action = val;
-                break;
+        if(actions.isEmpty()) return false;
+
+        for(Actions action : actions) {
+            for(ActionListener listener : listeners) {
+                if(listener.actionUp(action)) break;
             }
-        }
-
-        if(action == null) return false;
-        for(ActionListener listener : listeners) {
-            if(listener.actionUp(action)) break;
         }
 
         return true;
@@ -164,20 +166,14 @@ public class Controls implements InputProcessor, ControllerListener {
 
     @Override
     public boolean buttonDown(Controller controller, int buttonCode) {
-        ControllerButtons button = getControllerButton(controller, buttonCode);
+        List<Actions> actions = Actions.fromControllerButton(getControllerButton(controller, buttonCode));
 
-        Actions action = null;
-        for(Actions val : Actions.values()) {
-            if(val.getControllerButton() == button) {
-                action = val;
-                break;
+        if(actions.isEmpty()) return false;
+
+        for(Actions action : actions) {
+            for(ActionListener listener : listeners) {
+                if(listener.actionDown(action)) break;
             }
-        }
-
-        if(action == null) return false;
-
-        for(ActionListener listener : listeners) {
-            if(listener.actionDown(action)) break;
         }
 
         return true;
@@ -185,19 +181,14 @@ public class Controls implements InputProcessor, ControllerListener {
 
     @Override
     public boolean buttonUp(Controller controller, int buttonCode) {
-        ControllerButtons button = getControllerButton(controller, buttonCode);
-        Actions action = null;
-        for(Actions val : Actions.values()) {
-            if(val.getControllerButton() == button) {
-                action = val;
-                break;
+        List<Actions> actions = Actions.fromControllerButton(getControllerButton(controller, buttonCode));
+
+        if(actions.isEmpty()) return false;
+
+        for(Actions action : actions) {
+            for(ActionListener listener : listeners) {
+                if(listener.actionUp(action)) break;
             }
-        }
-
-        if(action == null) return false;
-
-        for(ActionListener listener : listeners) {
-            if(listener.actionUp(action)) break;
         }
 
         return true;
