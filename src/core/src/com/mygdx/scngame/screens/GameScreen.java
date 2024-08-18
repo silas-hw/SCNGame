@@ -160,10 +160,13 @@ public class GameScreen implements Screen, MapChangeEventListener {
         float widthLimit = Math.max(MAP_WIDTH - worldWidth/2, worldWidth/2);
         float heightLimit = Math.max(MAP_HEIGHT - worldHeight/2, worldHeight/2);
 
-        camera.position.x = MathUtils.clamp(player.position.x + player.WIDTH/2f,
+        float targetX = MathUtils.clamp(player.position.x + player.WIDTH/2f,
                 worldWidth/2, widthLimit);
-        camera.position.y = MathUtils.clamp(player.position.y + player.HEIGHT/2f,
+        float targetY = MathUtils.clamp(player.position.y + player.HEIGHT/2f,
                 worldHeight/2, heightLimit);
+
+        camera.position.x = MathUtils.lerp(camera.position.x, targetX, 0.009f);
+        camera.position.y = MathUtils.lerp(camera.position.y, targetY, 0.009f);
 
         camera.update();
 
