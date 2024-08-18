@@ -31,7 +31,8 @@ public class Controls implements InputProcessor, ControllerListener {
         RIGHT (Input.Keys.D, ControllerButtons.buttonDpadRight),
         ATTACK (Input.Keys.J, ControllerButtons.buttonA),
         DASH (Input.Keys.SHIFT_LEFT, ControllerButtons.buttonR1),
-        INTERACT (Input.Keys.E, ControllerButtons.buttonX);
+        INTERACT (Input.Keys.E, ControllerButtons.buttonX),
+        MENU (Input.Keys.ESCAPE, ControllerButtons.buttonStart);
 
         public final int defaultKey;
         public final ControllerButtons defaultControllerButton;
@@ -46,7 +47,7 @@ public class Controls implements InputProcessor, ControllerListener {
         }
 
         public void setKeycode(int keycode) {
-            prefs.putInteger(this.toString(), keycode);
+            prefs.putInteger(this + "-key", keycode);
             prefs.flush();
         }
 
@@ -66,7 +67,10 @@ public class Controls implements InputProcessor, ControllerListener {
             return Arrays.stream(Actions.values()).filter(e -> e.getControllerButton() == controllerButton).toList();
         }
 
-        private final static Preferences prefs = Gdx.app.getPreferences("scngame/controls");
+        /** only set to something else for testing. Could be final and private, but this makes it easier
+         * to give a mock preferences to test with
+         */
+        public static Preferences prefs = Gdx.app.getPreferences("scngame/controls");
     }
 
     private static Controls instance = null;

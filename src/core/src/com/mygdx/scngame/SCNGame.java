@@ -6,6 +6,7 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.scngame.controls.Controls;
+import com.mygdx.scngame.controls.MockPreferences;
 import com.mygdx.scngame.screens.AssetLoadingScreen;
 import com.mygdx.scngame.screens.data.ScreenData;
 import com.mygdx.scngame.settings.PrefSettings;

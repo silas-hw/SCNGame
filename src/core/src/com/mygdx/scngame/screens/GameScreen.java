@@ -27,6 +27,7 @@ import com.mygdx.scngame.path.PathNodes;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.scene.Scene;
 import com.mygdx.scngame.screens.data.ScreenData;
+import com.mygdx.scngame.settings.SettingsMenu;
 import com.mygdx.scngame.viewport.PixelFitScaling;
 
 import java.util.Map;
@@ -43,6 +44,7 @@ public class GameScreen implements Screen, MapChangeEventListener {
     Player player;
 
     Dialog dialog;
+    SettingsMenu settingsMenu;
 
     TiledMapRenderer mapRenderer;
     TiledMap tiledMap;
@@ -75,6 +77,7 @@ public class GameScreen implements Screen, MapChangeEventListener {
         world = new World<Box>();
 
         dialog = new Dialog(screenData);
+        settingsMenu = new SettingsMenu(screenData);
 
         this.mapPath = mapPath;
         this.spawnID = spawnID;
@@ -119,10 +122,14 @@ public class GameScreen implements Screen, MapChangeEventListener {
             player.position.y = 0;
         }
 
+        camera.position.x = player.position.x + player.WIDTH/2f;
+        camera.position.y = player.position.y + player.HEIGHT/2f;
+
         scene.addEntity(player);
 
         scene.setWorld(world);
 
+        Controls.getInstance().addActionListener(settingsMenu);
         Controls.getInstance().addActionListener(dialog);
         Controls.getInstance().addActionListener(scene);
 
@@ -142,7 +149,13 @@ public class GameScreen implements Screen, MapChangeEventListener {
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        bg.setVolume(screenData.settings().getMusicVolume());
+
+        if(screenData.settings().isMusicOn()) {
+            bg.setVolume(screenData.settings().getMusicVolume());
+        } else {
+            bg.setVolume(0f);
+        }
+
 
         // give some waiting time before doing anything.
         if(waitTime > 0f) {
@@ -177,6 +190,7 @@ public class GameScreen implements Screen, MapChangeEventListener {
         mapRenderer.render();
         scene.draw();
         dialog.draw();
+        settingsMenu.draw();
 
         ShapeRenderer shape = screenData.shapeRenderer();
 
