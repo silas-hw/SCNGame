@@ -1,5 +1,5 @@
 {
-    "automappingRulesFile": "",
+    "automappingRulesFile": "tilemap_rules/rules.txt",
     "commands": [
     ],
     "compatibilityVersion": 1100,
@@ -155,6 +155,36 @@
             "type": "class",
             "useAs": [
                 "property",
+                "object",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 13,
+            "members": [
+                {
+                    "name": "CollisionMask",
+                    "propertyType": "BitMask",
+                    "type": "class",
+                    "value": {
+                    }
+                },
+                {
+                    "name": "Map",
+                    "type": "string",
+                    "value": ""
+                },
+                {
+                    "name": "SpawnID",
+                    "type": "string",
+                    "value": ""
+                }
+            ],
+            "name": "Portal",
+            "type": "class",
+            "useAs": [
                 "object",
                 "project"
             ]

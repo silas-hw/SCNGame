@@ -23,10 +23,10 @@ public class Box {
     }
 
     /** A binary value representing what layers of other boxes that this box will collide with */
-    private int mask = 0b00000000;
+    public int mask = 0b00000000;
 
     /** a binary value representing the layers on which the box will be collided with by other boxes */
-    private int layer =  0b00000000;
+    public int layer =  0b00000000;
 
     /**
      *
@@ -112,6 +112,27 @@ public class Box {
             return Response.touch;
         }
     };
+
+    /**
+     * Converst an array of mask indices into a single integer bitmask. For example, giving
+     * <code>{0, 1, 2, 6}</code> would return <code>1000111</code>. <p>
+     *
+     * Indices given multiple times are only counted once.
+     *
+     * @param indices a list of mask indexes to set
+     * @return the resulting bit mask
+     */
+    public static final int getMaskFromIndices(int[] indices) {
+        int out = 0;
+
+        for(int index : indices) {
+            // prevents an index being put in twice messing things up
+            if((out & 1 << index) != 0) continue;
+            out += 1 << index;
+        }
+
+        return out;
+    }
 
     public static final CollisionFilter GLOBAL_FILTER = new globalFilter();
 

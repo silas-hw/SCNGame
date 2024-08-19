@@ -153,6 +153,10 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
         return this.world;
     }
 
+    public void setViewport(Viewport view) {
+        this.viewport = view;
+    }
+
     @Override
     public boolean isActionPressed(Controls.Actions action) {
         return actionsPressed[action.ordinal()];

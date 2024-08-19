@@ -16,17 +16,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.dongbat.jbump.World;
 import com.mygdx.scngame.SCNGame;
+import com.mygdx.scngame.entity.player.Player;
+import com.mygdx.scngame.physics.Box;
+import com.mygdx.scngame.scene.Scene;
 import com.mygdx.scngame.screens.data.ScreenData;
 import com.mygdx.scngame.settings.PrefSettings;
 import com.mygdx.scngame.settings.Settings;
+import com.mygdx.scngame.viewport.PixelFitScaling;
 
 public class MainMenuScreen implements Screen {
 
-    private Skin skin;
-    private Label label;
     private Stage stage;
 
     Viewport viewport;
@@ -37,7 +41,6 @@ public class MainMenuScreen implements Screen {
     Music bg;
 
     ScreenData screenData;
-
 
     public MainMenuScreen(ScreenData screenData) {
         this.game = screenData.game();
@@ -52,9 +55,9 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void show() {
-        skin = screenData.assets().get("skin/uiskin.json", Skin.class);
+        Skin skin = screenData.assets().get("skin/uiskin.json", Skin.class);
 
-        label = new Label(" ", skin);
+        Label label = new Label(" ", skin);
         label.setText("Press E to Start");
 
         Container<Label> container = new Container<>(label);
@@ -78,7 +81,22 @@ public class MainMenuScreen implements Screen {
         stage.draw();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            game.setScreen(new GameScreen(screenData));
+
+            World<Box> world = new World<>();
+            ExtendViewport gameView = new ExtendViewport(200, 200);
+            gameView.setScaling(new PixelFitScaling());
+
+            OrthographicCamera cam = new OrthographicCamera();
+
+            GameScreen.GameScreenData gameData = new GameScreen.GameScreenData(
+                    world,
+                    new Player(screenData.assets()),
+                    new Scene(null, screenData.batch(), screenData.shapeRenderer(), world),
+                    gameView,
+                    cam
+            );
+
+            game.setScreen(new GameScreen(screenData, gameData, "untitled.tmx", "test_spawn"));
         }
     }
 

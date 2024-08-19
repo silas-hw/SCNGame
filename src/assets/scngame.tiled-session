@@ -4,12 +4,29 @@
         "width": 2
     },
     "activeFile": "tilemaps/untitled.tmx",
+    "automapping.whileDrawing": false,
     "expandedProjectPaths": [
         "tilesets",
         ".",
         "tilemaps"
     ],
     "fileStates": {
+        "tilemap_rules/wall_rules.tmx": {
+            "scale": 4.7025,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 80.17012227538545,
+                "y": 80.17012227538544
+            }
+        },
+        "tilemap_rules/wall_rules2.tmx": {
+            "scale": 5.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 71.63636363636364,
+                "y": 80.36363636363636
+            }
+        },
         "tilemaps/testmap1.tmx": {
             "expandedObjectLayers": [
                 6
@@ -17,16 +34,30 @@
             "scale": 3,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 119.66666666666667,
-                "y": 79.66666666666666
+                "x": 118.99999999999999,
+                "y": 78.99999999999999
+            }
+        },
+        "tilemaps/testmap2.tmx": {
+            "expandedObjectLayers": [
+                5
+            ],
+            "scale": 4,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 762.5,
+                "y": 255.25
             }
         },
         "tilemaps/untitled.tmx": {
-            "scale": 2,
-            "selectedLayer": 1,
+            "expandedObjectLayers": [
+                2
+            ],
+            "scale": 3,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 301,
-                "y": 272.5
+                "x": 59.333333333333314,
+                "y": 311
             }
         },
         "tilemaps/untitled2.tmx": {
@@ -36,8 +67,8 @@
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 248,
-                "y": 461
+                "x": 246,
+                "y": 459
             }
         },
         "tilesets/set1.tsx": {
@@ -62,11 +93,11 @@
     },
     "frame.defaultDuration": 300,
     "last.imagePath": "D:/silas/Summer Projects 2024/SCNGame/src/assets/tilesets/set",
-    "map.height": 70,
+    "map.height": 100,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 8,
     "map.tileWidth": 8,
-    "map.width": 70,
+    "map.width": 100,
     "openFiles": [
         "tilemaps/testmap1.tmx",
         "tilesets/testset1.tsx",

@@ -255,6 +255,32 @@
    <frame tileid="89" duration="300"/>
   </animation>
  </tile>
+ <tile id="33">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="0" width="1" height="4">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
+ </tile>
+ <tile id="34">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="7" y="0" width="1" height="4">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
+ </tile>
  <tile id="35">
   <objectgroup draworder="index" id="2">
    <object id="1" type="Wall" x="0" y="0" width="8" height="5">
@@ -330,11 +356,221 @@
    <frame tileid="97" duration="300"/>
   </animation>
  </tile>
+ <tile id="43">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="4" width="1" height="4">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
+ </tile>
+ <tile id="44">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="7" y="4" width="1" height="4">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
+ </tile>
+ <tile id="51">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="3" width="8" height="5">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
+ </tile>
+ <tile id="52">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="3" width="8" height="5">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
+ </tile>
+ <tile id="53">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="3" width="8" height="5">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
+ </tile>
+ <tile id="61">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="0" width="1" height="8">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+       <property name="1" type="bool" value="false"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
+ </tile>
+ <tile id="63">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="7" y="0" width="1" height="8">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
+ </tile>
+ <tile id="71">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="0" width="8" height="8">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
+ </tile>
+ <tile id="72">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="0" width="8" height="8">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
+ </tile>
+ <tile id="73">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="0" width="8" height="8">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
+ </tile>
+ <tile id="81">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="0" width="8" height="8">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
+ </tile>
+ <tile id="82">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="0" width="8" height="8">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
+ </tile>
+ <tile id="83">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="0" width="8" height="8">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
+ </tile>
+ <tile id="91">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="0" width="8" height="7">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
+ </tile>
+ <tile id="92">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="0" width="8" height="7">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
+ </tile>
+ <tile id="93">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="Wall" x="0" y="0" width="8" height="7">
+    <properties>
+     <property name="CollisionLayer" type="class" propertytype="BitMask">
+      <properties>
+       <property name="0" type="bool" value="true"/>
+      </properties>
+     </property>
+    </properties>
+   </object>
+  </objectgroup>
+ </tile>
  <wangsets>
   <wangset name="grass" type="corner" tile="-1">
    <wangcolor name="dirt" color="#ff0000" tile="-1" probability="1"/>
    <wangcolor name="grass" color="#00ff00" tile="-1" probability="1"/>
    <wangcolor name="water" color="#0000ff" tile="-1" probability="1"/>
+   <wangcolor name="cliff top" color="#ff7700" tile="-1" probability="1"/>
    <wangtile tileid="0" wangid="0,2,0,2,0,2,0,2"/>
    <wangtile tileid="1" wangid="0,2,0,2,0,2,0,2"/>
    <wangtile tileid="2" wangid="0,2,0,2,0,2,0,2"/>
@@ -361,9 +597,22 @@
    <wangtile tileid="30" wangid="0,1,0,2,0,2,0,1"/>
    <wangtile tileid="31" wangid="0,1,0,1,0,2,0,1"/>
    <wangtile tileid="32" wangid="0,1,0,2,0,1,0,1"/>
+   <wangtile tileid="33" wangid="0,4,0,4,0,4,0,0"/>
+   <wangtile tileid="34" wangid="0,0,0,4,0,4,0,4"/>
    <wangtile tileid="35" wangid="0,3,0,2,0,2,0,3"/>
    <wangtile tileid="36" wangid="0,3,0,3,0,2,0,3"/>
    <wangtile tileid="37" wangid="0,3,0,2,0,3,0,3"/>
+   <wangtile tileid="43" wangid="0,4,0,4,0,0,0,4"/>
+   <wangtile tileid="44" wangid="0,4,0,0,0,4,0,4"/>
+   <wangtile tileid="51" wangid="0,0,0,4,0,0,0,0"/>
+   <wangtile tileid="52" wangid="0,0,0,4,0,4,0,0"/>
+   <wangtile tileid="53" wangid="0,0,0,0,0,4,0,0"/>
+   <wangtile tileid="61" wangid="0,4,0,4,0,0,0,0"/>
+   <wangtile tileid="62" wangid="0,4,0,4,0,4,0,4"/>
+   <wangtile tileid="63" wangid="0,0,0,0,0,4,0,4"/>
+   <wangtile tileid="71" wangid="0,4,0,0,0,0,0,0"/>
+   <wangtile tileid="72" wangid="0,4,0,0,0,0,0,4"/>
+   <wangtile tileid="73" wangid="0,0,0,0,0,0,0,4"/>
   </wangset>
  </wangsets>
 </tileset>

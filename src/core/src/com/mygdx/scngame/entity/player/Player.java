@@ -114,9 +114,19 @@ public class Player extends Entity {
 
         this.world = world;
 
-        this.world.add(collisionItem, position.x, position.y, WIDTH, HEIGHT/2);
+        this.world.add(collisionItem, position.x, position.y, WIDTH, HEIGHT/2f);
 
         this.hurtbox.setWorld(world);
+    }
+
+    public void resetState() {
+        this.state.exit();
+
+        this.state = new PlayerMoveState();
+        this.state.setContainer(this);
+        this.state.setWorld(this.world);
+
+        this.state.enter();
     }
 
     @Override

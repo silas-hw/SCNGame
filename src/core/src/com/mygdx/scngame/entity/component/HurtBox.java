@@ -83,7 +83,7 @@ public class HurtBox {
 
     public void setWorld(World<Box> world) {
         if(this.world != null) {
-            this.world.remove(hitbox);
+            if(this.world.hasItem(hitbox)) this.world.remove(hitbox);
         }
 
         this.world = world;

@@ -1,5 +1,6 @@
 package com.mygdx.scngame.map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
@@ -11,20 +12,20 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.context.EntityContext;
 import com.mygdx.scngame.entity.sprite.AnimatedSpriteEntity;
 import com.mygdx.scngame.entity.sprite.SpriteEntity;
+import com.mygdx.scngame.entity.trigger.Trigger;
 import com.mygdx.scngame.event.GlobalEventBus;
 import com.mygdx.scngame.path.PathNodes;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.DamageBox;
 import com.mygdx.scngame.physics.InteractBox;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Parses a tile map and loads in map objects into:
@@ -162,6 +163,24 @@ public class MapObjectLoader {
             };
 
             world.add(new Item<>(box), x + offsetX, y + offsetY, width, height);
+        } else if(type.equals("Portal")) {
+            MapProperties collisionMask = obj.getProperties().get("CollisionMask", MapProperties.class);
+            int[] maskIndices = getMaskLayers(collisionMask);
+
+            String mapPath = properties.get("Map", String.class);
+            String spawnID = properties.get("SpawnID", String.class);
+
+            Trigger portal = new Trigger(
+                    x, y, width, height, maskIndices,
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            GlobalEventBus.getInstance().changeMap(mapPath, spawnID);
+                        }
+                    }
+            );
+
+            entityContext.addEntity(portal);
         } else if(type.equals("PathNode")) {
             pathNodes.put(obj);
         } else if(type.equals("SpawnLocation")) {
@@ -213,5 +232,23 @@ public class MapObjectLoader {
             boolean set = collisionLayer.get(key, Boolean.class);
             box.setLayer(Integer.parseInt(key, 10), set);
         }
+    }
+
+    private int[] getMaskLayers(MapProperties collisionLayer) {
+        ArrayList<Integer> out = new ArrayList<>();
+        for (Iterator<String> it = collisionLayer.getKeys(); it.hasNext(); ) {
+            String key = it.next();
+
+            if("type".equals(key)) continue;
+
+            System.out.println(key);
+
+            boolean set = collisionLayer.get(key, Boolean.class);
+            if(set) {
+                out.add(Integer.parseInt(key, 10));
+            }
+        }
+
+        return out.stream().mapToInt(i->i).toArray();
     }
 }

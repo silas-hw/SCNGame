@@ -4,6 +4,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Rect;
 import com.dongbat.jbump.World;
@@ -37,7 +39,7 @@ public class GameScreen implements Screen, MapChangeEventListener {
     Scene scene;
 
     OrthographicCamera camera;
-    ExtendViewport gameViewport;
+    Viewport gameViewport;
 
     World<Box> world;
 
@@ -61,20 +63,28 @@ public class GameScreen implements Screen, MapChangeEventListener {
 
     ScreenViewport screenViewport;
 
-    public GameScreen(ScreenData screenData, Player player, String mapPath, String spawnID) {
+    public record GameScreenData(World<Box> world, Player player, Scene scene, Viewport gameViewport, OrthographicCamera cam) {};
+
+    private final GameScreenData gameData;
+
+    public GameScreen(ScreenData screenData, GameScreenData gameData, String mapPath, String spawnID) {
         this.game = screenData.game();
+        this.gameData = gameData;
 
         this.screenData = screenData;
 
         this.pathNodes = new PathNodes();
 
-        this.player = player;
+        this.player = gameData.player();
 
-        camera = new OrthographicCamera();
-        gameViewport = new ExtendViewport(200, 200, camera);
-        gameViewport.setScaling(new PixelFitScaling());
+        camera = gameData.cam;
 
-        world = new World<Box>();
+        gameViewport = gameData.gameViewport();
+
+        world = gameData.world();
+        world.reset();
+
+        scene = gameData.scene();
 
         dialog = new Dialog(screenData);
         settingsMenu = new SettingsMenu(screenData);
@@ -83,10 +93,6 @@ public class GameScreen implements Screen, MapChangeEventListener {
         this.spawnID = spawnID;
 
         screenViewport = new ScreenViewport();
-    }
-
-    public GameScreen(ScreenData screenData) {
-        this(screenData, new Player(screenData.assets()),  "untitled.tmx", "test_spawn");
     }
 
     // TODO: update docs to describe PathNode map object
@@ -99,7 +105,11 @@ public class GameScreen implements Screen, MapChangeEventListener {
         bg.setLooping(true);
         bg.play();
 
-        scene = new Scene(gameViewport, screenData.batch(), screenData.shapeRenderer(), world);
+        gameViewport.setCamera(camera);
+
+        scene.clearEntities();
+        scene.setWorld(world);
+        scene.setViewport(gameViewport);
 
         Gdx.app.log("GameScreen", "setting map to tilemaps/" + mapPath);
         tiledMap = screenData.assets().get("tilemaps/" + mapPath);
@@ -122,11 +132,21 @@ public class GameScreen implements Screen, MapChangeEventListener {
             player.position.y = 0;
         }
 
-        camera.position.x = player.position.x + player.WIDTH/2f;
-        camera.position.y = player.position.y + player.HEIGHT/2f;
+        gameViewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
+        float worldWidth = gameViewport.getWorldWidth();
+        float worldHeight = gameViewport.getWorldHeight();
+
+        float widthLimit = Math.max(MAP_WIDTH - worldWidth/2, worldWidth/2);
+        float heightLimit = Math.max(MAP_HEIGHT - worldHeight/2, worldHeight/2);
+
+        camera.position.x = MathUtils.clamp(player.position.x + player.WIDTH/2f,
+                worldWidth/2 + 32, widthLimit - 32);
+        camera.position.y = MathUtils.clamp(player.position.y + player.HEIGHT/2f,
+                worldHeight/2 + 32, heightLimit - 32);
+
+        player.resetState();
         scene.addEntity(player);
-
         scene.setWorld(world);
 
         Controls.getInstance().addActionListener(settingsMenu);
@@ -140,7 +160,7 @@ public class GameScreen implements Screen, MapChangeEventListener {
     float transitionAlpha = 1f;
     boolean fadeIn = true;
 
-    float waitTime = 0.3f;
+    float waitTime = 0.5f;
 
     String nextMap = "";
     String nextSpawn = "";
@@ -174,9 +194,9 @@ public class GameScreen implements Screen, MapChangeEventListener {
         float heightLimit = Math.max(MAP_HEIGHT - worldHeight/2, worldHeight/2);
 
         float targetX = MathUtils.clamp(player.position.x + player.WIDTH/2f,
-                worldWidth/2, widthLimit);
+                worldWidth/2 + 32, widthLimit - 32);
         float targetY = MathUtils.clamp(player.position.y + player.HEIGHT/2f,
-                worldHeight/2, heightLimit);
+                worldHeight/2 + 32, heightLimit - 32);
 
         camera.position.x = MathUtils.lerp(camera.position.x, targetX, 0.009f);
         camera.position.y = MathUtils.lerp(camera.position.y, targetY, 0.009f);
@@ -202,7 +222,7 @@ public class GameScreen implements Screen, MapChangeEventListener {
 
         // if a next map has been set and we've finished fading out, switch screen
         if(!nextMap.isEmpty() && transitionAlpha >=  1f && !fadeIn) {
-            game.setScreen(new GameScreen(screenData, player, nextMap, nextSpawn));
+            game.setScreen(new GameScreen(screenData, gameData, nextMap, nextSpawn));
         }
 
         screenViewport.apply();
@@ -273,7 +293,9 @@ public class GameScreen implements Screen, MapChangeEventListener {
         // so disposing of things being currently rendered is a *bad* idea
 
         // with everything using an asset manager now, it shouldn't be that bad however
-        scene.dispose();
+        scene.clearEntities();
+
+        world.reset();
 
         bg.stop();
 
@@ -289,7 +311,7 @@ public class GameScreen implements Screen, MapChangeEventListener {
 
     @Override
     public void onMapChange(String mapPath, String spawnID) {
-        if(mapPath == this.mapPath) return;
+        if(mapPath.equals(this.mapPath)) return;
 
         Gdx.app.log("GameScreen", "Changing map to: " + mapPath + " with spawnID: " + spawnID);
 
