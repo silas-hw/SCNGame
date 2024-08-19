@@ -39,7 +39,7 @@ public class GameScreen implements Screen, MapChangeEventListener {
     Scene scene;
 
     OrthographicCamera camera;
-    Viewport gameViewport;
+    ExtendViewport gameViewport;
 
     World<Box> world;
 
@@ -58,33 +58,28 @@ public class GameScreen implements Screen, MapChangeEventListener {
     private int MAP_WIDTH;
     private int MAP_HEIGHT;
 
-    final String mapPath;
-    final String spawnID;
+    String mapPath;
+    String spawnID;
 
     ScreenViewport screenViewport;
 
-    public record GameScreenData(World<Box> world, Player player, Scene scene, Viewport gameViewport, OrthographicCamera cam) {};
-
-    private final GameScreenData gameData;
-
-    public GameScreen(ScreenData screenData, GameScreenData gameData, String mapPath, String spawnID) {
+    public GameScreen(ScreenData screenData, Player player, String mapPath, String spawnID) {
         this.game = screenData.game();
-        this.gameData = gameData;
 
         this.screenData = screenData;
 
         this.pathNodes = new PathNodes();
 
-        this.player = gameData.player();
+        this.player = player;
 
-        camera = gameData.cam;
+        camera = new OrthographicCamera();
 
-        gameViewport = gameData.gameViewport();
+        gameViewport = new ExtendViewport(200, 200, camera);
+        gameViewport.setScaling(new PixelFitScaling());
 
-        world = gameData.world();
-        world.reset();
+        world = new World<>();
 
-        scene = gameData.scene();
+        scene = new Scene(gameViewport, screenData.batch(), screenData.shapeRenderer(), world);
 
         dialog = new Dialog(screenData);
         settingsMenu = new SettingsMenu(screenData);
@@ -93,6 +88,20 @@ public class GameScreen implements Screen, MapChangeEventListener {
         this.spawnID = spawnID;
 
         screenViewport = new ScreenViewport();
+
+        bg = screenData.assets().get("music/bgtest2.mp3", Music.class);
+        bg.setLooping(true);
+
+        Controls.getInstance().addActionListener(settingsMenu);
+        Controls.getInstance().addActionListener(dialog);
+        Controls.getInstance().addActionListener(scene);
+
+        GlobalEventBus.getInstance().addDialogListener(dialog);
+        GlobalEventBus.getInstance().addMapChangeListener(this);
+    }
+
+    public GameScreen(ScreenData screenData) {
+        this(screenData, new Player(screenData.assets()), "untitled.tmx", "test_spawn");
     }
 
     // TODO: update docs to describe PathNode map object
@@ -101,11 +110,10 @@ public class GameScreen implements Screen, MapChangeEventListener {
 
     @Override
     public void show() {
-        bg = screenData.assets().get("music/bgtest2.mp3", Music.class);
-        bg.setLooping(true);
-        bg.play();
 
         gameViewport.setCamera(camera);
+
+        world.reset();
 
         scene.clearEntities();
         scene.setWorld(world);
@@ -114,6 +122,16 @@ public class GameScreen implements Screen, MapChangeEventListener {
         Gdx.app.log("GameScreen", "setting map to tilemaps/" + mapPath);
         tiledMap = screenData.assets().get("tilemaps/" + mapPath);
         this.mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1f, screenData.batch());
+
+        String bgPath = tiledMap.getProperties().get("bg", String.class);
+        Music newBg = screenData.assets().get("music/" + bgPath, Music.class);
+
+        if(newBg != bg && newBg != null) {
+            bg.stop();
+            bg = newBg;
+
+            bg.setLooping(true);
+        }
 
         MAP_HEIGHT = tiledMap.getProperties().get("height", Integer.class) * tiledMap.getProperties().get("tileheight", Integer.class);
         MAP_WIDTH = tiledMap.getProperties().get("width", Integer.class) * tiledMap.getProperties().get("tilewidth", Integer.class);
@@ -148,13 +166,6 @@ public class GameScreen implements Screen, MapChangeEventListener {
         player.resetState();
         scene.addEntity(player);
         scene.setWorld(world);
-
-        Controls.getInstance().addActionListener(settingsMenu);
-        Controls.getInstance().addActionListener(dialog);
-        Controls.getInstance().addActionListener(scene);
-
-        GlobalEventBus.getInstance().addDialogListener(dialog);
-        GlobalEventBus.getInstance().addMapChangeListener(this);
     }
 
     float transitionAlpha = 1f;
@@ -180,6 +191,11 @@ public class GameScreen implements Screen, MapChangeEventListener {
         // give some waiting time before doing anything.
         if(waitTime > 0f) {
             waitTime -= delta;
+
+            // if waiting has finished turn the tunes up!!!
+            if(waitTime <= 0f) {
+                bg.play();
+            }
             return;
         }
 
@@ -220,9 +236,20 @@ public class GameScreen implements Screen, MapChangeEventListener {
             transitionAlpha += delta * 2;
         }
 
-        // if a next map has been set and we've finished fading out, switch screen
+        // if a next map has been set and we've finished fading out, switch map
         if(!nextMap.isEmpty() && transitionAlpha >=  1f && !fadeIn) {
-            game.setScreen(new GameScreen(screenData, gameData, nextMap, nextSpawn));
+            this.mapPath = nextMap;
+            this.spawnID = nextSpawn;
+
+            this.fadeIn = true;
+            this.waitTime = 0.5f;
+
+            this.nextMap = "";
+            this.nextSpawn = "";
+
+            // show loads the map and map renderer again
+            // resetting and then repopulating the world and scene
+            this.show();
         }
 
         screenViewport.apply();

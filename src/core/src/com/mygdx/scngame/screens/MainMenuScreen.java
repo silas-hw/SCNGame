@@ -81,22 +81,7 @@ public class MainMenuScreen implements Screen {
         stage.draw();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-
-            World<Box> world = new World<>();
-            ExtendViewport gameView = new ExtendViewport(200, 200);
-            gameView.setScaling(new PixelFitScaling());
-
-            OrthographicCamera cam = new OrthographicCamera();
-
-            GameScreen.GameScreenData gameData = new GameScreen.GameScreenData(
-                    world,
-                    new Player(screenData.assets()),
-                    new Scene(null, screenData.batch(), screenData.shapeRenderer(), world),
-                    gameView,
-                    cam
-            );
-
-            game.setScreen(new GameScreen(screenData, gameData, "untitled.tmx", "test_spawn"));
+            game.setScreen(new GameScreen(screenData));
         }
     }
 

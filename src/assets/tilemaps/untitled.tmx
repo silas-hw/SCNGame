@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="8" tileheight="8" infinite="0" nextlayerid="7" nextobjectid="45">
+ <properties>
+  <property name="bg" value="bgtest2.mp3"/>
+ </properties>
  <tileset firstgid="1" source="../tilesets/testset2.tsx"/>
  <tileset firstgid="101" source="../tilesets/testset1.tsx"/>
  <tileset firstgid="201" source="../tilesets/trees.tsx"/>
