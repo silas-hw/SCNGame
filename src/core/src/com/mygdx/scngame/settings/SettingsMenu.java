@@ -94,6 +94,7 @@ public class SettingsMenu implements ActionListener {
         if(!inFocus) return;
 
         stage.getViewport().apply(true);
+        stage.getViewport().getCamera().update();
         stage.draw();
     }
 
@@ -108,8 +109,11 @@ public class SettingsMenu implements ActionListener {
         }
 
         if(!inFocus) {
+            Controls.getInstance().removeInputProcessor(stage);
             return false;
         }
+
+        Controls.getInstance().addInputProcessor(stage);
 
         Actor currentActor = root.getChild(focusIndex);
         switch(action) {

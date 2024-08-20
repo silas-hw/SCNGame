@@ -1,6 +1,7 @@
 package com.mygdx.scngame.entity;
 
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Disposable;
@@ -34,6 +35,8 @@ public interface EntityState<T extends Entity> {
      * the state is to remain the same
      */
     EntityState<? super T> draw(SpriteBatch batch, ShapeRenderer shape, float alpha);
+
+    void drawWaterReflection(SpriteBatch batch, ShapeRenderer shape, float alpha);
 
     void setContainer(T container);
 

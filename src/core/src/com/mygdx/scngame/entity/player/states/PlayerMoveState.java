@@ -116,11 +116,11 @@ public class PlayerMoveState implements EntityState<Player> {
     }
 
 
-
     @Override
     public EntityState<? super Player> draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
         TextureAtlas.AtlasRegion text = container.anim.getKeyFrame(stateTime, true);
         batch.draw(text, container.position.x, container.position.y);
+
 
         // draw debug ray cast line
         if(!Boolean.getBoolean("debugRender")) return null;
@@ -137,6 +137,14 @@ public class PlayerMoveState implements EntityState<Player> {
         batch.begin();
 
         return null;
+    }
+
+    @Override
+    public void drawWaterReflection(SpriteBatch batch, ShapeRenderer shape, float alpha) {
+        TextureAtlas.AtlasRegion text = container.anim.getKeyFrame(stateTime, true);
+        text.flip(false, true);
+        batch.draw(text, container.position.x, container.position.y - text.getRegionHeight());
+        text.flip(false, true);
     }
 
     @Override

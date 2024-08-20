@@ -83,7 +83,8 @@ public class Controls implements InputProcessor, ControllerListener {
         return instance;
     }
 
-    private static Array<ActionListener> listeners = new Array<>();
+    private final Array<ActionListener> listeners = new Array<>();
+    private final Array<InputProcessor> inputProcessors = new Array<>();
 
     public void addActionListener(ActionListener listener) {
         listeners.add(listener);
@@ -93,8 +94,20 @@ public class Controls implements InputProcessor, ControllerListener {
         listeners.removeValue(listener, true);
     }
 
+    public void addInputProcessor(InputProcessor inputProcessor) {
+        inputProcessors.add(inputProcessor);
+    }
+
+    public void removeInputProcessor(InputProcessor inputProcessor) {
+        inputProcessors.removeValue(inputProcessor, true);
+    }
+
     @Override
     public boolean keyDown(int keycode) {
+        for(InputProcessor inputProcessor : inputProcessors) {
+            inputProcessor.keyDown(keycode);
+        }
+
         List<Actions> actions = Actions.fromKeycode(keycode);
 
         if(actions.isEmpty()) return false;
@@ -110,6 +123,10 @@ public class Controls implements InputProcessor, ControllerListener {
 
     @Override
     public boolean keyUp(int keycode) {
+        for(InputProcessor inputProcessor : inputProcessors) {
+            inputProcessor.keyUp(keycode);
+        }
+
         List<Actions> actions = Actions.fromKeycode(keycode);
 
         if(actions.isEmpty()) return false;
@@ -125,36 +142,64 @@ public class Controls implements InputProcessor, ControllerListener {
 
     @Override
     public boolean keyTyped(char character) {
+        for(InputProcessor inputProcessor : inputProcessors) {
+            inputProcessor.keyTyped(character);
+        }
+
         return false;
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        for(InputProcessor inputProcessor : inputProcessors) {
+            inputProcessor.touchDown(screenX, screenY, pointer, button);
+        }
+
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        for(InputProcessor inputProcessor : inputProcessors) {
+            inputProcessor.touchUp(screenX, screenY, pointer, button);
+        }
+
         return false;
     }
 
     @Override
     public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
+        for(InputProcessor inputProcessor : inputProcessors) {
+            inputProcessor.touchCancelled(screenX, screenY, pointer, button);
+        }
+
         return false;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+        for(InputProcessor inputProcessor : inputProcessors) {
+            inputProcessor.touchDragged(screenX, screenY, pointer);
+        }
+
         return false;
     }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
+        for(InputProcessor inputProcessor : inputProcessors) {
+            inputProcessor.mouseMoved(screenX, screenY);
+        }
+
         return false;
     }
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
+        for(InputProcessor inputProcessor : inputProcessors) {
+            inputProcessor.scrolled(amountX, amountY);
+        }
+
         return false;
     }
 

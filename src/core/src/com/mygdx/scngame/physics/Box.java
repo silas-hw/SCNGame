@@ -161,12 +161,17 @@ public class Box {
             Box otherBox = (Box) other.userData;
 
             // if the colliding box's mask doesn't match the collided box's layer
-            if((otherBox.layer & box.mask) == 0) {
-                return null;
+
+            boolean intersects = (otherBox.layer & box.mask) != 0;
+            boolean collides = intersects & otherBox.solid;
+
+            if(collides) {
+                return box.internalFilter.filter(item, other);
+            } else if(intersects) {
+                return Response.cross;
             }
 
-            if(otherBox.solid) return box.internalFilter.filter(item, other);
-            return Response.cross;
+            return null;
         }
     }
 }

@@ -221,9 +221,13 @@ public class GameScreen implements Screen, MapChangeEventListener {
 
         gameViewport.apply();
 
-        mapRenderer.setView(camera);
+        scene.drawWaterReflection();
 
+        gameViewport.apply();
+        camera.update();
+        mapRenderer.setView(camera);
         mapRenderer.render();
+
         scene.draw();
         dialog.draw();
         settingsMenu.draw();
@@ -301,6 +305,8 @@ public class GameScreen implements Screen, MapChangeEventListener {
         gameViewport.update(width, height);
         screenViewport.update(width, height, true);
         dialog.resize(width, height);
+        settingsMenu.resize(width, height);
+        scene.resize(width, height);
     }
 
     @Override

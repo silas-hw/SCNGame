@@ -89,11 +89,18 @@ public class Player extends Entity {
         }
 
         hurtbox.update(delta, this.position);
+
+        System.out.println(health.getHealth());
     }
 
     @Override
     public void draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
         state.draw( batch, shape, alpha);
+    }
+
+    @Override
+    public void drawWaterReflection(SpriteBatch batch, ShapeRenderer shape, float alpha) {
+        state.drawWaterReflection(batch, shape, alpha);
     }
 
     @Override

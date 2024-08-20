@@ -4,6 +4,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.scngame.controls.Controls;
 import com.mygdx.scngame.controls.MockPreferences;
@@ -29,7 +30,6 @@ public class SCNGame extends Game {
 
 		batch = new SpriteBatch();
 		shape = new ShapeRenderer();
-
 		assetManager = new AssetManager();
 
 		ScreenData screenData = new ScreenData(

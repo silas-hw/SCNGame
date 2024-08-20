@@ -1,13 +1,21 @@
 package com.mygdx.scngame.scene;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.SnapshotArray;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.controls.ActionListener;
@@ -57,6 +65,11 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
     // if the scene created its own batch. Used to determine whether to dispose of the batch and shape renderer
     private boolean ownsBatch = false;
 
+    private ShaderProgram waterShader;
+    private FrameBuffer waterFrameBuffer;
+
+    private ScreenViewport screenViewport;
+
     public Scene(Viewport viewport, World<Box> world) {
         this(viewport, new SpriteBatch(), new ShapeRenderer(), world);
         ownsBatch = true;
@@ -73,9 +86,20 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
         GlobalEventBus.getInstance().addDialogListener(this);
 
         this.world = world;
+
+        String vertex = Gdx.files.internal("shaders/vertex.glsl").readString();
+        String fragment = Gdx.files.internal("shaders/fragment.glsl").readString();
+
+        this.waterShader = new ShaderProgram(vertex, fragment);
+        this.waterFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+
+        this.screenViewport = new ScreenViewport();
     }
 
+    private float stateTime = 0f;
+
     public void update(float delta) {
+        stateTime += delta;
         Entity[] e = entities.begin();
 
         for(int i = 0; i<entities.size; i++) {
@@ -94,6 +118,7 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
 
     public void draw() {
         entities.sort(this.renderComparator);
+
         viewport.getCamera().update();
         viewport.apply();
 
@@ -110,6 +135,49 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
         entities.end();
 
         batch.end();
+    }
+
+    public void drawWaterReflection() {
+        entities.sort(this.renderComparator);
+
+        waterFrameBuffer.begin();
+
+        viewport.getCamera().update();
+        viewport.apply();
+
+        batch.setProjectionMatrix(viewport.getCamera().combined);
+        shape.setProjectionMatrix(viewport.getCamera().combined);
+
+        batch.begin();
+
+        ScreenUtils.clear(0f, 0f, 0f, 0f);
+
+        Entity[] e = entities.begin();
+        for(int i = 0; i<entities.size; i++) {
+            e[i].drawWaterReflection(batch, shape, alpha);
+        }
+
+        entities.end();
+        batch.end();
+
+        waterFrameBuffer.end();
+
+        waterShader.bind();
+        waterShader.setUniformf("u_time", stateTime);
+        batch.setShader(this.waterShader);
+
+        Texture frame = waterFrameBuffer.getColorBufferTexture();
+
+        screenViewport.apply();
+        screenViewport.getCamera().update();
+        batch.setProjectionMatrix(screenViewport.getCamera().combined);
+        batch.begin();
+
+        batch.draw(frame, 0, 0, frame.getWidth(), frame.getHeight(), 0, 0, 1, 1);
+
+        batch.end();
+
+        batch.setShader(null);
     }
 
     public void addEntity(Entity entity) {
@@ -209,6 +277,11 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
     public boolean actionUp(Controls.Actions action) {
         actionsPressed[action.ordinal()] = false;
         return true;
+    }
+
+    public void resize(int width, int height) {
+        screenViewport.update(width, height, true);
+        waterFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
     }
 
     public static class YComparator implements Comparator<Entity> {

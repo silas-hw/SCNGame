@@ -42,6 +42,8 @@ public abstract class Entity implements Disposable {
      */
     public void draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {}
 
+    public void drawWaterReflection(SpriteBatch batch, ShapeRenderer shape, float alpha) {}
+
     /**
      * Sets the {@link World physics world} for this Entity to use.
      *

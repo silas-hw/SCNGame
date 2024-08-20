@@ -44,6 +44,11 @@ public class PlayerDashState implements EntityState<Player> {
     }
 
     @Override
+    public void drawWaterReflection(SpriteBatch batch, ShapeRenderer shape, float alpha) {
+
+    }
+
+    @Override
     public void setContainer(Player container) {
         this.container = container;
     }
