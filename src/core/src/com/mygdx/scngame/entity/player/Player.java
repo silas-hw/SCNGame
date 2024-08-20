@@ -13,10 +13,8 @@ import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.*;
 import com.mygdx.scngame.entity.component.HealthComponent;
 import com.mygdx.scngame.entity.component.HurtBox;
-import com.mygdx.scngame.entity.context.EntityContext;
 import com.mygdx.scngame.entity.player.states.PlayerMoveState;
 import com.mygdx.scngame.physics.Box;
-import com.mygdx.scngame.physics.HitBox;
 
 // TODO: add comments
 public class Player extends Entity {
@@ -29,7 +27,11 @@ public class Player extends Entity {
     public HurtBox hurtbox;
 
     public Texture texture;
-    public Animation<TextureAtlas.AtlasRegion> anim;
+
+    public Animation<TextureAtlas.AtlasRegion> idleRightAnim;
+    public Animation<TextureAtlas.AtlasRegion> walkRightAnim;
+    public Animation<TextureAtlas.AtlasRegion> walkDownAnim;
+    public Animation<TextureAtlas.AtlasRegion> walkUpAnim;
 
     public final int WIDTH = 16;
     public final int HEIGHT = 16;
@@ -40,10 +42,16 @@ public class Player extends Entity {
     public final float interactDistance = 14f;
 
     public Player(AssetManager assets) {
+        float animDuration = 0.1f;
+
         texture = assets.get("sprites/wizardguy.png", Texture.class);
 
         TextureAtlas atlas = assets.get("animations/animation_atlas.atlas", TextureAtlas.class);
-        anim = new Animation<>(0.3f, atlas.findRegions("testanim"), Animation.PlayMode.LOOP);
+
+        idleRightAnim = new Animation<>(animDuration, atlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP);
+        walkRightAnim = new Animation<>(animDuration, atlas.findRegions("player/test_walk_right"), Animation.PlayMode.LOOP);
+        walkDownAnim = new Animation<>(animDuration, atlas.findRegions("player/test_walk_down"), Animation.PlayMode.LOOP);
+        walkUpAnim = new Animation<>(animDuration, atlas.findRegions("player/test_walk_up"), Animation.PlayMode.LOOP);
 
         Box foot;
         foot = new Box();
@@ -89,8 +97,6 @@ public class Player extends Entity {
         }
 
         hurtbox.update(delta, this.position);
-
-        System.out.println(health.getHealth());
     }
 
     @Override

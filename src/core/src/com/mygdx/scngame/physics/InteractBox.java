@@ -5,9 +5,7 @@ import com.dongbat.jbump.CollisionFilter;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Response;
 
-public abstract class InteractBox extends Box {
-    public abstract void interact();
-
+public abstract class InteractBox extends Box implements Interactable{
     public InteractBox() {
         super.setDebugColor(Color.GREEN);
         this.solid = false;

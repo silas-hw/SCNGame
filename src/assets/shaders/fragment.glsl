@@ -7,8 +7,8 @@ in vec4 gl_FragCoord;
 uniform sampler2D u_texture;
 
 uniform float u_time;
-uniform float u_amplitude = 0.001;
-uniform float u_frequency = 300;
+uniform float u_amplitude = 0.002;
+uniform float u_frequency = 400;
 uniform float u_timeCoefficient = 10;
 
 varying vec2 v_texCoords;

@@ -12,6 +12,7 @@ import com.mygdx.scngame.entity.player.Player;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.InteractBox;
 import com.mygdx.scngame.controls.Controls;
+import com.mygdx.scngame.physics.Interactable;
 
 import java.util.ArrayList;
 
@@ -40,16 +41,6 @@ public class PlayerMoveState implements EntityState<Player> {
         int dx = 0;
         int dy = 0;
 
-        if(container.context.isActionPressed(Controls.Actions.UP)) {
-            dy++;
-            facing = Direction.UP;
-        }
-
-        if(container.context.isActionPressed(Controls.Actions.DOWN)) {
-            dy--;
-            facing = Direction.DOWN;
-        }
-
         if(container.context.isActionPressed(Controls.Actions.LEFT)) {
             dx--;
             facing = Direction.LEFT;
@@ -58,6 +49,16 @@ public class PlayerMoveState implements EntityState<Player> {
         if(container.context.isActionPressed(Controls.Actions.RIGHT)) {
             dx++;
             facing = Direction.RIGHT;
+        }
+
+        if(container.context.isActionPressed(Controls.Actions.UP)) {
+            dy++;
+            facing = Direction.UP;
+        }
+
+        if(container.context.isActionPressed(Controls.Actions.DOWN)) {
+            dy--;
+            facing = Direction.DOWN;
         }
 
         container.direction.set(dx, dy);
@@ -100,7 +101,7 @@ public class PlayerMoveState implements EntityState<Player> {
             world.querySegment(rayStart.x, rayStart.y, rayEnd.x, rayEnd.y, InteractBox.INTERACT_FILTER, arr);
 
             if(arr.size() > 0) {
-                InteractBox interactBox = (InteractBox) arr.get(0).userData;
+                Interactable interactBox = (Interactable) arr.get(0).userData;
                 interactBox.interact();
             }
         }
@@ -115,11 +116,46 @@ public class PlayerMoveState implements EntityState<Player> {
         return null;
     }
 
+    private TextureAtlas.AtlasRegion lastFrame;
+
 
     @Override
     public EntityState<? super Player> draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
-        TextureAtlas.AtlasRegion text = container.anim.getKeyFrame(stateTime, true);
-        batch.draw(text, container.position.x, container.position.y);
+
+        boolean flipx = false;
+        boolean flipy = false;
+
+        if(container.direction.isZero()) {
+            flipx = facing == Direction.LEFT;
+            lastFrame = container.idleRightAnim.getKeyFrame(stateTime, true);
+        } else {
+
+            switch(facing) {
+                case LEFT:
+                    flipx = true;
+
+                case RIGHT:
+                    lastFrame = container.walkRightAnim.getKeyFrame(stateTime, true);
+                    break;
+
+                case DOWN:
+                    lastFrame = container.walkDownAnim.getKeyFrame(stateTime, true);
+                    break;
+
+                case UP:
+                    lastFrame = container.walkUpAnim.getKeyFrame(stateTime, true);
+                    break;
+            }
+
+        }
+
+
+
+        lastFrame.flip(flipx, flipy);
+
+        batch.draw(lastFrame, container.position.x, container.position.y);
+
+        lastFrame.flip(flipx, flipy);
 
 
         // draw debug ray cast line
@@ -141,10 +177,17 @@ public class PlayerMoveState implements EntityState<Player> {
 
     @Override
     public void drawWaterReflection(SpriteBatch batch, ShapeRenderer shape, float alpha) {
-        TextureAtlas.AtlasRegion text = container.anim.getKeyFrame(stateTime, true);
-        text.flip(false, true);
-        batch.draw(text, container.position.x, container.position.y - text.getRegionHeight());
-        text.flip(false, true);
+        boolean flipx = false;
+
+        switch(facing) {
+            case LEFT:
+                flipx = true;
+                break;
+        }
+
+        lastFrame.flip(flipx, true);
+        batch.draw(lastFrame, container.position.x, container.position.y - lastFrame.getRegionHeight());
+        lastFrame.flip(flipx, true);
     }
 
     @Override
@@ -159,6 +202,8 @@ public class PlayerMoveState implements EntityState<Player> {
 
     @Override
     public void enter() {
+
+        lastFrame = container.idleRightAnim.getKeyFrame(stateTime, true);
         container.hurtbox.setTakesDamage(true);
     }
 
