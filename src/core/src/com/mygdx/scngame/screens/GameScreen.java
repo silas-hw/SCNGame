@@ -136,7 +136,7 @@ public class GameScreen implements Screen, MapChangeEventListener {
         MAP_HEIGHT = tiledMap.getProperties().get("height", Integer.class) * tiledMap.getProperties().get("tileheight", Integer.class);
         MAP_WIDTH = tiledMap.getProperties().get("width", Integer.class) * tiledMap.getProperties().get("tilewidth", Integer.class);
 
-        MapObjectLoader mapObjects = new MapObjectLoader(tiledMap, this.world, this.scene, this.pathNodes);
+        MapObjectLoader mapObjects = new MapObjectLoader(tiledMap, this.world, this.scene, this.pathNodes, screenData.assets());
 
         Map<String, Vector2> spawnLocations = mapObjects.getSpawnLocations();
 

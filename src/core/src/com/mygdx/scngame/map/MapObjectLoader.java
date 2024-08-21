@@ -1,6 +1,7 @@
 package com.mygdx.scngame.map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
@@ -16,10 +17,12 @@ import com.badlogic.gdx.utils.Array;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.context.EntityContext;
+import com.mygdx.scngame.entity.npc.NPC;
 import com.mygdx.scngame.entity.sprite.AnimatedSpriteEntity;
 import com.mygdx.scngame.entity.sprite.SpriteEntity;
 import com.mygdx.scngame.entity.trigger.Trigger;
 import com.mygdx.scngame.event.GlobalEventBus;
+import com.mygdx.scngame.path.PathNode;
 import com.mygdx.scngame.path.PathNodes;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.DamageBox;
@@ -55,26 +58,31 @@ public class MapObjectLoader {
     private Map<String, Vector2> spawnLocations;
     PathNodes pathNodes;
 
+    private AssetManager assets;
+
     public PathNodes getPathNodes() {return pathNodes;}
     public Map<String, Vector2> getSpawnLocations() {return spawnLocations;}
 
-    public MapObjectLoader(TiledMap map,World<Box> world, EntityContext entityContext) {
-        this(map, world, entityContext, new HashMap<String, Vector2>(), new PathNodes());
+    public MapObjectLoader(TiledMap map,World<Box> world, EntityContext entityContext, AssetManager assets) {
+        this(map, world, entityContext, new HashMap<String, Vector2>(), new PathNodes(), assets);
     }
 
-    public MapObjectLoader(TiledMap map, World<Box> world, EntityContext entityContext, PathNodes pathNodes) {
-        this(map, world, entityContext, new HashMap<String, Vector2>(), pathNodes);
+    public MapObjectLoader(TiledMap map, World<Box> world, EntityContext entityContext, PathNodes pathNodes, AssetManager assets) {
+        this(map, world, entityContext, new HashMap<String, Vector2>(), pathNodes, assets);
     }
 
-    public MapObjectLoader(TiledMap map, World<Box> world, EntityContext entityContext, Map<String, Vector2> spawnLocations) {
-        this(map, world, entityContext, spawnLocations, new PathNodes());
+    public MapObjectLoader(TiledMap map, World<Box> world, EntityContext entityContext, Map<String, Vector2> spawnLocations, AssetManager assets) {
+        this(map, world, entityContext, spawnLocations, new PathNodes(), assets);
     }
 
-    public MapObjectLoader(TiledMap map, World<Box> world, EntityContext entityContext, Map<String, Vector2> spawnLocations, PathNodes pathNodes) {
+    public MapObjectLoader(TiledMap map, World<Box> world, EntityContext entityContext,
+                           Map<String, Vector2> spawnLocations, PathNodes pathNodes, AssetManager assets ) {
         this.world = world;
         this.entityContext = entityContext;
         this.spawnLocations = spawnLocations;
         this.pathNodes = pathNodes;
+
+        this.assets = assets;
 
         for(MapLayer layer : map.getLayers()) {
             if(layer instanceof TiledMapTileLayer) parseTileLayer((TiledMapTileLayer) layer);
@@ -202,6 +210,13 @@ public class MapObjectLoader {
 
             world.add(new Item<>(box), x + offsetX, y + offsetY, width, height);
 
+        } else if(type.equals("NPC")) {
+            String DialogID = properties.get("DialogID", String.class);
+            MapObject pathNode = properties.get("StartingNode", MapObject.class);
+
+            PathNode startingNode = pathNodes.put(pathNode);
+            NPC npc = new NPC(startingNode, DialogID, assets);
+            entityContext.addEntity(npc);
         } else if(obj instanceof TiledMapTileMapObject && type.equals("")) {
             TiledMapTile tile = ((TiledMapTileMapObject) obj).getTile();
 
@@ -240,8 +255,6 @@ public class MapObjectLoader {
             String key = it.next();
 
             if("type".equals(key)) continue;
-
-            System.out.println(key);
 
             boolean set = collisionLayer.get(key, Boolean.class);
             if(set) {

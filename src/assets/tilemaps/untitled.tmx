@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="8" tileheight="8" infinite="0" nextlayerid="7" nextobjectid="46">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="8" tileheight="8" infinite="0" nextlayerid="7" nextobjectid="51">
  <properties>
   <property name="bg" value="bgtest2.mp3"/>
  </properties>
@@ -304,6 +304,40 @@
     </property>
     <property name="DamageType" propertytype="DamageType" value="DEFAULT"/>
     <property name="damage" type="float" value="1"/>
+   </properties>
+  </object>
+  <object id="46" type="PathNode" x="164.667" y="248">
+   <properties>
+    <property name="NextNode1" type="object" value="47"/>
+    <property name="id" value="node1"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="47" type="PathNode" x="76.6667" y="248">
+   <properties>
+    <property name="NextNode1" type="object" value="48"/>
+    <property name="id" value="node2"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="48" type="PathNode" x="96" y="288">
+   <properties>
+    <property name="NextNode1" type="object" value="49"/>
+    <property name="id" value="node3"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="49" type="PathNode" x="164.667" y="304">
+   <properties>
+    <property name="NextNode1" type="object" value="46"/>
+    <property name="id" value="node4"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="50" name="NPC" type="NPC" x="164.667" y="216" width="8" height="16">
+   <properties>
+    <property name="DialogID" value="test_dialog_1"/>
+    <property name="StartingNode" type="object" value="46"/>
    </properties>
   </object>
  </objectgroup>

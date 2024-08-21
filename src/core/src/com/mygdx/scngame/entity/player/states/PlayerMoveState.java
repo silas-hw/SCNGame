@@ -68,8 +68,8 @@ public class PlayerMoveState implements EntityState<Player> {
             return new PlayerDashState();
         }
 
-        rayStart.y = container.position.y + container.HEIGHT/2;
-        rayStart.x = container.position.x + container.WIDTH/2;
+        rayStart.y = container.position.y + container.HEIGHT/2f;
+        rayStart.x = container.position.x + container.WIDTH/2f;
         rayEnd.x = rayStart.x;
         rayEnd.y = rayStart.y;
 
