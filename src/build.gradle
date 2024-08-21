@@ -16,20 +16,20 @@ buildscript {
 
 import com.badlogic.gdx.tools.texturepacker.TexturePacker
 
-task texturePacker {
+tasks.register('texturePacker') {
     doLast {
         logger.info("Calling TexturePacker");
         TexturePacker.process("raw_animations/", "assets/animations/", "animation_atlas");
     }
 }
 
-task writeAllAssetsToFile {
+tasks.register('writeAllAssetsToFile') {
     doLast {
         def assetsFolder = new File("${project.rootDir}/assets/")
         def assetsFile = new File(assetsFolder, "assets.txt")
         assetsFile.delete()
 
-        fileTree(assetsFolder).collect {assetsFolder.relativePath(it) }.each {
+        fileTree(assetsFolder).collect { assetsFolder.relativePath(it) }.each {
             assetsFile.append(it + "\0")
         }
     }
@@ -93,6 +93,4 @@ project(":core") {
     }
 
     compileJava.dependsOn writeAllAssetsToFile;
-    compileJava.dependsOn texturePacker;
-
 }
