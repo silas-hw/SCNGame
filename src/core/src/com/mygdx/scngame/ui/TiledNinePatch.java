@@ -105,7 +105,7 @@ public class TiledNinePatch implements Drawable {
         __shape.rect(position.x + left.getRegionWidth() * scale, position.y + bottom.getRegionHeight() * scale,
                 width * scale - left.getRegionWidth() * scale - right.getRegionWidth() * scale,
                 height * scale - bottom.getRegionHeight() * scale - top.getRegionHeight() * scale,
-                Color.BLUE, Color.BLUE, Color.CYAN, Color.CYAN);
+                Color.PURPLE, Color.PURPLE, Color.BLUE, Color.BLUE);
         __shape.end();
 
         batch.begin();

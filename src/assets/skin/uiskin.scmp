@@ -598,30 +598,30 @@ jsonData: {
 		{
 			class: com.ray3k.skincomposer.data.FreeTypeFontData
 			name: default-font-freetype
-			file: D:/silas/Summer Projects 2024/SCNGame/src/assets/skin/promptfont.ttf
+			file: D:/silas/Summer Projects 2024/SCNGame/src/assets/skin/MyFont2.ttf
 			previewTTF: Pacifico-Regular
 			useCustomSerializer: true
 			size: 32
 			mono: false
-			hinting: AutoMedium
+			hinting: Full
 			color: white
-			gamma: 1.8
-			renderCount: 1
+			gamma: 2
+			renderCount: 2
 			borderWidth: 1
 			borderColor: black
 			borderStraight: false
 			borderGamma: 1.8
-			shadowOffsetX: 1
-			shadowOffsetY: 1
+			shadowOffsetX: 0
+			shadowOffsetY: 0
 			shadowColor: black
 			spaceX: 0
-			spaceY: 0
+			spaceY: 2
 			characters: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789↧↦↤↥↞↠↡↟↱↰⇷⇸⇋⇌()!@#$%^&*_+-=><,./?'\":;[]{}\\|~"
 			kerning: false
 			flip: false
 			genMipMaps: true
-			minFilter: Linear
-			magFilter: Linear
+			minFilter: MipMapLinearLinear
+			magFilter: MipMapLinearLinear
 			incremental: false
 		}
 	]

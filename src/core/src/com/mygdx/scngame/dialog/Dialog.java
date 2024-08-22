@@ -1,7 +1,9 @@
 package com.mygdx.scngame.dialog;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
@@ -15,6 +17,7 @@ import com.mygdx.scngame.screens.data.ScreenData;
 import com.mygdx.scngame.controls.Controls;
 import com.mygdx.scngame.settings.Settings;
 import com.mygdx.scngame.ui.TiledNinePatch;
+import com.mygdx.scngame.ui.TruetypeLabel;
 
 // TODO: encapsulate dialog box UI into its own class
 
@@ -30,7 +33,7 @@ public class Dialog implements DialogEventListener, ActionListener {
 
     private Viewport view;
 
-    private static Skin skin;
+    private Skin skin;
 
     private Label label;
 
@@ -44,31 +47,37 @@ public class Dialog implements DialogEventListener, ActionListener {
 
     private Image icon;
 
-    private float WIDTH = 1200f;
-    private float HEIGHT = 300f;
+    private float WIDTH = 600f;
+    private float HEIGHT = 150f;
 
     TiledNinePatch npatch;
 
     private float basePatchScale = 3f;
 
-    private Settings settings;
+    private final Settings settings;
 
 
     public Dialog(ScreenData screenData) {
         this.settings = screenData.settings();
         this.skin = screenData.assets().get("skin/uiskin2.json", Skin.class);
 
+        float scale = settings.getUIScale();
+
         stage = new Stage(new ScreenViewport());
 
         root = new Table();
-
-        label = new Label("", skin);
 
         root.setFillParent(true);
 
         root.pad(20f);
 
         stage.addActor(root);
+
+        label = new TruetypeLabel( new FreeTypeFontGenerator(Gdx.files.internal("skin/MyFont2.ttf")), 20);
+
+        label.setFontScale(scale);
+        label.setWrap(true);
+        label.setAlignment(Align.top | Align.left);
 
         wrapper = new Container<>(label);
         wrapper.center();
@@ -79,8 +88,6 @@ public class Dialog implements DialogEventListener, ActionListener {
         icon = new Image(patchTexture);
         icon.setAlign(Align.center);
         icon.setScaling(Scaling.fit);
-
-        float scale = settings.getUIScale();
 
         inside = new Table();
         inside.add(wrapper).grow().colspan(2);
@@ -97,10 +104,6 @@ public class Dialog implements DialogEventListener, ActionListener {
 
         container.setBackground(npatch, true);
 
-        label.setFontScale(scale);
-        label.setWrap(true);
-        label.setAlignment(Align.top | Align.left);
-
 
         root.add(container);
 
@@ -116,8 +119,6 @@ public class Dialog implements DialogEventListener, ActionListener {
         }
 
         float scale = settings.getUIScale();
-
-        System.out.println(scale);
 
         /*
          *  Yeah, I know I *should* be doing root.getCell()... but that resizes the container and not the wrapper or

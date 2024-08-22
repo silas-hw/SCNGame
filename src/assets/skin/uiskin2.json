@@ -41,28 +41,28 @@ com.badlogic.gdx.graphics.Color: {
 }
 com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator: {
 	default-font-freetype: {
-		font: promptfont.ttf
+		font: MyFont2.ttf
 		size: 32
 		mono: false
 		color: white
-		gamma: 1.8
-		renderCount: 1
+		gamma: 2
+		renderCount: 2
 		borderWidth: 1
 		borderColor: black
 		borderStraight: false
 		borderGamma: 1.8
-		shadowOffsetX: 1
-		shadowOffsetY: 1
+		shadowOffsetX: 0
+		shadowOffsetY: 0
 		shadowColor: black
 		spaceX: 0
-		spaceY: 0
+		spaceY: 2
 		kerning: false
 		flip: false
 		genMipMaps: true
 		incremental: false
-		hinting: AutoMedium
-		minFilter: Linear
-		magFilter: Linear
+		hinting: Full
+		minFilter: MipMapLinearLinear
+		magFilter: MipMapLinearLinear
 		characters: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789↧↦↤↥↞↠↡↟↱↰⇷⇸⇋⇌()!@#$%^&*_+-=><,./?'\":;[]{}\\|~"
 	}
 }

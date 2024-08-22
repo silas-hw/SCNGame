@@ -1,5 +1,7 @@
 package com.mygdx.scngame.settings;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+
 /**
  * Defines an interface for retrieving general configuration settings. Most of the time,
  * {@link PrefSettings} will be used to retrieve and store settings in a persistent file.
@@ -24,6 +26,13 @@ public interface Settings {
 
     float getUIScale();
     void setUIScale(float uiScale);
+
+    /** sets a label have its font regenerated upon the UI scale being set, alongside a base font size for the
+     * new font size to be calculated from.
+     * @param label
+     */
+    void addLabelScaleListener(Label label);
+    void removeLabelScaleListener(Label label);
 
     float getHudScale();
     void setHudScale(float hudScale);
