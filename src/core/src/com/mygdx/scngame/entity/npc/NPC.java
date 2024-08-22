@@ -75,7 +75,7 @@ public class NPC extends Entity implements DialogEventListener {
     public void update(float delta) {
         if(freeze) {
             position.x = (int) position.x;
-            position.y = (int) position.y;aniw
+            position.y = (int) position.y;
             return;
         }
 
