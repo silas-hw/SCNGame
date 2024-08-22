@@ -118,10 +118,6 @@ public class Dialog implements DialogEventListener, ActionListener {
             return;
         }
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.W)) {
-            WIDTH += 10;
-        }
-
         float scale = settings.getDialogScale();
 
         /*
