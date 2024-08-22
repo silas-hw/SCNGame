@@ -270,7 +270,7 @@
     <property name="DialogID" value="test_dialog_1"/>
    </properties>
   </object>
-  <object id="43" type="Portal" x="0" y="242.667" width="8" height="51.3333">
+  <object id="43" type="Portal" x="0" y="242.667" width="8" height="52.8333">
    <properties>
     <property name="CollisionMask" type="class" propertytype="BitMask">
      <properties>

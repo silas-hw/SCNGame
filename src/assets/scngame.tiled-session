@@ -6,9 +6,9 @@
     "activeFile": "tilemaps/untitled.tmx",
     "automapping.whileDrawing": false,
     "expandedProjectPaths": [
-        "tilesets",
         ".",
-        "tilemaps"
+        "tilemaps",
+        "tilesets"
     ],
     "fileStates": {
         "tilemap_rules/wall_rules.tmx": {
@@ -56,8 +56,8 @@
             "scale": 4,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 431,
-                "y": 130.5
+                "x": 36.5,
+                "y": 320.75
             }
         },
         "tilemaps/untitled2.tmx": {
@@ -102,23 +102,19 @@
         "tilemaps/testmap1.tmx",
         "tilesets/testset1.tsx",
         "tilemaps/untitled.tmx",
-        "tilesets/set1.tsx",
         "tilesets/trees.tsx",
         "tilemaps/untitled2.tmx",
-        "tilesets/testset1.tsx",
-        "tilesets/testset1.tsx",
-        "tilesets/testset2.tsx",
-        "tilemaps/untitled.tmx"
+        "tilesets/testset2.tsx"
     ],
     "project": "scngame.tiled-project",
     "property.type": "object",
     "recentFiles": [
-        "tilesets/testset2.tsx",
-        "tilesets/testset1.tsx",
         "tilemaps/testmap1.tmx",
-        "tilemaps/untitled.tmx",
+        "tilesets/testset1.tsx",
+        "tilesets/testset2.tsx",
         "tilemaps/untitled2.tmx",
         "tilesets/trees.tsx",
+        "tilemaps/untitled.tmx",
         "tilesets/set1.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",

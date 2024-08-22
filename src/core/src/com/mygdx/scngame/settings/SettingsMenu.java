@@ -1,15 +1,16 @@
 package com.mygdx.scngame.settings;
 
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -31,28 +32,46 @@ public class SettingsMenu implements ActionListener {
 
     private final Array<Actor> focusableArray = new Array<Actor>();
 
-    private final FocusListener focusListener = new FocusListener() {
-        @Override
-        public void keyboardFocusChanged(FocusEvent event, Actor actor, boolean focused) {
-            if(focused) {
-                actor.setColor(Color.CYAN);
-            } else {
-                actor.setColor(Color.WHITE);
-            }
-            System.out.println(actor);
-        }
-    };
-
     private SpriteBatch batch;
+
+    private Window window;
+    private Slider uiScaleSlider;
+    private Slider musicSlider;
+    private Slider sfxSlider;
+    private CheckBox musicOn;
+    private CheckBox sfxOn;
+    private TextButton okButton;
+
+    private Skin skin;
 
 
     private final Settings settings;
     public SettingsMenu(ScreenData screenData) {
+        FocusListener focusListener = new FocusListener() {
+            @Override
+            public void keyboardFocusChanged(FocusEvent event, Actor actor, boolean focused) {
+                if (focused) {
+                    actor.setColor(Color.CYAN);
+                } else {
+                    actor.setColor(Color.WHITE);
+                }
+            }
+        };
+
+        ChangeListener setFocusListener = new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                focusIndex = focusableArray.indexOf(actor, true);
+                stage.setKeyboardFocus(actor);
+            }
+        };
+
         this.settings = screenData.settings();
         this.batch = screenData.batch();
         SpriteBatch batch = screenData.batch();
 
-        Skin skin = screenData.assets().get("skin/uiskin.json", Skin.class);
+        skin = screenData.assets().get("skin/uiskin2.json", Skin.class);
 
         stage = new Stage(new ScreenViewport(), batch);
 
@@ -61,32 +80,32 @@ public class SettingsMenu implements ActionListener {
 
         stage.addActor(root);
 
-        Window window = new Window("Settings", skin);
+        window = new Window("Settings", skin);
         window.setResizable(false);
         window.setMovable(true);
         window.keepWithinStage();
 
+        window.setScale(settings.getUIScale());
+
         root.add(window);
 
-        CheckBox musicOn = new CheckBox("music enabled", skin);
+        musicOn = new CheckBox("music enabled", skin);
         musicOn.setChecked(settings.isMusicOn());
 
         musicOn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 settings.setMusicOn(musicOn.isChecked());
-
-                focusIndex = focusableArray.indexOf(musicOn, true);
-                stage.setKeyboardFocus(musicOn);
             }
         });
 
+        musicOn.addListener(setFocusListener);
         musicOn.getStyle().focusedFontColor = Color.CYAN;
 
         focusableArray.add(musicOn);
-        window.add(musicOn).expandX().fillX().row();
+        window.add(musicOn).expandX().fillX().left().row();
 
-        Slider musicSlider = new Slider(0f, 1f, 0.1f, false, skin);
+        musicSlider = new Slider(0f, 1f, 0.1f, false, skin);
         musicSlider.setValue(settings.getMusicVolume());
 
         musicSlider.addCaptureListener(new ChangeListener() {
@@ -94,36 +113,32 @@ public class SettingsMenu implements ActionListener {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 settings.setMusicVolume(musicSlider.getValue());
-
-                focusIndex = focusableArray.indexOf(musicSlider, true);
-                stage.setKeyboardFocus(musicSlider);
             }
         });
 
-        musicSlider.addListener(this.focusListener);
+        musicSlider.addListener(setFocusListener);
+        musicSlider.addListener(focusListener);
 
         focusableArray.add(musicSlider);
         window.add(musicSlider).row();
 
-        CheckBox sfxOn = new CheckBox("sfx enabled", skin);
+        sfxOn = new CheckBox("sfx enabled", skin);
         sfxOn.setChecked(settings.isSfxOn());
 
         sfxOn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 settings.setSfxOn(sfxOn.isChecked());
-
-                focusIndex = focusableArray.indexOf(sfxOn, true);
-                stage.setKeyboardFocus(sfxOn);
             }
         });
 
+        sfxOn.addListener(setFocusListener);
         sfxOn.getStyle().focusedFontColor = Color.CYAN;
 
         focusableArray.add(sfxOn);
-        window.add(sfxOn).expandX().fillX().row();
+        window.add(sfxOn).left().row();
 
-        Slider sfxSlider = new Slider(0f, 1f, 0.1f, false, skin);
+        sfxSlider = new Slider(0f, 1f, 0.1f, false, skin);
         sfxSlider.setValue(settings.getSfxVol());
 
         sfxSlider.addCaptureListener(new ChangeListener() {
@@ -131,57 +146,37 @@ public class SettingsMenu implements ActionListener {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 settings.setSfxVol(sfxSlider.getValue());
-
-                focusIndex = focusableArray.indexOf(sfxSlider, true);
-                stage.setKeyboardFocus(sfxSlider);
             }
         });
 
-        sfxSlider.addCaptureListener(this.focusListener);
+        sfxSlider.addListener(setFocusListener);
+        sfxSlider.addCaptureListener(focusListener);
 
         focusableArray.add(sfxSlider);
         window.add(sfxSlider).row();
 
-        Slider menuScaleSlider = new Slider(1f, 3f, 0.1f, false, skin);
-        menuScaleSlider.setValue(settings.getMenuScale());
+        uiScaleSlider = new Slider(0.3f, 3f, 0.1f, false, skin);
+        uiScaleSlider.setValue(settings.getUIScale());
 
-        menuScaleSlider.addCaptureListener(new ChangeListener() {
-
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                settings.setMenuScale(menuScaleSlider.getValue());
-                window.setScale(menuScaleSlider.getValue());
-                focusIndex = focusableArray.indexOf(menuScaleSlider, true);
-                stage.setKeyboardFocus(menuScaleSlider);
-            }
-        });
-
-        menuScaleSlider.addListener(this.focusListener);
-
-        focusableArray.add(menuScaleSlider);
-        window.add(menuScaleSlider).row();
-
-        Slider dialogScaleSlider = new Slider(0.5f, 4f, 0.1f, false, skin);
-        dialogScaleSlider.setValue(settings.getDialogScale());
-
-        dialogScaleSlider.addCaptureListener(new ChangeListener() {
+        uiScaleSlider.addCaptureListener(new ChangeListener() {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                settings.setDialogScale(dialogScaleSlider.getValue());
-                focusIndex = focusableArray.indexOf(dialogScaleSlider, true);
-                stage.setKeyboardFocus(dialogScaleSlider);
+                settings.setUIScale(uiScaleSlider.getValue());
+
+                window.setScale(uiScaleSlider.getValue());
             }
         });
 
-        dialogScaleSlider.addListener(this.focusListener);
+        uiScaleSlider.addListener(setFocusListener);
+        uiScaleSlider.addListener(focusListener);
 
-        focusableArray.add(dialogScaleSlider);
-        window.add(dialogScaleSlider).row();
+        focusableArray.add(uiScaleSlider);
+        window.add(uiScaleSlider).row();
 
         HorizontalGroup buttons = new HorizontalGroup();
 
-        TextButton okButton = new TextButton("OK", skin);
+        okButton = new TextButton("OK", skin);
         okButton.addCaptureListener(new ChangeListener() {
 
             @Override
@@ -200,7 +195,6 @@ public class SettingsMenu implements ActionListener {
 
         buttons.rowCenter();
 
-
         window.add(buttons).growX().row();
 
         stage.setKeyboardFocus(focusableArray.get(focusIndex));
@@ -209,6 +203,7 @@ public class SettingsMenu implements ActionListener {
     public void draw() {
         if(!inFocus) return;
 
+        stage.act();
         stage.getViewport().apply(true);
         stage.getViewport().getCamera().update();
         stage.draw();

@@ -14,17 +14,16 @@ public interface Settings {
     float getMusicVolume();
     void setMusicVolume(float musicVolume);
 
+    float getTrueMusicVolume();
+
     boolean isSfxOn();
     void setSfxOn(boolean sfxOn);
 
     boolean isMusicOn();
     void setMusicOn(boolean musicOn);
 
-    float getDialogScale();
-    void setDialogScale(float dialogScale);
-
-    float getMenuScale();
-    void setMenuScale(float menuScale);
+    float getUIScale();
+    void setUIScale(float uiScale);
 
     float getHudScale();
     void setHudScale(float hudScale);

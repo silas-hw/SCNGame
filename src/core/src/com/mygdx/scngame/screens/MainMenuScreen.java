@@ -55,10 +55,11 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void show() {
-        Skin skin = screenData.assets().get("skin/uiskin.json", Skin.class);
+        Skin skin = screenData.assets().get("skin/uiskin2.json", Skin.class);
 
         Label label = new Label(" ", skin);
         label.setText("Press E to Start");
+        label.setFontScale(1/30f);
 
         Container<Label> container = new Container<>(label);
         container.center();
@@ -70,7 +71,7 @@ public class MainMenuScreen implements Screen {
 
         Gdx.app.log("MainMenu", "Music volume currently set to: " + screenData.settings().getMusicVolume());
 
-        bg.setVolume(screenData.settings().getMusicVolume());
+        bg.setVolume(screenData.settings().getTrueMusicVolume());
         bg.setLooping(true);
         bg.play();
     }

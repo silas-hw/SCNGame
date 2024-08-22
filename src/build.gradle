@@ -5,7 +5,8 @@ buildscript {
         mavenLocal()
         mavenCentral()
         gradlePluginPortal()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/"}
+        maven { url 'https://jitpack.io' }
         google()
     }
 
@@ -78,6 +79,8 @@ project(":desktop") {
         implementation "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
         api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+
+        implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
         
     }
 }
@@ -87,6 +90,8 @@ project(":core") {
 
     dependencies {
         implementation "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
+        implementation 'com.github.raeleus.stripe:stripe:2.0.0'
+        implementation 'com.github.raeleus.stripe:freetype:2.0.0'
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.github.tommyettinger:jbump:1.0.1"
         

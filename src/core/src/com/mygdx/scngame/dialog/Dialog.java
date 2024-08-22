@@ -1,10 +1,6 @@
 package com.mygdx.scngame.dialog;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.controllers.Controller;
-import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -48,8 +44,8 @@ public class Dialog implements DialogEventListener, ActionListener {
 
     private Image icon;
 
-    private float WIDTH = 600f;
-    private float HEIGHT = 150f;
+    private float WIDTH = 1200f;
+    private float HEIGHT = 300f;
 
     TiledNinePatch npatch;
 
@@ -60,7 +56,7 @@ public class Dialog implements DialogEventListener, ActionListener {
 
     public Dialog(ScreenData screenData) {
         this.settings = screenData.settings();
-        this.skin = screenData.assets().get("skin/uiskin.json", Skin.class);
+        this.skin = screenData.assets().get("skin/uiskin2.json", Skin.class);
 
         stage = new Stage(new ScreenViewport());
 
@@ -84,7 +80,7 @@ public class Dialog implements DialogEventListener, ActionListener {
         icon.setAlign(Align.center);
         icon.setScaling(Scaling.fit);
 
-        float scale = settings.getDialogScale();
+        float scale = settings.getUIScale();
 
         inside = new Table();
         inside.add(wrapper).grow().colspan(2);
@@ -105,6 +101,7 @@ public class Dialog implements DialogEventListener, ActionListener {
         label.setWrap(true);
         label.setAlignment(Align.top | Align.left);
 
+
         root.add(container);
 
         root.bottom();
@@ -118,7 +115,9 @@ public class Dialog implements DialogEventListener, ActionListener {
             return;
         }
 
-        float scale = settings.getDialogScale();
+        float scale = settings.getUIScale();
+
+        System.out.println(scale);
 
         /*
          *  Yeah, I know I *should* be doing root.getCell()... but that resizes the container and not the wrapper or
@@ -133,10 +132,12 @@ public class Dialog implements DialogEventListener, ActionListener {
         container.height(HEIGHT * scale);
 
         label.setFontScale(scale);
+
         inside.getCell(icon).pad(5 * scale);
         wrapper.pad(5 * scale);
 
         stage.getViewport().apply();
+        stage.act();
         stage.draw();
     }
 
@@ -161,7 +162,7 @@ public class Dialog implements DialogEventListener, ActionListener {
                 message += "Well, the controls should be: ";
                 for(Controls.Actions c : Controls.Actions.values()) {
                     message += c.toString() + ": ";
-                    message += Input.Keys.toString(c.getKeycode()) + " OR " + c.getControllerButton().name() + ", ";
+                    message += Input.Keys.toString(c.getKeycode()) + " OR " + c.getControllerButton().getDisplayText() + ", ";
                 }
                 break;
 

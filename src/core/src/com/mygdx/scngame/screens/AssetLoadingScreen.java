@@ -21,6 +21,7 @@ import com.mygdx.scngame.SCNGame;
 import com.mygdx.scngame.map.MyTmxMapLoader;
 import com.mygdx.scngame.screens.data.ScreenData;
 import com.mygdx.scngame.settings.Settings;
+import com.ray3k.stripe.FreeTypeSkinLoader;
 
 import java.net.URL;
 import java.security.CodeSource;
@@ -99,6 +100,7 @@ public class AssetLoadingScreen implements Screen {
     @Override
     public void show() {
         assetManager.setLoader(TiledMap.class, new MyTmxMapLoader(new InternalFileHandleResolver()));
+        assetManager.setLoader(Skin.class, new FreeTypeSkinLoader(assetManager.getFileHandleResolver()));
 
         for(String filePath : assetMap) {
             String extension = Gdx.files.internal(filePath).extension();

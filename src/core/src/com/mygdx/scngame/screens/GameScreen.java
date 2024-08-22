@@ -181,11 +181,7 @@ public class GameScreen implements Screen, MapChangeEventListener {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if(screenData.settings().isMusicOn()) {
-            bg.setVolume(screenData.settings().getMusicVolume());
-        } else {
-            bg.setVolume(0f);
-        }
+        bg.setVolume(screenData.settings().getTrueMusicVolume());
 
 
         // give some waiting time before doing anything.

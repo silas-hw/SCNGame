@@ -10,8 +10,7 @@ public class PrefSettings implements Settings {
     private final static String PREF_SFX_ON = "sfxOn";
     private final static String PREF_MUSIC_ON = "musicOn";
 
-    private final static String PREF_DIALOG_SCALE = "dialogScale";
-    private final static String PREF_MENU_SCALE = "menuScale";
+    private final static String PREF_UI_SCALE = "uiScale";
     private final static String PREF_HUD_SCALE = "hudScale";
 
     private final static String PREFS_NAME = "scngame/user_settings";
@@ -59,6 +58,12 @@ public class PrefSettings implements Settings {
         getPrefs().flush();
     }
 
+    public float getTrueMusicVolume() {
+        if(!isMusicOn()) return 0f;
+
+        return getMusicVolume();
+    }
+
     public boolean isSfxOn() {
         return getPrefs().getBoolean(PREF_SFX_ON, true);
     }
@@ -77,22 +82,13 @@ public class PrefSettings implements Settings {
         getPrefs().flush();
     }
 
-    public float getDialogScale() {
-        return getPrefs().getFloat(PREF_DIALOG_SCALE, 1.0f);
+    public float getUIScale() {
+        return getPrefs().getFloat(PREF_UI_SCALE, 1.0f);
     }
 
-    public void setDialogScale(float dialogScale) {
-        dialogScale = Math.max(dialogScale, 0.8f);
-        getPrefs().putFloat(PREF_DIALOG_SCALE, dialogScale);
-        getPrefs().flush();
-    }
-
-    public float getMenuScale() {
-        return getPrefs().getFloat(PREF_MENU_SCALE, 1.0f);
-    }
-
-    public void setMenuScale(float menuScale) {
-        getPrefs().putFloat(PREF_MENU_SCALE, menuScale);
+    public void setUIScale(float dialogScale) {
+        dialogScale = Math.max(dialogScale, 0.3f);
+        getPrefs().putFloat(PREF_UI_SCALE, dialogScale);
         getPrefs().flush();
     }
 

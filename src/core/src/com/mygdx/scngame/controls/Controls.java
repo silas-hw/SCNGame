@@ -249,20 +249,28 @@ public class Controls implements InputProcessor, ControllerListener {
     }
 
     public enum ControllerButtons {
-        buttonA,
-        buttonB,
-        buttonX,
-        buttonY,
-        buttonDpadLeft,
-        buttonDpadRight,
-        buttonDpadDown,
-        buttonDpadUp,
-        buttonR1,
-        buttonL1,
-        buttonBack,
-        buttonStart,
-        buttonLeftStick,
-        buttonRightStick,
+        buttonA ("↧"),
+        buttonB ("↦"),
+        buttonX ("↤"),
+        buttonY ("↥"),
+        buttonDpadLeft ("↞") ,
+        buttonDpadRight ("↠"),
+        buttonDpadDown ("↡"),
+        buttonDpadUp ("↟"),
+        buttonR1 ("↱"),
+        buttonL1 ("↰"),
+        buttonBack ("⇷"),
+        buttonStart ("⇸"),
+        buttonLeftStick ("⇋"),
+        buttonRightStick ("⇌");
+
+        private final String displayText;
+
+        ControllerButtons(String displayText){
+            this.displayText = displayText;
+        }
+
+        public String getDisplayText(){return this.displayText;}
     }
 
     public static ControllerButtons getControllerButton(Controller controller, int code) {
