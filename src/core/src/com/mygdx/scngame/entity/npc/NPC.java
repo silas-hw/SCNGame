@@ -69,10 +69,17 @@ public class NPC extends Entity implements DialogEventListener {
 
     private float speed = 50f;
     private boolean freeze = false;
+    private float stateTime = 0f;
 
     @Override
     public void update(float delta) {
-        if(freeze) return;
+        if(freeze) {
+            position.x = (int) position.x;
+            position.y = (int) position.y;aniw
+            return;
+        }
+
+        stateTime += delta;
 
         boolean passedNextNode = direction.hasOppositeDirection(nextPathNode.position.cpy().sub(position).nor());
 
@@ -97,9 +104,29 @@ public class NPC extends Entity implements DialogEventListener {
 
     @Override
     public void draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
-        TextureAtlas.AtlasRegion frame = walkDownAnim.getKeyFrame(0f, true);
+        TextureAtlas.AtlasRegion frame = walkUpAnim.getKeyFrame(stateTime, true);
+        boolean flipx = false;
 
+        if(direction.isZero()) {
+            frame = walkDownAnim.getKeyFrame(stateTime, true);
+        }
+
+        if(direction.x > 0f) {
+            frame = walkRightAnim.getKeyFrame(stateTime, true);
+        } else if(direction.x < 0f) {
+            frame = walkRightAnim.getKeyFrame(stateTime, true);
+            flipx = true;
+        }
+
+        if(direction.y > 0f && Math.abs(direction.y) > Math.abs(direction.x)) {
+            frame = walkUpAnim.getKeyFrame(stateTime, true);
+        } else if(direction.y < 0f && Math.abs(direction.y) > Math.abs(direction.x)) {
+            frame = walkDownAnim.getKeyFrame(stateTime, true);
+        }
+
+        frame.flip(flipx, false);
         batch.draw(frame, position.x, position.y);
+        frame.flip(flipx, false);
     }
 
     @Override

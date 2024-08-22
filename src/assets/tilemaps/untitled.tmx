@@ -313,7 +313,7 @@
    </properties>
    <point/>
   </object>
-  <object id="47" type="PathNode" x="76.6667" y="248">
+  <object id="47" type="PathNode" x="104" y="256">
    <properties>
     <property name="NextNode1" type="object" value="48"/>
     <property name="id" value="node2"/>
@@ -334,7 +334,7 @@
    </properties>
    <point/>
   </object>
-  <object id="50" name="NPC" type="NPC" x="164.667" y="216" width="8" height="16">
+  <object id="50" name="NPC" type="NPC" x="172.917" y="219" width="8" height="16">
    <properties>
     <property name="DialogID" value="test_dialog_1"/>
     <property name="StartingNode" type="object" value="46"/>
