@@ -99,9 +99,9 @@ project(":core") {
 
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.github.tommyettinger:jbump:1.0.1"
-        api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
 
+        // needed for tests
+        testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1' // For JUnit 5
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1' // For JUnit 5
         testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
