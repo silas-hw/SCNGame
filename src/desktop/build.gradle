@@ -1,5 +1,6 @@
 sourceCompatibility = 1.17
 sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.test.java.srcDirs = [ "test/" ]
 sourceSets.main.resources.srcDirs = ["../assets"]
 
 project.ext.mainClassName = "com.mygdx.scngame.DesktopLauncher"
@@ -8,6 +9,8 @@ project.ext.assetsDir = new File("../assets")
 import org.gradle.internal.os.OperatingSystem
 
 tasks.register('run', JavaExec) {
+    dependsOn project(':core').tasks.test
+
     dependsOn classes
     mainClass = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
@@ -55,6 +58,8 @@ tasks.register('debugRender', JavaExec) {
 
 tasks.register('dist', Jar) {
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+
+    dependsOn project(':core').tasks.test
 
     manifest {
         attributes 'Main-Class': project.mainClassName

@@ -17,6 +17,11 @@ public class GlobalEventBus {
         return bus;
     }
 
+    public void clearAllListeners() {
+        this.clearDialogListeners();
+        this.clearMapChangeListener();
+    }
+
     private final Array<DialogEventListener> dialogListeners = new Array<>();
 
     public void addDialogListener(DialogEventListener listener) {
@@ -27,6 +32,10 @@ public class GlobalEventBus {
     public void removeDialogListener(DialogEventListener listener) {
         Gdx.app.log(tag, "Removing dialog listener: " + listener);
         dialogListeners.removeValue(listener, true);
+    }
+
+    public void clearDialogListeners() {
+        dialogListeners.clear();
     }
 
     public void startDialog(String id) {
@@ -53,6 +62,10 @@ public class GlobalEventBus {
     public void removeMapChangeListener(MapChangeEventListener listener) {
         Gdx.app.log(tag, "Removing map listener: " + listener);
         mapChangeListeners.removeValue(listener, true);
+    }
+
+    public void clearMapChangeListener() {
+        mapChangeListeners.clear();
     }
 
     public void changeMap(String mapPath, String spawnID) {

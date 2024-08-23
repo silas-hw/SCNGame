@@ -70,7 +70,11 @@ public class Controls implements InputProcessor, ControllerListener {
         /** only set to something else for testing. Could be final and private, but this makes it easier
          * to give a mock preferences to test with
          */
-        public static Preferences prefs = Gdx.app.getPreferences("scngame/controls");
+        public static Preferences prefs = new MockPreferences();
+    }
+
+    public static void initPreferences() {
+        Actions.prefs =  Gdx.app.getPreferences("scngame/controls");
     }
 
     private static Controls instance = null;

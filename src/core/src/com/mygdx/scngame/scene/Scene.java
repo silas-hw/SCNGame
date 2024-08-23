@@ -25,6 +25,7 @@ import com.mygdx.scngame.event.DialogEventListener;
 import com.mygdx.scngame.event.GlobalEventBus;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.controls.Controls;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -180,7 +181,9 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
         batch.setShader(null);
     }
 
-    public void addEntity(Entity entity) {
+    public void addEntity(@NotNull Entity entity) {
+        assert entity != null : "Can't add a null entity to a scene";
+
         // change entity context to this if it currently belongs to another context
         if(entity.context != null) {
             entity.context.removeEntity(entity);
@@ -208,7 +211,9 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
     }
 
     @Override
-    public void setWorld(World<Box> world) {
+    public void setWorld(@NotNull World<Box> world) {
+        assert world != null : "Cannot set world to null";
+
         this.world = world;
 
         for(Entity entity : entities) {
