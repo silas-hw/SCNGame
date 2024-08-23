@@ -37,8 +37,6 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-// TODO: load animations and sound files
-
 public class AssetLoadingScreen implements Screen {
 
     private static final String logTag = "AssetLoadingScreen";
@@ -145,8 +143,6 @@ public class AssetLoadingScreen implements Screen {
 
         Gdx.app.log(logTag, "All assets set to load!");
     }
-
-    // TODO: inform user of asset loading graphically
 
     private float progressBarWidthProportion = 0.7f;
     private float progressBarHeightProportion = 0.025f;

@@ -10,8 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import java.util.HashMap;
 
-// TODO: add caching and shared resources to improve performance (IMPORTANT)
-
 /**
  * A hackjob solution to true type font labels. Really horrible. Like. Really really horrible.
  */
