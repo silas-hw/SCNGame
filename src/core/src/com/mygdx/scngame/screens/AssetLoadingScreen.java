@@ -12,6 +12,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -99,8 +101,10 @@ public class AssetLoadingScreen implements Screen {
 
     @Override
     public void show() {
-        assetManager.setLoader(TiledMap.class, new MyTmxMapLoader(new InternalFileHandleResolver()));
+        InternalFileHandleResolver resolver = new InternalFileHandleResolver();
+        assetManager.setLoader(TiledMap.class, new MyTmxMapLoader(resolver));
         assetManager.setLoader(Skin.class, new FreeTypeSkinLoader(assetManager.getFileHandleResolver()));
+        assetManager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
 
         for(String filePath : assetMap) {
             String extension = Gdx.files.internal(filePath).extension();
@@ -123,6 +127,9 @@ public class AssetLoadingScreen implements Screen {
             } else if (filePath.startsWith("animations/") && extension.equals("atlas")) {
                 assetManager.load(filePath, TextureAtlas.class);
                 Gdx.app.log(logTag, filePath + "set to load as TextureAtlas");
+            } else if (extension.equals("ttf")) {
+                assetManager.load(filePath, FreeTypeFontGenerator.class);
+                Gdx.app.log(logTag, filePath + " set to load as FreeTypeFontGenerator");
             } else {
                 Gdx.app.log(logTag, filePath + " IGNORED");
                 Gdx.app.debug(logTag, "Warning: file may have been placed in incorrect directory");

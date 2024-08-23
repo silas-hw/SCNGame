@@ -73,7 +73,8 @@ public class Dialog implements DialogEventListener, ActionListener {
 
         stage.addActor(root);
 
-        label = new TruetypeLabel( new FreeTypeFontGenerator(Gdx.files.internal("skin/MyFont2.ttf")), 20);
+        FreeTypeFontGenerator fontGenerator = screenData.assets().get("skin/MyFont2.ttf", FreeTypeFontGenerator.class);
+        label = new TruetypeLabel(fontGenerator, 20);
 
         label.setFontScale(scale);
         label.setWrap(true);

@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
@@ -27,6 +28,7 @@ import com.mygdx.scngame.scene.Scene;
 import com.mygdx.scngame.screens.data.ScreenData;
 import com.mygdx.scngame.settings.PrefSettings;
 import com.mygdx.scngame.settings.Settings;
+import com.mygdx.scngame.ui.TruetypeLabel;
 import com.mygdx.scngame.viewport.PixelFitScaling;
 
 public class MainMenuScreen implements Screen {
@@ -57,9 +59,8 @@ public class MainMenuScreen implements Screen {
     public void show() {
         Skin skin = screenData.assets().get("skin/uiskin2.json", Skin.class);
 
-        Label label = new Label(" ", skin);
+        TruetypeLabel label = new TruetypeLabel(screenData.assets().get("skin/MyFont2.ttf", FreeTypeFontGenerator.class), 16);
         label.setText("Press E to Start");
-        label.setFontScale(1/30f);
 
         Container<Label> container = new Container<>(label);
         container.center();

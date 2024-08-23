@@ -49,7 +49,7 @@ public class SettingsMenu implements ActionListener {
 
     private final Settings settings;
     public SettingsMenu(ScreenData screenData) {
-        FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("skin/MyFont2.ttf"));
+        FreeTypeFontGenerator fontGenerator = screenData.assets().get("skin/MyFont2.ttf", FreeTypeFontGenerator.class);
 
         FocusListener focusListener = new FocusListener() {
             @Override
@@ -91,7 +91,6 @@ public class SettingsMenu implements ActionListener {
         window.getTitleTable().getCell(window.getTitleLabel()).setActor(new TruetypeLabel( fontGenerator, 16));
         window.getTitleLabel().setText("Settings");
 
-        settings.addLabelScaleListener(window.getTitleLabel());
         window.setScale(settings.getUIScale());
 
         root.add(window);
@@ -104,8 +103,6 @@ public class SettingsMenu implements ActionListener {
 
         musicOn.setLabel(new TruetypeLabel(fontGenerator, 16));
         musicOn.getLabel().setText("music enabled");
-
-        settings.addLabelScaleListener(musicOn.getLabel());
 
         focusableArray.add(musicOn);
         window.add(musicOn).expandX().left().row();
@@ -129,8 +126,6 @@ public class SettingsMenu implements ActionListener {
         sfxOn.getLabel().setText("sfx enabled");
 
         sfxOn.pack();
-
-        settings.addLabelScaleListener(sfxOn.getLabel());
 
         focusableArray.add(sfxOn);
         window.add(sfxOn).left().row();
@@ -170,7 +165,6 @@ public class SettingsMenu implements ActionListener {
         okButton.getLabel().setAlignment(Align.center);
 
         Table buttons = new Table();
-        settings.addLabelScaleListener(okButton.getLabel());
         focusableArray.add(okButton);
         buttons.add(okButton).colspan(1).expandX().fillX().pad(5f);
 
@@ -196,8 +190,6 @@ public class SettingsMenu implements ActionListener {
         });
 
         focusableArray.add(applyButton);
-        settings.addLabelScaleListener(applyButton.getLabel());
-
 
         buttons.add(applyButton).colspan(1).expandX().fillX().pad(5f);
         window.add(buttons).expandX().fillX().row();

@@ -97,24 +97,6 @@ public class PrefSettings implements Settings {
         dialogScale = Math.max(dialogScale, 0.3f);
         getPrefs().putFloat(PREF_UI_SCALE, dialogScale);
         getPrefs().flush();
-
-        if(labels.isEmpty()) return;
-
-        for(Label label : labels) {
-            label.setFontScale(dialogScale);
-        }
-    }
-
-    Array<Label> labels = new Array<>();
-
-    @Override
-    public void addLabelScaleListener(Label label) {
-        labels.add(label);
-    }
-
-    @Override
-    public void removeLabelScaleListener(Label label) {
-        labels.removeValue(label, true);
     }
 
     public float getHudScale() {
