@@ -9,6 +9,7 @@ import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -17,8 +18,10 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.scngame.SCNGame;
 import com.mygdx.scngame.map.MyTmxMapLoader;
 import com.mygdx.scngame.screens.data.ScreenData;
@@ -49,6 +52,8 @@ public class AssetLoadingScreen implements Screen {
 
     ScreenData screenData;
 
+    ScreenViewport viewport;
+
     public AssetLoadingScreen(ScreenData args) {
         this.game = args.game();
         this.batch = args.batch();
@@ -56,6 +61,8 @@ public class AssetLoadingScreen implements Screen {
 
         this.settings = args.settings();
         this.screenData = args;
+
+        this.viewport = new ScreenViewport();
 
         assetManager = screenData.assets();
 
@@ -141,9 +148,36 @@ public class AssetLoadingScreen implements Screen {
 
     // TODO: inform user of asset loading graphically
 
+    private float progressBarWidthProportion = 0.7f;
+    private float progressBarHeightProportion = 0.025f;
+
+    private float progress = 0f;
+
     @Override
     public void render(float delta) {
         Gdx.app.log(logTag, "Loading assets... " + assetManager.getProgress()*100 + "%");
+
+        viewport.getCamera().update();
+        shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
+
+        float width = progressBarWidthProportion * viewport.getScreenWidth();
+        float height = progressBarHeightProportion * viewport.getScreenHeight();
+
+        float x = (viewport.getScreenWidth() - width)/2f;
+        float y = (viewport.getScreenHeight() - height)/2f;
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.LIGHT_GRAY);
+
+        shapeRenderer.rect(x, y, width, height);
+
+        shapeRenderer.setColor(Color.RED);
+
+        progress = MathUtils.lerp(progress, assetManager.getProgress(), 0.1f);
+
+        shapeRenderer.rect(x, y, width*progress, height);
+
+        shapeRenderer.end();
 
         if(assetManager.isFinished()) {
             game.setScreen(new MainMenuScreen(screenData));
@@ -155,7 +189,7 @@ public class AssetLoadingScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        viewport.update(width, height, true);
     }
 
     @Override
