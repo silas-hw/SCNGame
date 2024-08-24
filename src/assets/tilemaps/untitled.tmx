@@ -338,6 +338,10 @@
    <properties>
     <property name="DialogID" value="test_dialog_1"/>
     <property name="StartingNode" type="object" value="46"/>
+    <property name="walkDownAnim" value="player/test_walk_down"/>
+    <property name="walkRightAnim" value="testanim"/>
+    <property name="walkUpAnim" value="player/test_walk_up"/>
+    <property name="walkingSpeed" type="float" value="50"/>
    </properties>
   </object>
  </objectgroup>

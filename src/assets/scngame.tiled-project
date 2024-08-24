@@ -149,6 +149,26 @@
                     "name": "StartingNode",
                     "type": "object",
                     "value": 0
+                },
+                {
+                    "name": "walkDownAnim",
+                    "type": "string",
+                    "value": "unset"
+                },
+                {
+                    "name": "walkRightAnim",
+                    "type": "string",
+                    "value": "unset"
+                },
+                {
+                    "name": "walkUpAnim",
+                    "type": "string",
+                    "value": "unset"
+                },
+                {
+                    "name": "walkingSpeed",
+                    "type": "float",
+                    "value": -1
                 }
             ],
             "name": "NPC",

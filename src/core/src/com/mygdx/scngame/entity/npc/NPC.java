@@ -24,34 +24,46 @@ import com.mygdx.scngame.physics.InteractBox;
 public class NPC extends Entity implements DialogEventListener {
 
     private PathNode nextPathNode;
-
-    public Animation<TextureAtlas.AtlasRegion> walkUpAnim;
-    public Animation<TextureAtlas.AtlasRegion> walkDownAnim;
-    public Animation<TextureAtlas.AtlasRegion> walkRightAnim;
+    private PathNode currentPathNode;
 
     private final Item<Box> interactItem;
     private final Item<Box> collisionItem;
 
-    public NPC(PathNode startingPathNode, String dialogID, AssetManager assets) {
-        float animDuration = 0.2f;
+    public static class NPCBreed {
 
-        TextureAtlas atlas = assets.get("animations/animation_atlas.atlas", TextureAtlas.class);
+        public Animation<TextureAtlas.AtlasRegion> walkUpAnim;
+        public Animation<TextureAtlas.AtlasRegion> walkDownAnim;
+        public Animation<TextureAtlas.AtlasRegion> walkRightAnim;
+        public PathNode startingPathNode;
+        public String dialogID = "";
 
-        walkRightAnim = new Animation<>(animDuration, atlas.findRegions("player/test_walk_right"), Animation.PlayMode.LOOP);
-        walkDownAnim = new Animation<>(animDuration, atlas.findRegions("player/test_walk_down"), Animation.PlayMode.LOOP);
-        walkUpAnim = new Animation<>(animDuration, atlas.findRegions("player/test_walk_up"), Animation.PlayMode.LOOP);
+        public float walkingSpeed = 50f;
+
+        public boolean valid() {
+            return walkUpAnim != null && walkDownAnim != null && walkRightAnim != null && startingPathNode != null;
+        }
+
+    }
+
+    public NPCBreed breed;
+
+    public NPC(NPCBreed breed) {
+        assert breed != null;
+        assert breed.valid();
+
+        this.breed = breed;
 
         InteractBox interactBox = new InteractBox() {
             @Override
             public void interact() {
-                GlobalEventBus.getInstance().startDialog(dialogID);
+                GlobalEventBus.getInstance().startDialog(breed.dialogID);
             }
         };
 
         interactItem = new Item<>(interactBox);
 
-        position.x = startingPathNode.position.x;
-        position.y = startingPathNode.position.y;
+        position.x = breed.startingPathNode.position.x;
+        position.y = breed.startingPathNode.position.y;
 
         Box collider = new Box();
         collider.setLayer(0, true);
@@ -61,13 +73,16 @@ public class NPC extends Entity implements DialogEventListener {
 
         collisionItem = new Item<>(collider);
 
-        nextPathNode = startingPathNode.getNeighbour(0);
-        direction = nextPathNode.position.cpy().sub(position).nor();
+        currentPathNode = breed.startingPathNode;
+
+        if(!breed.startingPathNode.neighbours.isEmpty()) {
+            nextPathNode = breed.startingPathNode.neighbours.get(0);
+            direction = nextPathNode.position.cpy().sub(position).nor();
+        }
 
         GlobalEventBus.getInstance().addDialogListener(this);
     }
 
-    private float speed = 50f;
     private boolean freeze = false;
     private float stateTime = 0f;
 
@@ -81,17 +96,27 @@ public class NPC extends Entity implements DialogEventListener {
 
         stateTime += delta;
 
-        boolean passedNextNode = direction.hasOppositeDirection(nextPathNode.position.cpy().sub(position).nor());
+        if(currentPathNode.neighbours.isEmpty()) {
+            position.x = (int) nextPathNode.position.x;
+            position.y = (int) nextPathNode.position.y;
+            direction.set(0, 0);
+        } else {
+            boolean passedNextNode = direction.hasOppositeDirection(nextPathNode.position.cpy().sub(position).nor());
 
-        if(passedNextNode) {
-            position.x = nextPathNode.position.x;
-            position.y = nextPathNode.position.y;
+            if(passedNextNode) {
+                position.x = nextPathNode.position.x;
+                position.y = nextPathNode.position.y;
 
-            nextPathNode = nextPathNode.getNeighbour(0);
-            direction = nextPathNode.position.cpy().sub(position).nor();
+                currentPathNode = nextPathNode;
+
+                if(!nextPathNode.neighbours.isEmpty()) {
+                    nextPathNode = nextPathNode.neighbours.get(0);
+                    direction = nextPathNode.position.cpy().sub(position).nor();
+                }
+            }
         }
 
-        position.mulAdd(direction, delta*speed);
+        position.mulAdd(direction, delta*breed.walkingSpeed);
 
         world.move(collisionItem, position.x, position.y, Box.GLOBAL_FILTER);
         world.move(interactItem, position.x + 1, position.y + 1, Box.GLOBAL_FILTER);
@@ -104,24 +129,24 @@ public class NPC extends Entity implements DialogEventListener {
 
     @Override
     public void draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
-        TextureAtlas.AtlasRegion frame = walkUpAnim.getKeyFrame(stateTime, true);
+        TextureAtlas.AtlasRegion frame = breed.walkUpAnim.getKeyFrame(0f, true);
         boolean flipx = false;
 
         if(direction.isZero()) {
-            frame = walkDownAnim.getKeyFrame(stateTime, true);
+            frame = breed.walkDownAnim.getKeyFrame(0f, true);
         }
 
         if(direction.x > 0f) {
-            frame = walkRightAnim.getKeyFrame(stateTime, true);
+            frame = breed.walkRightAnim.getKeyFrame(stateTime, true);
         } else if(direction.x < 0f) {
-            frame = walkRightAnim.getKeyFrame(stateTime, true);
+            frame = breed.walkRightAnim.getKeyFrame(stateTime, true);
             flipx = true;
         }
 
         if(direction.y > 0f && Math.abs(direction.y) > Math.abs(direction.x)) {
-            frame = walkUpAnim.getKeyFrame(stateTime, true);
+            frame = breed.walkUpAnim.getKeyFrame(stateTime, true);
         } else if(direction.y < 0f && Math.abs(direction.y) > Math.abs(direction.x)) {
-            frame = walkDownAnim.getKeyFrame(stateTime, true);
+            frame = breed.walkDownAnim.getKeyFrame(stateTime, true);
         }
 
         frame.flip(flipx, false);

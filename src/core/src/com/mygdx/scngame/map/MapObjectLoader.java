@@ -2,6 +2,8 @@ package com.mygdx.scngame.map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
@@ -56,6 +58,7 @@ public class MapObjectLoader {
     private World<Box> world;
     private EntityContext entityContext;
     private Map<String, Vector2> spawnLocations;
+    private TextureAtlas animAtlas;
     PathNodes pathNodes;
 
     private AssetManager assets;
@@ -83,6 +86,7 @@ public class MapObjectLoader {
         this.pathNodes = pathNodes;
 
         this.assets = assets;
+        this.animAtlas = assets.get("animations/animation_atlas.atlas");
 
         for(MapLayer layer : map.getLayers()) {
             if(layer instanceof TiledMapTileLayer) parseTileLayer((TiledMapTileLayer) layer);
@@ -136,6 +140,7 @@ public class MapObjectLoader {
         float y = properties.get("y", float.class);
         float width = properties.get("width", float.class);
         float height = properties.get("height", float.class);
+        String name = properties.get("Name", String.class);
 
         String type = obj.getProperties().get("type", String.class);
         if(type == null) type = "";
@@ -211,11 +216,36 @@ public class MapObjectLoader {
             world.add(new Item<>(box), x + offsetX, y + offsetY, width, height);
 
         } else if(type.equals("NPC")) {
-            String DialogID = properties.get("DialogID", String.class);
+            String dialogID = properties.get("DialogID", String.class);
             MapObject pathNode = properties.get("StartingNode", MapObject.class);
 
+            String walkUpAnimPath = properties.get("walkUpAnim", String.class);
+            String walkDownAnimPath = properties.get("walkDownAnim", String.class);
+            String walkRightAnimPath = properties.get("walkRightAnim", String.class);
+
+            assert walkUpAnimPath != null : "Walk Up animation not set for NPC: " + name;
+            assert walkDownAnimPath != null : "Walk down animation not set for NPC: " + name;
+            assert walkRightAnimPath != null : "Walk right animation not set for NPC: " + name;
+
+            Float walkingSpeed = properties.get("walkingSpeed", Float.class);
+
             PathNode startingNode = pathNodes.put(pathNode);
-            NPC npc = new NPC(startingNode, DialogID, assets);
+
+            // will eventually be configured in tile map
+            Animation.PlayMode playmode = Animation.PlayMode.LOOP;
+
+            NPC.NPCBreed breed = new NPC.NPCBreed();
+            breed.startingPathNode = startingNode;
+            breed.dialogID = dialogID;
+
+            breed.walkDownAnim = new Animation<>(0.2f, animAtlas.findRegions(walkDownAnimPath), playmode);
+            breed.walkUpAnim = new Animation<>(0.2f, animAtlas.findRegions(walkUpAnimPath), playmode);
+            breed.walkRightAnim = new Animation<>(0.2f, animAtlas.findRegions(walkRightAnimPath), playmode);
+
+            if(walkingSpeed != null) breed.walkingSpeed = walkingSpeed;
+
+            NPC npc = new NPC(breed);
+
             entityContext.addEntity(npc);
         } else if(obj instanceof TiledMapTileMapObject && type.equals("")) {
             TiledMapTile tile = ((TiledMapTileMapObject) obj).getTile();

@@ -23,13 +23,14 @@ public final class PathNodes {
 
         // put the node straight into the cache even if we don't know its neighbours yet
         // this is to allow for circular paths - such that a neighbour may reference this node itself
-        PathNode node = new PathNode(id, null, x, y);
+        PathNode node = new PathNode(id, x, y);
         cache.put(id, node);
 
-        PathNode[] neighbours = new PathNode[4];
-        neighbours[0] = this.put(mapObject.getProperties().get("NextNode1", MapObject.class));
+        MapObject neighbourObj = mapObject.getProperties().get("NextNode1", MapObject.class);
 
-        node.setNeighbours(neighbours);
+        if(neighbourObj != null) {
+            node.neighbours.add(this.put(neighbourObj));
+        }
 
         return node;
     }
