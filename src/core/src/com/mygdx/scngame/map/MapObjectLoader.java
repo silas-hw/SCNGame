@@ -145,123 +145,142 @@ public class MapObjectLoader {
         String type = obj.getProperties().get("type", String.class);
         if(type == null) type = "";
 
-        if(type.equals("Wall")) {
-            Box newWall = new Box();
-            newWall.solid = true;
+        switch(type) {
+            case "Wall":
+                Box newWall = new Box();
+                newWall.solid = true;
 
-            MapProperties collisionLayer = obj.getProperties().get("CollisionLayer", MapProperties.class);
-            setBoxCollisionLayers(collisionLayer, newWall);
+                MapProperties collisionLayer = obj.getProperties().get("CollisionLayer", MapProperties.class);
+                setBoxCollisionLayers(collisionLayer, newWall);
 
 
-            world.add(new Item<>(newWall), x + offsetX, y + offsetY, width, height);
-        } else if(type.equals("DamageWall")) {
-            String dtype = properties.get("DamageType", String.class);
-            float damage = properties.get("damage", float.class);
-            DamageBox newDamage = new DamageBox(damage, DamageBox.DamageType.valueOf(dtype));
+                world.add(new Item<>(newWall), x + offsetX, y + offsetY, width, height);
+                break;
 
-            newDamage.solid = false;
+            case "DamageWall":
+                String dtype = properties.get("DamageType", String.class);
+                float damage = properties.get("damage", float.class);
+                DamageBox newDamage = new DamageBox(damage, DamageBox.DamageType.valueOf(dtype));
 
-            MapProperties collisionLayer = obj.getProperties().get("CollisionLayer", MapProperties.class);
-            setBoxCollisionLayers(collisionLayer, newDamage);
+                newDamage.solid = false;
 
-            world.add(new Item<>(newDamage), x + offsetX, y + offsetY, width, height);
-        } else if(type.equals("Sign")) {
-            String dialogID = properties.get("DialogID", String.class);
+                collisionLayer = obj.getProperties().get("CollisionLayer", MapProperties.class);
+                setBoxCollisionLayers(collisionLayer, newDamage);
 
-            InteractBox box = new InteractBox() {
-                @Override
-                public void interact() {
-                    GlobalEventBus.getInstance().startDialog(dialogID);
-                }
-            };
+                world.add(new Item<>(newDamage), x + offsetX, y + offsetY, width, height);
 
-            world.add(new Item<>(box), x + offsetX, y + offsetY, width, height);
-        } else if(type.equals("Portal")) {
-            MapProperties collisionMask = obj.getProperties().get("CollisionMask", MapProperties.class);
-            int[] maskIndices = getMaskLayers(collisionMask);
+                break;
 
-            String mapPath = properties.get("Map", String.class);
-            String spawnID = properties.get("SpawnID", String.class);
+            case "Sign":
+                String dialogID = properties.get("DialogID", String.class);
 
-            Trigger portal = new Trigger(
-                    x, y, width, height, maskIndices,
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            GlobalEventBus.getInstance().changeMap(mapPath, spawnID);
-                        }
+                InteractBox box = new InteractBox() {
+                    @Override
+                    public void interact() {
+                        GlobalEventBus.getInstance().startDialog(dialogID);
                     }
-            );
+                };
 
-            entityContext.addEntity(portal);
-        } else if(type.equals("PathNode")) {
-            pathNodes.put(obj);
-        } else if(type.equals("SpawnLocation")) {
-            String spawnID = properties.get("SpawnID", String.class);
-            Vector2 spawnLocation = new Vector2(x, y);
+                world.add(new Item<>(box), x + offsetX, y + offsetY, width, height);
+                break;
 
-            spawnLocations.put(spawnID, spawnLocation);
-        } else if(type.equals("Door")) {
-            String mapPath = properties.get("Map", String.class);
-            String spawnID = properties.get("SpawnID", String.class);
+            case "Portal":
+                MapProperties collisionMask = obj.getProperties().get("CollisionMask", MapProperties.class);
+                int[] maskIndices = getMaskLayers(collisionMask);
 
-            InteractBox box = new InteractBox() {
+                String mapPath = properties.get("Map", String.class);
+                String spawnID = properties.get("SpawnID", String.class);
 
-                @Override
-                public void interact() {
-                    GlobalEventBus.getInstance().changeMap(mapPath, spawnID);
+                Trigger portal = new Trigger(
+                        x, y, width, height, maskIndices,
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                GlobalEventBus.getInstance().changeMap(mapPath, spawnID);
+                            }
+                        }
+                );
+
+                entityContext.addEntity(portal);
+                break;
+
+            case "PathNode":
+                pathNodes.put(obj);
+                break;
+
+            case "SpawnLocation":
+                spawnID = properties.get("SpawnID", String.class);
+                Vector2 spawnLocation = new Vector2(x, y);
+
+                spawnLocations.put(spawnID, spawnLocation);
+                break;
+
+            case "Door":
+                mapPath = properties.get("Map", String.class);
+                spawnID = properties.get("SpawnID", String.class);
+
+                box = new InteractBox() {
+
+                    @Override
+                    public void interact() {
+                        GlobalEventBus.getInstance().changeMap(mapPath, spawnID);
+                    }
+                };
+
+                world.add(new Item<>(box), x + offsetX, y + offsetY, width, height);
+                break;
+
+            case "NPC":
+                dialogID = properties.get("DialogID", String.class);
+                MapObject pathNode = properties.get("StartingNode", MapObject.class);
+
+                String walkUpAnimPath = properties.get("walkUpAnim", String.class);
+                String walkDownAnimPath = properties.get("walkDownAnim", String.class);
+                String walkRightAnimPath = properties.get("walkRightAnim", String.class);
+
+                assert walkUpAnimPath != null : "Walk Up animation not set for NPC: " + name;
+                assert walkDownAnimPath != null : "Walk down animation not set for NPC: " + name;
+                assert walkRightAnimPath != null : "Walk right animation not set for NPC: " + name;
+
+                Float walkingSpeed = properties.get("walkingSpeed", Float.class);
+
+                PathNode startingNode = pathNodes.put(pathNode);
+                // will eventually be configured in tile map
+                Animation.PlayMode playmode = Animation.PlayMode.LOOP;
+
+                NPC.NPCBreed breed = new NPC.NPCBreed();
+                breed.startingPathNode = startingNode;
+                breed.dialogID = dialogID;
+
+                breed.walkDownAnim = new Animation<>(0.2f, animAtlas.findRegions(walkDownAnimPath), playmode);
+                breed.walkUpAnim = new Animation<>(0.2f, animAtlas.findRegions(walkUpAnimPath), playmode);
+                breed.walkRightAnim = new Animation<>(0.2f, animAtlas.findRegions(walkRightAnimPath), playmode);
+
+                if(walkingSpeed != null) breed.walkingSpeed = walkingSpeed;
+
+                NPC npc = new NPC(breed);
+
+                entityContext.addEntity(npc);
+                break;
+
+            default:
+                if(!(obj instanceof TiledMapTileMapObject)) return;
+
+                TiledMapTile tile = ((TiledMapTileMapObject) obj).getTile();
+
+                if(tile instanceof AnimatedTiledMapTile) {
+                    float interval = (float) ((AnimatedTiledMapTile) tile).getAnimationIntervals()[0]/1000f;
+                    entityContext.addEntity(new AnimatedSpriteEntity(((AnimatedTiledMapTile) tile).getFrameTiles(), interval, x, y));
+
+                } else {
+                    TextureRegion texture = ((TextureMapObject) obj).getTextureRegion();
+                    entityContext.addEntity(new SpriteEntity(texture, x, y));
                 }
-            };
-
-            world.add(new Item<>(box), x + offsetX, y + offsetY, width, height);
-
-        } else if(type.equals("NPC")) {
-            String dialogID = properties.get("DialogID", String.class);
-            MapObject pathNode = properties.get("StartingNode", MapObject.class);
-
-            String walkUpAnimPath = properties.get("walkUpAnim", String.class);
-            String walkDownAnimPath = properties.get("walkDownAnim", String.class);
-            String walkRightAnimPath = properties.get("walkRightAnim", String.class);
-
-            assert walkUpAnimPath != null : "Walk Up animation not set for NPC: " + name;
-            assert walkDownAnimPath != null : "Walk down animation not set for NPC: " + name;
-            assert walkRightAnimPath != null : "Walk right animation not set for NPC: " + name;
-
-            Float walkingSpeed = properties.get("walkingSpeed", Float.class);
-
-            PathNode startingNode = pathNodes.put(pathNode);
-
-            // will eventually be configured in tile map
-            Animation.PlayMode playmode = Animation.PlayMode.LOOP;
-
-            NPC.NPCBreed breed = new NPC.NPCBreed();
-            breed.startingPathNode = startingNode;
-            breed.dialogID = dialogID;
-
-            breed.walkDownAnim = new Animation<>(0.2f, animAtlas.findRegions(walkDownAnimPath), playmode);
-            breed.walkUpAnim = new Animation<>(0.2f, animAtlas.findRegions(walkUpAnimPath), playmode);
-            breed.walkRightAnim = new Animation<>(0.2f, animAtlas.findRegions(walkRightAnimPath), playmode);
-
-            if(walkingSpeed != null) breed.walkingSpeed = walkingSpeed;
-
-            NPC npc = new NPC(breed);
-
-            entityContext.addEntity(npc);
-        } else if(obj instanceof TiledMapTileMapObject && type.equals("")) {
-            TiledMapTile tile = ((TiledMapTileMapObject) obj).getTile();
-
-            if(tile instanceof AnimatedTiledMapTile) {
-                float interval = (float) ((AnimatedTiledMapTile) tile).getAnimationIntervals()[0]/1000f;
-                entityContext.addEntity(new AnimatedSpriteEntity(((AnimatedTiledMapTile) tile).getFrameTiles(), interval, x, y));
-
-            } else {
-                TextureRegion texture = ((TextureMapObject) obj).getTextureRegion();
-                entityContext.addEntity(new SpriteEntity(texture, x, y));
-            }
 
 
-            // parse the tile held by the tiled map tile object - getting any child objects of that tile
-            parseTile(tile, x,  y);
+                // parse the tile held by the tiled map tile object - getting any child objects of that tile
+                parseTile(tile, x,  y);
+                break;
         }
     }
 
