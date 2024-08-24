@@ -25,16 +25,17 @@ public class PlayerMoveState implements EntityState<Player> {
     protected Player container;
     protected World<Box> world;
 
-    private enum Direction {
+    public enum Direction {
         UP, DOWN, LEFT, RIGHT
     }
 
-    private Direction facing = Direction.LEFT;
+    protected Direction facing = Direction.LEFT;
 
     Vector2 rayStart = new Vector2();
     Vector2 rayEnd = new Vector2();
 
-    private float stateTime = 0f;
+    public float stateTime = 0f;
+
     @Override
     public EntityState<? super Player> update(float delta) {
         stateTime += delta;
@@ -59,6 +60,10 @@ public class PlayerMoveState implements EntityState<Player> {
         if(container.context.isActionPressed(Controls.Actions.DOWN)) {
             dy--;
             facing = Direction.DOWN;
+        }
+
+        if(container.context.isActionJustPressed(Controls.Actions.ATTACK)) {
+            return new PlayerAttackState(facing);
         }
 
         container.direction.set(dx, dy);
@@ -125,31 +130,24 @@ public class PlayerMoveState implements EntityState<Player> {
         boolean flipx = false;
         boolean flipy = false;
 
-        if(container.direction.isZero()) {
-            flipx = facing == Direction.LEFT;
-            lastFrame = container.idleRightAnim.getKeyFrame(stateTime, true);
-        } else {
+        float animationTime = container.direction.isZero() ? 0f : stateTime;
 
-            switch(facing) {
-                case LEFT:
-                    flipx = true;
+        switch(facing) {
+            case LEFT:
+                flipx = true;
 
-                case RIGHT:
-                    lastFrame = container.walkRightAnim.getKeyFrame(stateTime, true);
-                    break;
+            case RIGHT:
+                lastFrame = container.walkRightAnim.getKeyFrame(animationTime, true);
+                break;
 
-                case DOWN:
-                    lastFrame = container.walkDownAnim.getKeyFrame(stateTime, true);
-                    break;
+            case DOWN:
+                lastFrame = container.walkDownAnim.getKeyFrame(animationTime, true);
+                break;
 
-                case UP:
-                    lastFrame = container.walkUpAnim.getKeyFrame(stateTime, true);
-                    break;
-            }
-
+            case UP:
+                lastFrame = container.walkUpAnim.getKeyFrame(animationTime, true);
+                break;
         }
-
-
 
         lastFrame.flip(flipx, flipy);
 
@@ -202,7 +200,6 @@ public class PlayerMoveState implements EntityState<Player> {
 
     @Override
     public void enter() {
-
         lastFrame = container.idleRightAnim.getKeyFrame(stateTime, true);
         container.hurtbox.setTakesDamage(true);
     }

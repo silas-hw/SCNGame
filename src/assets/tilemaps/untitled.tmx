@@ -334,14 +334,14 @@
    </properties>
    <point/>
   </object>
-  <object id="50" name="NPC" type="NPC" x="172.917" y="219" width="8" height="16">
+  <object id="50" name="NPC" type="NPC" x="177.417" y="228.5" width="8" height="16">
    <properties>
     <property name="DialogID" value="test_dialog_1"/>
     <property name="StartingNode" type="object" value="46"/>
     <property name="walkDownAnim" value="player/test_walk_down"/>
     <property name="walkRightAnim" value="testanim"/>
     <property name="walkUpAnim" value="player/test_walk_up"/>
-    <property name="walkingSpeed" type="float" value="50"/>
+    <property name="walkingSpeed" type="float" value="500"/>
    </properties>
   </object>
  </objectgroup>

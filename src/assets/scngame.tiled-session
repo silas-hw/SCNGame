@@ -56,8 +56,8 @@
             "scale": 4,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 288.5,
-                "y": 279.875
+                "x": 253.5,
+                "y": 348.5
             }
         },
         "tilemaps/untitled2.tmx": {
@@ -67,8 +67,8 @@
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 280,
-                "y": 280.5
+                "x": 279,
+                "y": 280
             }
         },
         "tilesets/set1.tsx": {
@@ -92,12 +92,12 @@
         }
     },
     "frame.defaultDuration": 300,
-    "last.imagePath": "D:/silas/Summer Projects 2024/SCNGame/src/assets/tilesets/set",
-    "map.height": 100,
+    "last.imagePath": "D:/silas/Summer Projects 2024/SCNGame/src/assets/tilesets",
+    "map.height": 20,
     "map.lastUsedFormat": "tmx",
-    "map.tileHeight": 8,
-    "map.tileWidth": 8,
-    "map.width": 100,
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 20,
     "openFiles": [
         "tilemaps/testmap1.tmx",
         "tilesets/testset1.tsx",
