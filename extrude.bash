@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
 
-indir="./ase/tilesets/"
+indir="./ase/tilesets/$1"
 outdir="./src/assets/tilesets"
-width=16
-height=16
 find $indir* -name '*.png' -print0 | while read -r -d '' filename; do
 	file="${filename#$indir}"
 	echo "Extruding $filename into $outdir/$file"
 
-	tile-extruder --tileWidth $width --tileHeight $height --input $filename --output $outdir/$file
+	tile-extruder --tileWidth $1 --tileHeight $1 --input $filename --output $outdir/$file
 done
