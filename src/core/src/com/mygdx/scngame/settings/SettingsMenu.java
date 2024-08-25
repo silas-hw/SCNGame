@@ -1,9 +1,6 @@
 package com.mygdx.scngame.settings;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.MathUtils;
@@ -19,7 +16,6 @@ import com.mygdx.scngame.controls.ActionListener;
 import com.mygdx.scngame.controls.Controls;
 import com.mygdx.scngame.screens.data.ScreenData;
 import com.mygdx.scngame.ui.TruetypeLabel;
-import org.w3c.dom.Text;
 
 /**
  * The UI menu to allow the user to manipulate a given Settings instance.

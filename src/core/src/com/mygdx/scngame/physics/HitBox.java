@@ -1,7 +1,6 @@
 package com.mygdx.scngame.physics;
 
 import com.badlogic.gdx.graphics.Color;
-import com.dongbat.jbump.Response;
 
 /**
  * Convenience class so that a physics component may describe some

@@ -11,10 +11,10 @@
  </tile>
  <tile id="15">
   <animation>
-   <frame tileid="15" duration="310"/>
-   <frame tileid="38" duration="310"/>
-   <frame tileid="39" duration="310"/>
-   <frame tileid="38" duration="310"/>
+   <frame tileid="15" duration="300"/>
+   <frame tileid="38" duration="300"/>
+   <frame tileid="39" duration="300"/>
+   <frame tileid="38" duration="300"/>
   </animation>
  </tile>
  <tile id="16">
@@ -89,17 +89,6 @@
   </animation>
  </tile>
  <tile id="19">
-  <objectgroup draworder="index" id="2">
-   <object id="1" type="Wall" x="0" y="3" width="5" height="5">
-    <properties>
-     <property name="CollisionLayer" type="class" propertytype="BitMask">
-      <properties>
-       <property name="0" type="bool" value="true"/>
-      </properties>
-     </property>
-    </properties>
-   </object>
-  </objectgroup>
   <animation>
    <frame tileid="19" duration="300"/>
    <frame tileid="49" duration="300"/>
@@ -237,17 +226,6 @@
   </animation>
  </tile>
  <tile id="29">
-  <objectgroup draworder="index" id="2">
-   <object id="1" type="Wall" x="0" y="0" width="5" height="5">
-    <properties>
-     <property name="CollisionLayer" type="class" propertytype="BitMask">
-      <properties>
-       <property name="0" type="bool" value="true"/>
-      </properties>
-     </property>
-    </properties>
-   </object>
-  </objectgroup>
   <animation>
    <frame tileid="29" duration="300"/>
    <frame tileid="59" duration="300"/>

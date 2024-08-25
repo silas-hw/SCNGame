@@ -1,10 +1,7 @@
 package com.mygdx.scngame.entity.player.states;
 
-import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.dongbat.jbump.Rect;
-import com.dongbat.jbump.Response;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.EntityState;
 import com.mygdx.scngame.entity.player.Player;

@@ -1,18 +1,18 @@
 package com.mygdx.scngame.dialog;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.scngame.controls.ActionListener;
+import com.mygdx.scngame.event.DialogEventBus;
 import com.mygdx.scngame.event.DialogEventListener;
-import com.mygdx.scngame.event.GlobalEventBus;
 import com.mygdx.scngame.screens.data.ScreenData;
 import com.mygdx.scngame.controls.Controls;
 import com.mygdx.scngame.settings.Settings;
@@ -25,7 +25,7 @@ import com.mygdx.scngame.ui.TruetypeLabel;
  * Encapsulates the handling of dialog events, including capturing events, drawing dialog boxes, and
  * firing dialog end events.
  */
-public class Dialog implements DialogEventListener, ActionListener {
+public class Dialog implements DialogEventListener, ActionListener, DialogEventBus {
 
     private boolean inFocus = false;
 
@@ -181,9 +181,7 @@ public class Dialog implements DialogEventListener, ActionListener {
     }
 
     @Override
-    public void onDialogEnd() {
-        inFocus = false;
-    }
+    public void onDialogEnd() {}
 
 
     @Override
@@ -193,7 +191,7 @@ public class Dialog implements DialogEventListener, ActionListener {
         switch(action) {
             case INTERACT:
                 inFocus = false;
-                GlobalEventBus.getInstance().endDialog();
+                this.endDialog();
         }
 
         return true;
@@ -204,5 +202,40 @@ public class Dialog implements DialogEventListener, ActionListener {
         if(!inFocus) return false;
 
         return true;
+    }
+
+    private Array<DialogEventListener> listeners = new Array<>();
+
+    @Override
+    public void addDialogListener(DialogEventListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public void removeDialogListener(DialogEventListener listener) {
+        listeners.removeValue(listener, true);
+    }
+
+    @Override
+    public void clearDialogListeners() {
+        listeners.clear();
+    }
+
+    @Override
+    public void startDialog(String id) {
+        this.onDialogStart(id);
+
+        for(DialogEventListener listener : listeners) {
+            listener.onDialogStart(id);
+        }
+    }
+
+    @Override
+    public void endDialog() {
+        this.onDialogEnd();
+
+        for(DialogEventListener listener : listeners) {
+            listener.onDialogEnd();
+        }
     }
 }

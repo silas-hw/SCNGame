@@ -27,6 +27,14 @@
                 "y": 80.36363636363636
             }
         },
+        "tilemaps/cobble.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 156.66666666666663,
+                "y": 227.33333333333337
+            }
+        },
         "tilemaps/testmap1.tmx": {
             "expandedObjectLayers": [
                 6
@@ -53,11 +61,11 @@
             "expandedObjectLayers": [
                 2
             ],
-            "scale": 4,
-            "selectedLayer": 3,
+            "scale": 3,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 253.5,
-                "y": 348.5
+                "x": 378.66666666666663,
+                "y": 350.66666666666663
             }
         },
         "tilemaps/untitled2.tmx": {
@@ -67,8 +75,8 @@
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 279,
-                "y": 280
+                "x": 277,
+                "y": 278
             }
         },
         "tilesets/set1.tsx": {

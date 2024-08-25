@@ -1,17 +1,14 @@
 package com.mygdx.scngame.entity.npc;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Disposable;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Rect;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.Entity;
-import com.mygdx.scngame.event.DialogEventListener;
-import com.mygdx.scngame.event.GlobalEventBus;
+import com.mygdx.scngame.event.DialogEventBus;
 import com.mygdx.scngame.path.PathNode;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.InteractBox;
@@ -21,7 +18,7 @@ import com.mygdx.scngame.physics.InteractBox;
  * and contains an {@link com.mygdx.scngame.physics.InteractBox} that upon interaction fires of a
  * pre-defined dialog event ({@link com.mygdx.scngame.event.DialogEventListener})
  */
-public class NPC extends Entity implements DialogEventListener {
+public class NPC extends Entity {
 
     private PathNode nextPathNode;
     private PathNode currentPathNode;
@@ -47,7 +44,7 @@ public class NPC extends Entity implements DialogEventListener {
 
     public NPCBreed breed;
 
-    public NPC(NPCBreed breed) {
+    public NPC(NPCBreed breed, DialogEventBus dialogBus) {
         assert breed != null;
         assert breed.valid();
 
@@ -56,7 +53,7 @@ public class NPC extends Entity implements DialogEventListener {
         InteractBox interactBox = new InteractBox() {
             @Override
             public void interact() {
-                GlobalEventBus.getInstance().startDialog(breed.dialogID);
+                dialogBus.startDialog(breed.dialogID);
             }
         };
 
@@ -79,21 +76,12 @@ public class NPC extends Entity implements DialogEventListener {
             nextPathNode = breed.startingPathNode.neighbours.get(0);
             direction = nextPathNode.position.cpy().sub(position).nor();
         }
-
-        GlobalEventBus.getInstance().addDialogListener(this);
     }
 
-    private boolean freeze = false;
     private float stateTime = 0f;
 
     @Override
     public void update(float delta) {
-        if(freeze) {
-            position.x = (int) position.x;
-            position.y = (int) position.y;
-            return;
-        }
-
         stateTime += delta;
 
         if(currentPathNode.neighbours.isEmpty()) {
@@ -170,15 +158,5 @@ public class NPC extends Entity implements DialogEventListener {
     @Override
     public void dispose() {
 
-    }
-
-    @Override
-    public void onDialogStart(String id) {
-        freeze = true;
-    }
-
-    @Override
-    public void onDialogEnd() {
-        freeze = false;
     }
 }

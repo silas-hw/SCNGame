@@ -1,11 +1,7 @@
 package com.mygdx.scngame.scene;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.controllers.Controller;
-import com.badlogic.gdx.controllers.ControllerListener;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -22,7 +18,6 @@ import com.mygdx.scngame.controls.ActionListener;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.context.EntityContext;
 import com.mygdx.scngame.event.DialogEventListener;
-import com.mygdx.scngame.event.GlobalEventBus;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.controls.Controls;
 import org.jetbrains.annotations.NotNull;
@@ -84,8 +79,6 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
         this.shape = shape;
         this.viewport = viewport;
 
-        GlobalEventBus.getInstance().addDialogListener(this);
-
         this.world = world;
 
         String vertex = Gdx.files.internal("shaders/vertex.glsl").readString();
@@ -99,8 +92,13 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
 
     private float stateTime = 0f;
 
+    private boolean freeze = false;
+
     public void update(float delta) {
         stateTime += delta;
+
+        if(freeze) return;
+
         Entity[] e = entities.begin();
 
         for(int i = 0; i<entities.size; i++) {
@@ -264,10 +262,13 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
     public void onDialogStart(String id) {
         Arrays.fill(actionsJustPressed, false);
         Arrays.fill(actionsPressed, false);
+
+        freeze = true;
     }
 
     @Override
     public void onDialogEnd() {
+        freeze = false;
     }
 
     @Override
@@ -286,6 +287,7 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
 
     public void resize(int width, int height) {
         screenViewport.update(width, height, true);
+
         waterFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
     }
 

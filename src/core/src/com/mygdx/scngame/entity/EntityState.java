@@ -1,10 +1,7 @@
 package com.mygdx.scngame.entity;
 
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Disposable;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.physics.Box;
 

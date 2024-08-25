@@ -2,9 +2,6 @@ package com.mygdx.scngame.screens;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.controllers.Controller;
-import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -13,19 +10,18 @@ import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Rect;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.controls.Controls;
 import com.mygdx.scngame.dialog.Dialog;
 import com.mygdx.scngame.entity.player.Player;
-import com.mygdx.scngame.event.GlobalEventBus;
+import com.mygdx.scngame.event.MapChangeEventBus;
 import com.mygdx.scngame.event.MapChangeEventListener;
 import com.mygdx.scngame.map.MapObjectLoader;
-import com.mygdx.scngame.path.PathNodes;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.scene.Scene;
 import com.mygdx.scngame.screens.data.ScreenData;
@@ -34,7 +30,7 @@ import com.mygdx.scngame.viewport.PixelFitScaling;
 
 import java.util.Map;
 
-public class GameScreen implements Screen, MapChangeEventListener {
+public class GameScreen implements Screen, MapChangeEventBus {
     Game game;
     Scene scene;
 
@@ -51,8 +47,6 @@ public class GameScreen implements Screen, MapChangeEventListener {
     TiledMapRenderer mapRenderer;
     TiledMap tiledMap;
 
-    PathNodes pathNodes;
-
     ScreenData screenData;
 
     private int MAP_WIDTH;
@@ -67,8 +61,6 @@ public class GameScreen implements Screen, MapChangeEventListener {
         this.game = screenData.game();
 
         this.screenData = screenData;
-
-        this.pathNodes = new PathNodes();
 
         this.player = player;
 
@@ -95,9 +87,6 @@ public class GameScreen implements Screen, MapChangeEventListener {
         Controls.getInstance().addActionListener(settingsMenu);
         Controls.getInstance().addActionListener(dialog);
         Controls.getInstance().addActionListener(scene);
-
-        GlobalEventBus.getInstance().addDialogListener(dialog);
-        GlobalEventBus.getInstance().addMapChangeListener(this);
     }
 
     public GameScreen(ScreenData screenData) {
@@ -119,6 +108,9 @@ public class GameScreen implements Screen, MapChangeEventListener {
         scene.setWorld(world);
         scene.setViewport(gameViewport);
 
+        dialog.clearDialogListeners();
+        dialog.addDialogListener(scene);
+
         Gdx.app.log("GameScreen", "setting map to tilemaps/" + mapPath);
         tiledMap = screenData.assets().get("tilemaps/" + mapPath);
         this.mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1f, screenData.batch());
@@ -136,7 +128,8 @@ public class GameScreen implements Screen, MapChangeEventListener {
         MAP_HEIGHT = tiledMap.getProperties().get("height", Integer.class) * tiledMap.getProperties().get("tileheight", Integer.class);
         MAP_WIDTH = tiledMap.getProperties().get("width", Integer.class) * tiledMap.getProperties().get("tilewidth", Integer.class);
 
-        MapObjectLoader mapObjects = new MapObjectLoader(tiledMap, this.world, this.scene, this.pathNodes, screenData.assets());
+        MapObjectLoader mapObjects = new MapObjectLoader(tiledMap, this.world, this.scene,
+                                                         screenData.assets(), this.dialog, this);
 
         Map<String, Vector2> spawnLocations = mapObjects.getSpawnLocations();
 
@@ -328,8 +321,7 @@ public class GameScreen implements Screen, MapChangeEventListener {
 
         bg.stop();
 
-        GlobalEventBus.getInstance().removeDialogListener(dialog);
-        GlobalEventBus.getInstance().removeMapChangeListener(this);
+        dialog.clearDialogListeners();
 
         Controls.getInstance().removeActionListener(dialog);
         Controls.getInstance().removeActionListener(scene);
@@ -338,8 +330,25 @@ public class GameScreen implements Screen, MapChangeEventListener {
     @Override
     public void dispose() {}
 
+    private Array<MapChangeEventListener> listeners = new Array<>();
+
     @Override
-    public void onMapChange(String mapPath, String spawnID) {
+    public void addMapChangeListener(MapChangeEventListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public void removeMapChangeListener(MapChangeEventListener listener) {
+        listeners.removeValue(listener, true);
+    }
+
+    @Override
+    public void clearMapChangeListener() {
+        listeners.clear();
+    }
+
+    @Override
+    public void changeMap(String mapPath, String spawnID) {
         if(mapPath.equals(this.mapPath)) return;
 
         Gdx.app.log("GameScreen", "Changing map to: " + mapPath + " with spawnID: " + spawnID);
@@ -347,5 +356,9 @@ public class GameScreen implements Screen, MapChangeEventListener {
         nextMap = mapPath;
         nextSpawn = spawnID;
         fadeIn = false;
+
+        for(MapChangeEventListener listener : listeners) {
+            listener.onMapChange(mapPath, spawnID);
+        }
     }
 }

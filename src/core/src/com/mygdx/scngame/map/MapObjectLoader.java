@@ -1,6 +1,5 @@
 package com.mygdx.scngame.map;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -15,7 +14,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.context.EntityContext;
@@ -23,7 +21,8 @@ import com.mygdx.scngame.entity.npc.NPC;
 import com.mygdx.scngame.entity.sprite.AnimatedSpriteEntity;
 import com.mygdx.scngame.entity.sprite.SpriteEntity;
 import com.mygdx.scngame.entity.trigger.Trigger;
-import com.mygdx.scngame.event.GlobalEventBus;
+import com.mygdx.scngame.event.DialogEventBus;
+import com.mygdx.scngame.event.MapChangeEventBus;
 import com.mygdx.scngame.path.PathNode;
 import com.mygdx.scngame.path.PathNodes;
 import com.mygdx.scngame.physics.Box;
@@ -42,15 +41,6 @@ import java.util.*;
  *      <li>
  *          {@link com.mygdx.scngame.entity.context.EntityContext} for entities
  *      </li>
- *
- *      <li>
- *          {@link java.util.Map} between {@link String id} and {@link com.badlogic.gdx.math.Vector2 position} for
- *          spawn locations
- *      </li>
- *
- *      <li>
- *          {@link PathNodes} for path nodes
- *      </li>
  * </ul>
  */
 public class MapObjectLoader {
@@ -63,27 +53,22 @@ public class MapObjectLoader {
 
     private AssetManager assets;
 
+    private DialogEventBus dialogBus;
+    private MapChangeEventBus mapBus;
+
     public PathNodes getPathNodes() {return pathNodes;}
     public Map<String, Vector2> getSpawnLocations() {return spawnLocations;}
 
-    public MapObjectLoader(TiledMap map,World<Box> world, EntityContext entityContext, AssetManager assets) {
-        this(map, world, entityContext, new HashMap<String, Vector2>(), new PathNodes(), assets);
-    }
-
-    public MapObjectLoader(TiledMap map, World<Box> world, EntityContext entityContext, PathNodes pathNodes, AssetManager assets) {
-        this(map, world, entityContext, new HashMap<String, Vector2>(), pathNodes, assets);
-    }
-
-    public MapObjectLoader(TiledMap map, World<Box> world, EntityContext entityContext, Map<String, Vector2> spawnLocations, AssetManager assets) {
-        this(map, world, entityContext, spawnLocations, new PathNodes(), assets);
-    }
-
     public MapObjectLoader(TiledMap map, World<Box> world, EntityContext entityContext,
-                           Map<String, Vector2> spawnLocations, PathNodes pathNodes, AssetManager assets ) {
+                           AssetManager assets, DialogEventBus dialogBus, MapChangeEventBus mapBus) {
         this.world = world;
         this.entityContext = entityContext;
-        this.spawnLocations = spawnLocations;
-        this.pathNodes = pathNodes;
+        this.spawnLocations = new HashMap<>();
+        this.pathNodes = new PathNodes();
+
+        this.mapBus = mapBus;
+
+        this.dialogBus = dialogBus;
 
         this.assets = assets;
         this.animAtlas = assets.get("animations/animation_atlas.atlas");
@@ -150,9 +135,8 @@ public class MapObjectLoader {
                 Box newWall = new Box();
                 newWall.solid = true;
 
-                MapProperties collisionLayer = obj.getProperties().get("CollisionLayer", MapProperties.class);
-                setBoxCollisionLayers(collisionLayer, newWall);
-
+                MapProperties wallCollisionLayer = obj.getProperties().get("CollisionLayer", MapProperties.class);
+                setBoxCollisionLayers(wallCollisionLayer, newWall);
 
                 world.add(new Item<>(newWall), x + offsetX, y + offsetY, width, height);
                 break;
@@ -164,39 +148,39 @@ public class MapObjectLoader {
 
                 newDamage.solid = false;
 
-                collisionLayer = obj.getProperties().get("CollisionLayer", MapProperties.class);
-                setBoxCollisionLayers(collisionLayer, newDamage);
+                MapProperties damageCollisionLayer = obj.getProperties().get("CollisionLayer", MapProperties.class);
+                setBoxCollisionLayers(damageCollisionLayer, newDamage);
 
                 world.add(new Item<>(newDamage), x + offsetX, y + offsetY, width, height);
 
                 break;
 
             case "Sign":
-                String dialogID = properties.get("DialogID", String.class);
+                String signDialogID = properties.get("DialogID", String.class);
 
-                InteractBox box = new InteractBox() {
+                InteractBox signBox = new InteractBox() {
                     @Override
                     public void interact() {
-                        GlobalEventBus.getInstance().startDialog(dialogID);
+                        dialogBus.startDialog(signDialogID);
                     }
                 };
 
-                world.add(new Item<>(box), x + offsetX, y + offsetY, width, height);
+                world.add(new Item<>(signBox), x + offsetX, y + offsetY, width, height);
                 break;
 
             case "Portal":
                 MapProperties collisionMask = obj.getProperties().get("CollisionMask", MapProperties.class);
                 int[] maskIndices = getMaskLayers(collisionMask);
 
-                String mapPath = properties.get("Map", String.class);
-                String spawnID = properties.get("SpawnID", String.class);
+                String portalMapPath = properties.get("Map", String.class);
+                String portalSpawnID = properties.get("SpawnID", String.class);
 
                 Trigger portal = new Trigger(
                         x, y, width, height, maskIndices,
                         new Runnable() {
                             @Override
                             public void run() {
-                                GlobalEventBus.getInstance().changeMap(mapPath, spawnID);
+                                mapBus.changeMap(portalMapPath, portalSpawnID);
                             }
                         }
                 );
@@ -209,29 +193,29 @@ public class MapObjectLoader {
                 break;
 
             case "SpawnLocation":
-                spawnID = properties.get("SpawnID", String.class);
+                String spawnID = properties.get("SpawnID", String.class);
                 Vector2 spawnLocation = new Vector2(x, y);
 
                 spawnLocations.put(spawnID, spawnLocation);
                 break;
 
             case "Door":
-                mapPath = properties.get("Map", String.class);
-                spawnID = properties.get("SpawnID", String.class);
+                String doorMapPath = properties.get("Map", String.class);
+                String doorSpawnID = properties.get("SpawnID", String.class);
 
-                box = new InteractBox() {
+                InteractBox doorBox = new InteractBox() {
 
                     @Override
                     public void interact() {
-                        GlobalEventBus.getInstance().changeMap(mapPath, spawnID);
+                        mapBus.changeMap(doorMapPath, doorSpawnID);
                     }
                 };
 
-                world.add(new Item<>(box), x + offsetX, y + offsetY, width, height);
+                world.add(new Item<>(doorBox), x + offsetX, y + offsetY, width, height);
                 break;
 
             case "NPC":
-                dialogID = properties.get("DialogID", String.class);
+                String npcDialogID = properties.get("DialogID", String.class);
                 MapObject pathNode = properties.get("StartingNode", MapObject.class);
 
                 String walkUpAnimPath = properties.get("walkUpAnim", String.class);
@@ -250,7 +234,7 @@ public class MapObjectLoader {
 
                 NPC.NPCBreed breed = new NPC.NPCBreed();
                 breed.startingPathNode = startingNode;
-                breed.dialogID = dialogID;
+                breed.dialogID = npcDialogID;
 
                 breed.walkDownAnim = new Animation<>(0.2f, animAtlas.findRegions(walkDownAnimPath), playmode);
                 breed.walkUpAnim = new Animation<>(0.2f, animAtlas.findRegions(walkUpAnimPath), playmode);
@@ -258,7 +242,7 @@ public class MapObjectLoader {
 
                 if(walkingSpeed != null) breed.walkingSpeed = walkingSpeed;
 
-                NPC npc = new NPC(breed);
+                NPC npc = new NPC(breed, dialogBus);
 
                 entityContext.addEntity(npc);
                 break;

@@ -5,7 +5,7 @@ import com.badlogic.gdx.maps.MapObject;
 import java.util.HashMap;
 
 public final class PathNodes {
-    private HashMap<String, PathNode> cache = new HashMap<>();
+    private final HashMap<String, PathNode> cache = new HashMap<>();
 
     public PathNode put(MapObject mapObject) {
         assert  mapObject.getProperties().get("type", String.class).equals("PathNode") :
