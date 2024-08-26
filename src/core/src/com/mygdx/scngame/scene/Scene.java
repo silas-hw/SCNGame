@@ -163,6 +163,12 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
 
         waterShader.bind();
         waterShader.setUniformf("u_time", stateTime);
+
+        waterShader.setUniformf("viewportHeight", viewport.getScreenHeight());
+        waterShader.setUniformf("worldHeight", viewport.getWorldHeight());
+        waterShader.setUniformf("viewportWidth", viewport.getScreenWidth());
+        waterShader.setUniformf("worldWidth", viewport.getWorldWidth());
+
         batch.setShader(this.waterShader);
 
         Texture frame = waterFrameBuffer.getColorBufferTexture();
@@ -288,7 +294,7 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
     public void resize(int width, int height) {
         screenViewport.update(width, height, true);
 
-        waterFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+        waterFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
     }
 
     public static class YComparator implements Comparator<Entity> {

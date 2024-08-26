@@ -184,7 +184,7 @@ public class PlayerMoveState implements EntityState<Player> {
         }
 
         lastFrame.flip(flipx, true);
-        batch.draw(lastFrame, container.position.x, container.position.y - lastFrame.getRegionHeight());
+        batch.draw(lastFrame, (int) container.position.x, ((int) container.position.y) - lastFrame.getRegionHeight());
         lastFrame.flip(flipx, true);
     }
 

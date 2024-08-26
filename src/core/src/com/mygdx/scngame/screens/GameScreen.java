@@ -214,6 +214,7 @@ public class GameScreen implements Screen, MapChangeEventBus {
 
         gameViewport.apply();
         camera.update();
+
         mapRenderer.setView(camera);
         mapRenderer.render();
 
