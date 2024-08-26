@@ -3,12 +3,12 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "tilemaps/untitled.tmx",
+    "activeFile": "tilesets/testset2.tsx",
     "automapping.whileDrawing": false,
     "expandedProjectPaths": [
+        "tilesets",
         ".",
-        "tilemaps",
-        "tilesets"
+        "tilemaps"
     ],
     "fileStates": {
         "tilemap_rules/wall_rules.tmx": {
@@ -28,11 +28,11 @@
             }
         },
         "tilemaps/cobble.tmx": {
-            "scale": 1.5,
+            "scale": 3,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 156.66666666666663,
-                "y": 227.33333333333337
+                "x": 159.83333333333331,
+                "y": 159.83333333333331
             }
         },
         "tilemaps/testmap1.tmx": {
@@ -42,8 +42,8 @@
             "scale": 3,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 119.66666666666667,
-                "y": 79.66666666666666
+                "x": 119.83333333333331,
+                "y": 79.83333333333331
             }
         },
         "tilemaps/testmap2.tmx": {
@@ -61,11 +61,11 @@
             "expandedObjectLayers": [
                 2
             ],
-            "scale": 3,
-            "selectedLayer": 0,
+            "scale": 5.5,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 378.66666666666663,
-                "y": 350.66666666666663
+                "x": 286.1818181818182,
+                "y": 279.9090909090909
             }
         },
         "tilemaps/untitled2.tmx": {
@@ -75,9 +75,13 @@
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 277,
-                "y": 278
+                "x": 280,
+                "y": 280.5
             }
+        },
+        "tilesets/cobble.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 8
         },
         "tilesets/set1.tsx": {
             "scaleInDock": 1,
@@ -86,17 +90,17 @@
         "tilesets/testset1.tsx": {
             "dynamicWrapping": false,
             "scaleInDock": 4,
-            "scaleInEditor": 5.5
+            "scaleInEditor": 8
         },
         "tilesets/testset2.tsx": {
             "dynamicWrapping": false,
             "scaleInDock": 1,
-            "scaleInEditor": 5.5
+            "scaleInEditor": 11
         },
         "tilesets/trees.tsx": {
             "dynamicWrapping": true,
             "scaleInDock": 1,
-            "scaleInEditor": 11
+            "scaleInEditor": 8
         }
     },
     "frame.defaultDuration": 300,
@@ -112,21 +116,26 @@
         "tilemaps/untitled.tmx",
         "tilesets/trees.tsx",
         "tilemaps/untitled2.tmx",
+        "tilesets/testset2.tsx",
+        "tilesets/cobble.tsx",
+        "tilemaps/cobble.tmx",
         "tilesets/testset2.tsx"
     ],
     "project": "scngame.tiled-project",
-    "property.type": "float",
+    "property.type": "BitMask",
     "recentFiles": [
         "tilemaps/testmap1.tmx",
         "tilesets/testset1.tsx",
-        "tilesets/testset2.tsx",
-        "tilemaps/untitled2.tmx",
-        "tilesets/trees.tsx",
         "tilemaps/untitled.tmx",
+        "tilesets/trees.tsx",
+        "tilemaps/untitled2.tmx",
+        "tilesets/testset2.tsx",
+        "tilemaps/cobble.tmx",
+        "tilesets/cobble.tsx",
         "tilesets/set1.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
-    "tileset.margin": 2,
+    "tileset.margin": 1,
     "tileset.spacing": 2,
     "tileset.tileSize": {
         "height": 8,

@@ -111,7 +111,7 @@ public class PlayerMoveState implements EntityState<Player> {
             }
         }
 
-        container.position.mulAdd(container.direction, container.speed*delta);
+        container.position.mulAdd(container.direction, container.getSpeed()*delta);
 
         if(container.direction.isZero()) {
             container.position.x = MathUtils.round(container.position.x);

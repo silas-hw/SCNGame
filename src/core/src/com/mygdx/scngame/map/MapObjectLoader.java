@@ -28,6 +28,7 @@ import com.mygdx.scngame.path.PathNodes;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.DamageBox;
 import com.mygdx.scngame.physics.InteractBox;
+import com.mygdx.scngame.physics.TerrainBox;
 
 import java.util.*;
 
@@ -245,6 +246,18 @@ public class MapObjectLoader {
                 NPC npc = new NPC(breed, dialogBus);
 
                 entityContext.addEntity(npc);
+                break;
+
+            case "TerrainBox":
+                float terrainSpeedCoeffient = properties.get("speedCoefficient", Float.class);
+                MapProperties terrainCollisionLayer = properties.get("CollisionLayer", MapProperties.class);
+
+                TerrainBox terrainBox = new TerrainBox(terrainSpeedCoeffient);
+                setBoxCollisionLayers(terrainCollisionLayer, terrainBox);
+
+                System.out.println("Adding terrain box");
+
+                world.add(new Item<>(terrainBox), x + offsetX, y + offsetY, width, height);
                 break;
 
             default:

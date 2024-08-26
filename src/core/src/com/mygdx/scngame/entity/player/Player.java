@@ -6,15 +6,14 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.dongbat.jbump.Item;
-import com.dongbat.jbump.Rect;
-import com.dongbat.jbump.Response;
-import com.dongbat.jbump.World;
+import com.badlogic.gdx.math.MathUtils;
+import com.dongbat.jbump.*;
 import com.mygdx.scngame.entity.*;
 import com.mygdx.scngame.entity.component.HealthComponent;
 import com.mygdx.scngame.entity.component.HurtBox;
 import com.mygdx.scngame.entity.player.states.PlayerMoveState;
 import com.mygdx.scngame.physics.Box;
+import com.mygdx.scngame.physics.TerrainBox;
 
 // TODO: add comments
 public class Player extends Entity {
@@ -36,7 +35,16 @@ public class Player extends Entity {
     public final int WIDTH = 16;
     public final int HEIGHT = 16;
 
-    public float speed = 100;
+    private float speed = 100;
+    private float speedCoeff = 1f;
+
+    public float getSpeed() {
+        return speed * speedCoeff;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
 
     // from center of body, so account for half of width/height
     public final float interactDistance = 14f;
@@ -60,7 +68,7 @@ public class Player extends Entity {
         // players collision mask is set to true for layer 0!!!
         foot.setMask(0, true);
         foot.setLayer(0, true);
-        foot.internalFilter = Box.TOUCH_FILTER;
+        foot.internalFilter = Box.SLIDE_FILTER;
 
         collisionItem = new Item<>(foot);
 
@@ -81,6 +89,20 @@ public class Player extends Entity {
         EntityState<? super Player> newState =  state.update(delta);
 
         Response.Result res = world.move(collisionItem, position.x, position.y, Box.GLOBAL_FILTER);
+
+        Collisions cols = res.projectedCollisions;
+
+        speedCoeff = 1f;
+        for(int i = 0; i <cols.size(); i++) {
+            Item<?> collided = cols.get(i).other;
+            if(collided.userData instanceof TerrainBox terrainBox) {
+
+                speedCoeff = terrainBox.speedCoefficient;
+
+                // we only want to count one terrain
+                break;
+            }
+        }
 
         Rect rect = world.getRect(collisionItem);
         position.x = rect.x;

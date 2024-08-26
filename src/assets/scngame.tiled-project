@@ -288,6 +288,38 @@
                 "object",
                 "project"
             ]
+        },
+        {
+            "color": "#ff81592c",
+            "drawFill": true,
+            "id": 15,
+            "members": [
+                {
+                    "name": "CollisionLayer",
+                    "propertyType": "BitMask",
+                    "type": "class",
+                    "value": {
+                    }
+                },
+                {
+                    "name": "speedCoefficient",
+                    "type": "float",
+                    "value": 0
+                }
+            ],
+            "name": "TerrainBox",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
         }
     ]
 }
