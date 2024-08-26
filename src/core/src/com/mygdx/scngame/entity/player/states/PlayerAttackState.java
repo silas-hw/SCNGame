@@ -10,10 +10,10 @@ import com.mygdx.scngame.physics.DamageBox;
 
 public class PlayerAttackState extends PlayerMoveState {
 
-    private Direction attackDirection;
-    private Item<Box> attackBox;
+    private final Direction attackDirection;
+    private final Item<Box> attackBox;
 
-    private Vector2 attackBoxOffset = new Vector2();
+    private final Vector2 attackBoxOffset = new Vector2();
     private float attackBoxWidth = 5f;
     private float attackBoxHeight = 5f;
 

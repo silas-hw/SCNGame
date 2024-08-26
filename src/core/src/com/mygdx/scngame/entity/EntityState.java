@@ -31,7 +31,7 @@ public interface EntityState<T extends Entity> {
      * @return A new state for the containing {@link Entity} to switch to, or <code>null</code> if
      * the state is to remain the same
      */
-    EntityState<? super T> draw(SpriteBatch batch, ShapeRenderer shape, float alpha);
+    void draw(SpriteBatch batch, ShapeRenderer shape, float alpha);
 
     void drawWaterReflection(SpriteBatch batch, ShapeRenderer shape, float alpha);
 

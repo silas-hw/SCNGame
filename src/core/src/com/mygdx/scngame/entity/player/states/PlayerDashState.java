@@ -10,8 +10,6 @@ import com.mygdx.scngame.physics.Box;
 public class PlayerDashState implements EntityState<Player> {
 
     private float dashTimer = 0f;
-    private final float dashTime = 0.2f;
-    private final float dashDist = 65f;
 
     protected Player container;
     protected World<Box> world;
@@ -20,7 +18,10 @@ public class PlayerDashState implements EntityState<Player> {
     public EntityState<? super Player> update(float delta) {
 
         dashTimer += delta;
-        container.position.mulAdd(container.direction, (dashDist/dashTime)*delta);
+
+        float dashTime = 0.2f;
+        float dashDist = 65f;
+        container.position.mulAdd(container.direction, (dashDist / dashTime)*delta);
 
         if(dashTimer >= dashTime) {
             return new PlayerMoveState();
@@ -30,14 +31,10 @@ public class PlayerDashState implements EntityState<Player> {
     }
 
     @Override
-    public EntityState<? super Player> draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
+    public void draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
         batch.setColor(0.9f, 0.4f, 0.4f, 0.8f);
-
         batch.draw(container.texture, container.position.x, container.position.y);
-
         batch.setColor(1.0f, 1.0f, 1.0f, 1f);
-
-        return null;
     }
 
     @Override

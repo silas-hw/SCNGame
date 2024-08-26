@@ -125,7 +125,7 @@ public class PlayerMoveState implements EntityState<Player> {
 
 
     @Override
-    public EntityState<? super Player> draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
+    public void draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
 
         boolean flipx = false;
         boolean flipy = false;
@@ -157,7 +157,7 @@ public class PlayerMoveState implements EntityState<Player> {
 
 
         // draw debug ray cast line
-        if(!Boolean.getBoolean("debugRender")) return null;
+        if(!Boolean.getBoolean("debugRender")) return;
 
         batch.end();
 
@@ -169,8 +169,6 @@ public class PlayerMoveState implements EntityState<Player> {
         shape.end();
 
         batch.begin();
-
-        return null;
     }
 
     @Override
