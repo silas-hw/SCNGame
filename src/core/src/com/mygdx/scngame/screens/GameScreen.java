@@ -17,7 +17,7 @@ import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Rect;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.controls.Controls;
-import com.mygdx.scngame.dialog.Dialog;
+import com.mygdx.scngame.dialog.DialogView;
 import com.mygdx.scngame.entity.player.Player;
 import com.mygdx.scngame.event.MapChangeEventBus;
 import com.mygdx.scngame.event.MapChangeEventListener;
@@ -41,7 +41,7 @@ public class GameScreen implements Screen, MapChangeEventBus {
 
     Player player;
 
-    Dialog dialog;
+    DialogView dialogView;
     SettingsMenu settingsMenu;
 
     TiledMapRenderer mapRenderer;
@@ -73,7 +73,7 @@ public class GameScreen implements Screen, MapChangeEventBus {
 
         scene = new Scene(gameViewport, screenData.batch(), screenData.shapeRenderer(), world);
 
-        dialog = new Dialog(screenData);
+        dialogView = new DialogView(screenData);
         settingsMenu = new SettingsMenu(screenData);
 
         this.mapPath = mapPath;
@@ -85,7 +85,7 @@ public class GameScreen implements Screen, MapChangeEventBus {
         bg.setLooping(true);
 
         Controls.getInstance().addActionListener(settingsMenu);
-        Controls.getInstance().addActionListener(dialog);
+        Controls.getInstance().addActionListener(dialogView);
         Controls.getInstance().addActionListener(scene);
     }
 
@@ -108,8 +108,8 @@ public class GameScreen implements Screen, MapChangeEventBus {
         scene.setWorld(world);
         scene.setViewport(gameViewport);
 
-        dialog.clearDialogListeners();
-        dialog.addDialogListener(scene);
+        dialogView.clearDialogListeners();
+        dialogView.addDialogListener(scene);
 
         Gdx.app.log("GameScreen", "setting map to tilemaps/" + mapPath);
         tiledMap = screenData.assets().get("tilemaps/" + mapPath);
@@ -129,7 +129,7 @@ public class GameScreen implements Screen, MapChangeEventBus {
         MAP_WIDTH = tiledMap.getProperties().get("width", Integer.class) * tiledMap.getProperties().get("tilewidth", Integer.class);
 
         MapObjectLoader mapObjects = new MapObjectLoader(tiledMap, this.world, this.scene,
-                                                         screenData.assets(), this.dialog, this);
+                                                         screenData.assets(), this.dialogView, this);
 
         Map<String, Vector2> spawnLocations = mapObjects.getSpawnLocations();
 
@@ -219,7 +219,7 @@ public class GameScreen implements Screen, MapChangeEventBus {
         mapRenderer.render();
 
         scene.draw();
-        dialog.draw();
+        dialogView.draw();
         settingsMenu.draw();
 
         ShapeRenderer shape = screenData.shapeRenderer();
@@ -294,7 +294,7 @@ public class GameScreen implements Screen, MapChangeEventBus {
     public void resize(int width, int height) {
         gameViewport.update(width, height);
         screenViewport.update(width, height, true);
-        dialog.resize(width, height);
+        dialogView.resize(width, height);
         settingsMenu.resize(width, height);
         scene.resize(width, height);
     }
@@ -322,9 +322,9 @@ public class GameScreen implements Screen, MapChangeEventBus {
 
         bg.stop();
 
-        dialog.clearDialogListeners();
+        dialogView.clearDialogListeners();
 
-        Controls.getInstance().removeActionListener(dialog);
+        Controls.getInstance().removeActionListener(dialogView);
         Controls.getInstance().removeActionListener(scene);
     }
 

@@ -1,6 +1,7 @@
 package com.mygdx.scngame.dialog;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -19,13 +20,15 @@ import com.mygdx.scngame.settings.Settings;
 import com.mygdx.scngame.ui.TiledNinePatch;
 import com.mygdx.scngame.ui.TruetypeLabel;
 
+import java.util.Iterator;
+
 // TODO: encapsulate dialog box UI into its own class
 
 /**
  * Encapsulates the handling of dialog events, including capturing events, drawing dialog boxes, and
  * firing dialog end events.
  */
-public class Dialog implements DialogEventListener, ActionListener, DialogEventBus {
+public class DialogView implements DialogEventListener, ActionListener, DialogEventBus {
 
     private boolean inFocus = false;
 
@@ -56,10 +59,27 @@ public class Dialog implements DialogEventListener, ActionListener, DialogEventB
 
     private final Settings settings;
 
+    AssetManager assets;
 
-    public Dialog(ScreenData screenData) {
+    Iterator<DialogMessage> currentNode;
+
+    DialogNode defaultDialog;
+
+
+    public DialogView(ScreenData screenData) {
         this.settings = screenData.settings();
+        this.assets = screenData.assets();
         this.skin = screenData.assets().get("skin/uiskin2.json", Skin.class);
+
+        DialogMessage defaultMessage = new DialogMessage();
+        defaultMessage.speaker = "Error...";
+        defaultMessage.message = "Invalid dialog file provided.";
+        defaultMessage.icon = assets.get("sprites/sign.png", Texture.class);
+
+        defaultDialog = new DialogNode();
+        defaultDialog.messages.add(defaultMessage);
+
+        currentNode = defaultDialog.iterator();
 
         float scale = settings.getUIScale();
 
@@ -139,6 +159,8 @@ public class Dialog implements DialogEventListener, ActionListener, DialogEventB
          * Failed refactoring attempts: 2
          */
 
+        stage.act();
+
         container.width(WIDTH * scale);
         container.height(HEIGHT * scale);
         npatch.scale = 3 * scale;
@@ -147,9 +169,9 @@ public class Dialog implements DialogEventListener, ActionListener, DialogEventB
         label.setFontScale(scale);
 
         inside.getCell(icon).pad(5 * scale);
+        inside.getCell(wrapper).pad(5 * scale);
 
         stage.getViewport().apply();
-        stage.act();
         stage.draw();
     }
 
@@ -167,41 +189,49 @@ public class Dialog implements DialogEventListener, ActionListener, DialogEventB
     public void onDialogStart(String id) {
         inFocus = true;
 
-        switch(id) {
-            case "test_dialog_1":
-                message = "";
+        if(!assets.contains(id)) {
+            currentNode = defaultDialog.iterator();
+        } else {
+            DialogFile df = assets.get(id);
+            DialogNode node = df.dialogNodes.get(0);
 
-                message += "Well, the controls should be: ";
-                for(Controls.Actions c : Controls.Actions.values()) {
-                    message += c.toString() + ": ";
-                    message += Input.Keys.toString(c.getKeycode()) + " OR " + c.getControllerButton().getDisplayText() + ", ";
-                }
-                break;
-
-            case "test_dialog_2":
-                message = "casper is stinkyyyyyy";
-                break;
-
-            default:
-                message = "Default Message";
-                break;
+            currentNode = node != null ? node.iterator() : defaultDialog.iterator();
         }
 
-        label.setText(message);
+        this.nextMessage();
+    }
+
+    void nextMessage() {
+        if(currentNode.hasNext()) {
+            DialogMessage msg = currentNode.next();
+
+            label.setText(msg.speaker + ": \n " + msg.message);
+
+            Image icon = new Image(msg.icon);
+            icon.setScaling(Scaling.fit);
+
+            inside.getCell(this.icon).setActor(icon).colspan(1);
+            inside.getCell(this.wrapper).colspan(2);
+
+            this.icon = icon;
+        } else {
+            endDialog();
+        }
     }
 
     @Override
-    public void onDialogEnd() {}
+    public void onDialogEnd() {
+        inFocus = false;
+        currentNode = defaultDialog.iterator();
+    }
 
 
     @Override
     public boolean actionDown(Controls.Actions action) {
         if(!inFocus) return false;
 
-        switch(action) {
-            case INTERACT:
-                inFocus = false;
-                this.endDialog();
+        if(action == Controls.Actions.INTERACT) {
+            this.nextMessage();
         }
 
         return true;
@@ -209,12 +239,10 @@ public class Dialog implements DialogEventListener, ActionListener, DialogEventB
 
     @Override
     public boolean actionUp(Controls.Actions action) {
-        if(!inFocus) return false;
-
-        return true;
+        return inFocus;
     }
 
-    private Array<DialogEventListener> listeners = new Array<>();
+    private final Array<DialogEventListener> listeners = new Array<>();
 
     @Override
     public void addDialogListener(DialogEventListener listener) {

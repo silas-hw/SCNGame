@@ -75,8 +75,8 @@
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 280,
-                "y": 280.5
+                "x": 279,
+                "y": 280
             }
         },
         "tilesets/cobble.tsx": {

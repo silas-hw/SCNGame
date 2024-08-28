@@ -23,6 +23,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.scngame.SCNGame;
+import com.mygdx.scngame.dialog.DialogFile;
+import com.mygdx.scngame.dialog.XmlDialogLoader;
 import com.mygdx.scngame.map.MyTmxMapLoader;
 import com.mygdx.scngame.screens.data.ScreenData;
 import com.mygdx.scngame.settings.Settings;
@@ -111,6 +113,8 @@ public class AssetLoadingScreen implements Screen {
         assetManager.setLoader(Skin.class, new FreeTypeSkinLoader(assetManager.getFileHandleResolver()));
         assetManager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
 
+        assetManager.setLoader(DialogFile.class, new XmlDialogLoader());
+
         for(String filePath : assetMap) {
             String extension = Gdx.files.internal(filePath).extension();
 
@@ -135,6 +139,9 @@ public class AssetLoadingScreen implements Screen {
             } else if (extension.equals("ttf")) {
                 assetManager.load(filePath, FreeTypeFontGenerator.class);
                 Gdx.app.log(logTag, filePath + " set to load as FreeTypeFontGenerator");
+            } else if(extension.equals("dxml")) {
+                assetManager.load(filePath, DialogFile.class);
+                Gdx.app.log(logTag, filePath + " set to load as DialogFile");
             } else {
                 Gdx.app.log(logTag, filePath + " IGNORED");
                 Gdx.app.debug(logTag, "Warning: file may have been placed in incorrect directory");
@@ -151,8 +158,6 @@ public class AssetLoadingScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.app.log(logTag, "Loading assets... " + assetManager.getProgress()*100 + "%");
-
         viewport.getCamera().update();
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
 

@@ -267,7 +267,7 @@
   <object id="40" gid="4198" x="240" y="384" width="16" height="16"/>
   <object id="41" type="Sign" x="240" y="376" width="16" height="8">
    <properties>
-    <property name="DialogID" value="test_dialog_1"/>
+    <property name="DialogID" value="dialog/test.dxml"/>
    </properties>
   </object>
   <object id="43" type="Portal" x="0" y="242.667" width="8" height="52.8333">

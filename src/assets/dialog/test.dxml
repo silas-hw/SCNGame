@@ -1,0 +1,16 @@
+
+<root>
+    <dialog id="test1">
+        <message speaker="First Person" icon="sprites/wizardguy.png">
+            Hello, World! I am now adding to this message!
+        </message>
+
+        <message speaker="Another Person" icon="sprites/sign.png">
+            This is the second message!
+        </message>
+
+        <message speaker="First person" icon="sprites/wizardguy.png">
+            That's so cool! Isn't it????A???!? :3
+        </message>
+    </dialog>
+</root>

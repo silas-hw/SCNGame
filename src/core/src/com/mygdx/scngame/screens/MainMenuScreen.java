@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.SCNGame;
+import com.mygdx.scngame.dialog.DialogFile;
 import com.mygdx.scngame.entity.player.Player;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.scene.Scene;

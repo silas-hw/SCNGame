@@ -255,8 +255,6 @@ public class MapObjectLoader {
                 TerrainBox terrainBox = new TerrainBox(terrainSpeedCoeffient);
                 setBoxCollisionLayers(terrainCollisionLayer, terrainBox);
 
-                System.out.println("Adding terrain box");
-
                 world.add(new Item<>(terrainBox), x + offsetX, y + offsetY, width, height);
                 break;
 
