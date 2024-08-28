@@ -301,7 +301,7 @@ public class TiledNinePatch implements Drawable {
 
     @Override
     public float getMinWidth() {
-        return minWidth;
+        return minWidth * scale;
     }
 
     @Override
@@ -311,7 +311,7 @@ public class TiledNinePatch implements Drawable {
 
     @Override
     public float getMinHeight() {
-        return minHeight;
+        return minHeight * scale;
     }
 
     @Override

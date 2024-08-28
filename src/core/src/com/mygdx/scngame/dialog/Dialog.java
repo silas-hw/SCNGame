@@ -101,9 +101,8 @@ public class Dialog implements DialogEventListener, ActionListener, DialogEventB
         container.fill();
 
         npatch = TiledNinePatch.getInstanceFromDot9(patchTexture);
-        npatch.scale = basePatchScale;
 
-        container.setBackground(npatch, true);
+        container.setBackground(npatch, false);
 
 
         root.add(container);
@@ -128,15 +127,26 @@ public class Dialog implements DialogEventListener, ActionListener, DialogEventB
          *
          * Not pleasant, but just leave it as is. This is really a problem with how much of a god shite mess
          * scene2d.ui is (probably, or I'm just a dumbass. Either could be true).
+         *
+         * Also drawables don't have their scale set by the thing thats drawing them??? So if you want the drawable
+         * to be scaled or anything (if the drawable in question even supports that) you have to either set some world
+         * height/width on the drawable manually and have that scaled to the required width/height, or set some scale
+         * on the drawable manually.
+         *
+         * It also seems widgets containing a drawable don't re-calculate their padding if the pad sizes provided by
+         * their drawable change.
+         *
+         * Failed refactoring attempts: 2
          */
 
         container.width(WIDTH * scale);
         container.height(HEIGHT * scale);
+        npatch.scale = 3 * scale;
+        container.pad(npatch.getTopHeight(), npatch.getLeftWidth(), npatch.getBottomHeight(), npatch.getRightWidth());
 
         label.setFontScale(scale);
 
         inside.getCell(icon).pad(5 * scale);
-        wrapper.pad(5 * scale);
 
         stage.getViewport().apply();
         stage.act();
