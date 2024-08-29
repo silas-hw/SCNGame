@@ -1,5 +1,7 @@
 package com.mygdx.scngame.event;
 
+import com.badlogic.gdx.maps.tiled.TiledMap;
+
 public interface MapChangeEventListener {
-    void onMapChange(String mapPath, String spawnID);
+    void onMapChange(TiledMap map, String spawnID);
 }

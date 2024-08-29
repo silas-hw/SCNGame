@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Rect;
 import com.dongbat.jbump.World;
+import com.mygdx.scngame.dialog.DialogFile;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.event.DialogEventBus;
 import com.mygdx.scngame.path.PathNode;
@@ -33,7 +34,7 @@ public class NPC extends Entity {
         public Animation<TextureAtlas.AtlasRegion> walkRightAnim;
         public PathNode startingPathNode;
         public String dialogID = "";
-        public String dialogFile = "";
+        public DialogFile dialogFile;
 
         public float walkingSpeed = 50f;
 
@@ -54,7 +55,8 @@ public class NPC extends Entity {
         InteractBox interactBox = new InteractBox() {
             @Override
             public void interact() {
-                dialogBus.startDialog(breed.dialogFile, breed.dialogID);
+
+                dialogBus.startDialog(breed.dialogFile.getDialogNode(breed.dialogID));
             }
         };
 

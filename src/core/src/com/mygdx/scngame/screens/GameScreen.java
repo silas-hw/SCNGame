@@ -55,7 +55,6 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
     private int MAP_WIDTH;
     private int MAP_HEIGHT;
 
-    String mapPath;
     String spawnID;
 
     ScreenViewport screenViewport;
@@ -83,7 +82,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
         dialogView = new DialogView(screenData);
         settingsMenu = new SettingsMenu(screenData);
 
-        this.mapPath = save.map;
+        this.tiledMap = screenData.assets().get("tilemaps/" + save.map);
         this.spawnID = save.spawnLocation;
 
         screenViewport = new ScreenViewport();
@@ -121,8 +120,6 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
         dialogView.clearDialogListeners();
         dialogView.addDialogListener(scene);
 
-        Gdx.app.log("GameScreen", "setting map to tilemaps/" + mapPath);
-        tiledMap = screenData.assets().get("tilemaps/" + mapPath);
         this.mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1f, screenData.batch());
 
         String bgPath = tiledMap.getProperties().get("bg", String.class);
@@ -176,7 +173,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
 
     float waitTime = 0.5f;
 
-    String nextMap = "";
+    TiledMap nextMap = null;
     String nextSpawn = "";
 
 
@@ -245,14 +242,14 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
         }
 
         // if a next map has been set and we've finished fading out, switch map
-        if(!nextMap.isEmpty() && transitionAlpha >=  1f && !fadeIn) {
-            this.mapPath = nextMap;
+        if(nextMap != null && transitionAlpha >=  1f && !fadeIn) {
+            this.tiledMap = nextMap;
             this.spawnID = nextSpawn;
 
             this.fadeIn = true;
             this.waitTime = 0.5f;
 
-            this.nextMap = "";
+            this.nextMap = null;
             this.nextSpawn = "";
 
             // show loads the map and map renderer again
@@ -363,17 +360,17 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
     }
 
     @Override
-    public void changeMap(String mapPath, String spawnID) {
-        if(mapPath.equals(this.mapPath)) return;
+    public void changeMap(TiledMap map, String spawnID) {
+        if(map == tiledMap) return;
 
-        Gdx.app.log("GameScreen", "Changing map to: " + mapPath + " with spawnID: " + spawnID);
+        Gdx.app.log("GameScreen", "Changing map to: " + map + " with spawnID: " + spawnID);
 
-        nextMap = mapPath;
+        nextMap = map;
         nextSpawn = spawnID;
         fadeIn = false;
 
         for(MapChangeEventListener listener : listeners) {
-            listener.onMapChange(mapPath, spawnID);
+            listener.onMapChange(map, spawnID);
         }
     }
 
@@ -383,7 +380,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
         // save current status and spawn location to file
 
         saveFile.spawnLocation = spawnID;
-        saveFile.map = mapPath;
+        saveFile.map = "";
         saveFile.saveDateEpoch = Instant.now().getEpochSecond();
 
         saveFile.writeToXML();

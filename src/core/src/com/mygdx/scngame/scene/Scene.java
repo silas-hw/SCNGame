@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.controls.ActionListener;
+import com.mygdx.scngame.dialog.DialogNode;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.context.EntityContext;
 import com.mygdx.scngame.event.DialogEventListener;
@@ -265,7 +266,7 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
     }
 
     @Override
-    public void onDialogStart(String dialogFile, String id) {
+    public void onDialogStart(DialogNode dialog) {
         Arrays.fill(actionsJustPressed, false);
         Arrays.fill(actionsPressed, false);
 

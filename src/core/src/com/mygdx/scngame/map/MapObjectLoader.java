@@ -16,6 +16,8 @@ import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.World;
+import com.mygdx.scngame.dialog.DialogFile;
+import com.mygdx.scngame.dialog.DialogNode;
 import com.mygdx.scngame.entity.context.EntityContext;
 import com.mygdx.scngame.entity.npc.NPC;
 import com.mygdx.scngame.entity.sprite.AnimatedSpriteEntity;
@@ -160,12 +162,14 @@ public class MapObjectLoader {
 
             case "Sign":
                 String signDialogID = properties.get("DialogID", String.class);
-                String signDialogFile = properties.get("DialogFile", String.class);
+                String signDialogFilePath = properties.get("DialogFile", String.class);
+
+                DialogFile signDialogFile = assets.get(signDialogFilePath, DialogFile.class);
 
                 InteractBox signBox = new InteractBox() {
                     @Override
                     public void interact() {
-                        dialogBus.startDialog(signDialogFile, signDialogID);
+                        dialogBus.startDialog(signDialogFile.getDialogNode(signDialogID));
                     }
                 };
 
@@ -179,12 +183,14 @@ public class MapObjectLoader {
                 String portalMapPath = properties.get("Map", String.class);
                 String portalSpawnID = properties.get("SpawnID", String.class);
 
+                TiledMap portalMap = assets.get("tilemaps/" + portalMapPath);
+
                 Trigger portal = new Trigger(
                         x, y, width, height, maskIndices,
                         new Runnable() {
                             @Override
                             public void run() {
-                                mapBus.changeMap(portalMapPath, portalSpawnID);
+                                mapBus.changeMap(portalMap, portalSpawnID);
                             }
                         }
                 );
@@ -207,11 +213,13 @@ public class MapObjectLoader {
                 String doorMapPath = properties.get("Map", String.class);
                 String doorSpawnID = properties.get("SpawnID", String.class);
 
+                TiledMap doorMap = assets.get("tilemaps/" + doorMapPath);
+
                 InteractBox doorBox = new InteractBox() {
 
                     @Override
                     public void interact() {
-                        mapBus.changeMap(doorMapPath, doorSpawnID);
+                        mapBus.changeMap(doorMap, doorSpawnID);
                     }
                 };
 
@@ -240,7 +248,7 @@ public class MapObjectLoader {
                 NPC.NPCBreed breed = new NPC.NPCBreed();
                 breed.startingPathNode = startingNode;
                 breed.dialogID = npcDialogID;
-                breed.dialogFile = npcDialogFile;
+                breed.dialogFile = assets.get(npcDialogFile, DialogFile.class);
 
                 breed.walkDownAnim = new Animation<>(0.2f, animAtlas.findRegions(walkDownAnimPath), playmode);
                 breed.walkUpAnim = new Animation<>(0.2f, animAtlas.findRegions(walkUpAnimPath), playmode);
