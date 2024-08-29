@@ -141,6 +141,11 @@
             "id": 14,
             "members": [
                 {
+                    "name": "DialogFile",
+                    "type": "string",
+                    "value": "unset"
+                },
+                {
                     "name": "DialogID",
                     "type": "string",
                     "value": "unset"
@@ -238,6 +243,11 @@
             "id": 10,
             "members": [
                 {
+                    "name": "DialogFile",
+                    "type": "string",
+                    "value": "unset"
+                },
+                {
                     "name": "DialogID",
                     "type": "string",
                     "value": "unset"
@@ -263,26 +273,6 @@
                 }
             ],
             "name": "SpawnLocation",
-            "type": "class",
-            "useAs": [
-                "object",
-                "project"
-            ]
-        },
-        {
-            "color": "#fff9f9ff",
-            "drawFill": true,
-            "id": 7,
-            "members": [
-                {
-                    "name": "CollisionLayer",
-                    "propertyType": "BitMask",
-                    "type": "class",
-                    "value": {
-                    }
-                }
-            ],
-            "name": "Wall",
             "type": "class",
             "useAs": [
                 "object",
@@ -318,6 +308,26 @@
                 "tileset",
                 "wangcolor",
                 "wangset",
+                "project"
+            ]
+        },
+        {
+            "color": "#fff9f9ff",
+            "drawFill": true,
+            "id": 7,
+            "members": [
+                {
+                    "name": "CollisionLayer",
+                    "propertyType": "BitMask",
+                    "type": "class",
+                    "value": {
+                    }
+                }
+            ],
+            "name": "Wall",
+            "type": "class",
+            "useAs": [
+                "object",
                 "project"
             ]
         }

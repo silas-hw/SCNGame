@@ -1,16 +1,38 @@
-
 <root>
-    <dialog id="test1">
-        <message speaker="First Person" icon="sprites/wizardguy.png">
-            Hello, World! I am now adding to this message!
-        </message>
+    <group id="sign">
+        <dialog id="sign_0">
+            <message speaker="Weird Sign" icon="sprites/sign.png">
+                Bleep Bloop.
+            </message>
+        </dialog>
 
-        <message speaker="Another Person" icon="sprites/sign.png">
-            This is the second message!
-        </message>
+        <dialog id="sign_1">
+            <message speaker="Weird Sign" icon="sprites/sign.png">
+                Another message chosen randomly.
+            </message>
+        </dialog>
 
-        <message speaker="First person" icon="sprites/wizardguy.png">
-            That's so cool! Isn't it????A???!? :3
-        </message>
-    </dialog>
+        <dialog id="sign_2">
+            <message speaker="Weird Sign :(" icon="sprites/sign.png">
+                ...
+            </message>
+
+            <message speaker="????" icon="sprites/testtree1.png">
+                The trees are quiet.
+            </message>
+        </dialog>
+    </group>
+
+    <group id="test_npc">
+        <dialog id="test_npc">
+            <message speaker="????" icon="sprites/wizardguy.png">
+                Lorem Ipsum blah blah blah blah blah blah...
+            </message>
+
+            <message speaker="Freddy Fazbear" icon="sprites/wizardguy.png">
+                oh hoh oho oh oh ho hoho
+            </message>
+        </dialog>
+    </group>
+
 </root>

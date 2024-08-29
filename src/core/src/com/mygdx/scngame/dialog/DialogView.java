@@ -186,14 +186,14 @@ public class DialogView implements DialogEventListener, ActionListener, DialogEv
     }
 
     @Override
-    public void onDialogStart(String id) {
+    public void onDialogStart(String dialogFile, String id) {
         inFocus = true;
 
-        if(!assets.contains(id)) {
+        if(!assets.contains(dialogFile)) {
             currentNode = defaultDialog.iterator();
         } else {
-            DialogFile df = assets.get(id);
-            DialogNode node = df.dialogNodes.get(0);
+            DialogFile df = assets.get(dialogFile);
+            DialogNode node = df.getDialogNode(id);
 
             currentNode = node != null ? node.iterator() : defaultDialog.iterator();
         }
@@ -260,11 +260,11 @@ public class DialogView implements DialogEventListener, ActionListener, DialogEv
     }
 
     @Override
-    public void startDialog(String id) {
-        this.onDialogStart(id);
+    public void startDialog(String dialogFile, String id) {
+        this.onDialogStart(dialogFile, id);
 
         for(DialogEventListener listener : listeners) {
-            listener.onDialogStart(id);
+            listener.onDialogStart(dialogFile, id);
         }
     }
 

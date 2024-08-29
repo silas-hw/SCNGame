@@ -265,7 +265,7 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
     }
 
     @Override
-    public void onDialogStart(String id) {
+    public void onDialogStart(String dialogFile, String id) {
         Arrays.fill(actionsJustPressed, false);
         Arrays.fill(actionsPressed, false);
 

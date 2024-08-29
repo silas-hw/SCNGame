@@ -158,11 +158,12 @@ public class MapObjectLoader {
 
             case "Sign":
                 String signDialogID = properties.get("DialogID", String.class);
+                String signDialogFile = properties.get("DialogFile", String.class);
 
                 InteractBox signBox = new InteractBox() {
                     @Override
                     public void interact() {
-                        dialogBus.startDialog(signDialogID);
+                        dialogBus.startDialog(signDialogFile, signDialogID);
                     }
                 };
 
@@ -217,6 +218,7 @@ public class MapObjectLoader {
 
             case "NPC":
                 String npcDialogID = properties.get("DialogID", String.class);
+                String npcDialogFile = properties.get("DialogFile", String.class);
                 MapObject pathNode = properties.get("StartingNode", MapObject.class);
 
                 String walkUpAnimPath = properties.get("walkUpAnim", String.class);
@@ -236,6 +238,7 @@ public class MapObjectLoader {
                 NPC.NPCBreed breed = new NPC.NPCBreed();
                 breed.startingPathNode = startingNode;
                 breed.dialogID = npcDialogID;
+                breed.dialogFile = npcDialogFile;
 
                 breed.walkDownAnim = new Animation<>(0.2f, animAtlas.findRegions(walkDownAnimPath), playmode);
                 breed.walkUpAnim = new Animation<>(0.2f, animAtlas.findRegions(walkUpAnimPath), playmode);

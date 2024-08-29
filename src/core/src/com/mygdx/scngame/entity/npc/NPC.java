@@ -33,6 +33,7 @@ public class NPC extends Entity {
         public Animation<TextureAtlas.AtlasRegion> walkRightAnim;
         public PathNode startingPathNode;
         public String dialogID = "";
+        public String dialogFile = "";
 
         public float walkingSpeed = 50f;
 
@@ -53,7 +54,7 @@ public class NPC extends Entity {
         InteractBox interactBox = new InteractBox() {
             @Override
             public void interact() {
-                dialogBus.startDialog(breed.dialogID);
+                dialogBus.startDialog(breed.dialogFile, breed.dialogID);
             }
         };
 

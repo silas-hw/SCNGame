@@ -32,20 +32,24 @@ public class XmlDialogLoader extends SynchronousAssetLoader<DialogFile, XmlDialo
 
         XmlReader.Element root = xml.parse(file);
 
-        for(XmlReader.Element dialog : root.getChildrenByName("dialog")) {
-            DialogNode dialogNode = new DialogNode();
-            dialogNode.id = dialog.getAttribute("id");
+        for(XmlReader.Element group : root.getChildrenByName("group")) {
+            String groupName = group.getAttribute("id", "");
+            for(XmlReader.Element dialog : group.getChildrenByName("dialog")) {
+                DialogNode dialogNode = new DialogNode();
+                dialogNode.id = dialog.getAttribute("id");
 
-            for(XmlReader.Element message : dialog.getChildrenByName("message")) {
-                DialogMessage dialogMessage = new DialogMessage();
-                dialogMessage.speaker = message.getAttribute("speaker", "");
-                dialogMessage.message = message.getText();
-                dialogMessage.icon = assetManager.get(message.getAttribute("icon"), Texture.class);
+                for(XmlReader.Element message : dialog.getChildrenByName("message")) {
+                    DialogMessage dialogMessage = new DialogMessage();
+                    dialogMessage.speaker = message.getAttribute("speaker", "");
+                    dialogMessage.message = message.getText();
+                    dialogMessage.icon = assetManager.get(message.getAttribute("icon"), Texture.class);
 
-                dialogNode.messages.add(dialogMessage);
+                    dialogNode.messages.add(dialogMessage);
+                }
+
+                dFile.addDialogNode(groupName, dialogNode);
             }
 
-            dFile.dialogNodes.add(dialogNode);
         }
 
         return dFile;

@@ -8,6 +8,6 @@ public interface DialogEventBus {
     void removeDialogListener(DialogEventListener listener);
     void clearDialogListeners();
 
-    void startDialog(String id);
+    void startDialog(String dialogFile, String id);
     void endDialog();
 }
