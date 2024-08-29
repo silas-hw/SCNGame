@@ -214,8 +214,8 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
         float targetY = MathUtils.clamp(player.position.y + player.HEIGHT/2f,
                 worldHeight/2 + 32, heightLimit - 32);
 
-        camera.position.x = MathUtils.lerp(camera.position.x, targetX, 0.009f);
-        camera.position.y = MathUtils.lerp(camera.position.y, targetY, 0.009f);
+        camera.position.x = MathUtils.lerp(camera.position.x, targetX, 4f * delta);
+        camera.position.y = MathUtils.lerp(camera.position.y, targetY, 4f * delta);
 
         camera.update();
 
