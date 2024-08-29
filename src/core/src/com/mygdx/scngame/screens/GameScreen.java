@@ -21,16 +21,19 @@ import com.mygdx.scngame.dialog.DialogView;
 import com.mygdx.scngame.entity.player.Player;
 import com.mygdx.scngame.event.MapChangeEventBus;
 import com.mygdx.scngame.event.MapChangeEventListener;
+import com.mygdx.scngame.event.SaveEventBus;
 import com.mygdx.scngame.map.MapObjectLoader;
 import com.mygdx.scngame.physics.Box;
+import com.mygdx.scngame.save.SaveFile;
 import com.mygdx.scngame.scene.Scene;
 import com.mygdx.scngame.screens.data.ScreenData;
 import com.mygdx.scngame.settings.SettingsMenu;
 import com.mygdx.scngame.viewport.PixelFitScaling;
 
+import java.time.Instant;
 import java.util.Map;
 
-public class GameScreen implements Screen, MapChangeEventBus {
+public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
     Game game;
     Scene scene;
 
@@ -57,12 +60,16 @@ public class GameScreen implements Screen, MapChangeEventBus {
 
     ScreenViewport screenViewport;
 
-    public GameScreen(ScreenData screenData, Player player, String mapPath, String spawnID) {
+    SaveFile saveFile;
+
+    public GameScreen(ScreenData screenData, SaveFile save) {
         this.game = screenData.game();
+
+        this.saveFile = save;
 
         this.screenData = screenData;
 
-        this.player = player;
+        this.player = new Player(screenData.assets());
 
         camera = new OrthographicCamera();
 
@@ -76,8 +83,8 @@ public class GameScreen implements Screen, MapChangeEventBus {
         dialogView = new DialogView(screenData);
         settingsMenu = new SettingsMenu(screenData);
 
-        this.mapPath = mapPath;
-        this.spawnID = spawnID;
+        this.mapPath = save.map;
+        this.spawnID = save.spawnLocation;
 
         screenViewport = new ScreenViewport();
 
@@ -90,7 +97,10 @@ public class GameScreen implements Screen, MapChangeEventBus {
     }
 
     public GameScreen(ScreenData screenData) {
-        this(screenData, new Player(screenData.assets()), "untitled.tmx", "test_spawn");
+        // internally name the save as the length of the number of saves+1
+        this(screenData, new SaveFile("untitled.tmx", "test_spawn",
+                "ermm", Instant.now().toEpochMilli(),
+                Gdx.files.local("/save/" + (Gdx.files.local("/save/").list().length+1) + ".save")));
     }
 
     // TODO: update docs to describe PathNode map object
@@ -129,7 +139,7 @@ public class GameScreen implements Screen, MapChangeEventBus {
         MAP_WIDTH = tiledMap.getProperties().get("width", Integer.class) * tiledMap.getProperties().get("tilewidth", Integer.class);
 
         MapObjectLoader mapObjects = new MapObjectLoader(tiledMap, this.world, this.scene,
-                                                         screenData.assets(), this.dialogView, this);
+                                                         screenData.assets(), this.dialogView, this, this);
 
         Map<String, Vector2> spawnLocations = mapObjects.getSpawnLocations();
 
@@ -175,6 +185,10 @@ public class GameScreen implements Screen, MapChangeEventBus {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         bg.setVolume(screenData.settings().getTrueMusicVolume());
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.T)) {
+            this.save(spawnID);
+        }
 
 
         // give some waiting time before doing anything.
@@ -361,5 +375,17 @@ public class GameScreen implements Screen, MapChangeEventBus {
         for(MapChangeEventListener listener : listeners) {
             listener.onMapChange(mapPath, spawnID);
         }
+    }
+
+    @Override
+    public void save(String spawnLocation) {
+        // get filehandle
+        // save current status and spawn location to file
+
+        saveFile.spawnLocation = spawnID;
+        saveFile.map = mapPath;
+        saveFile.saveDateEpoch = Instant.now().getEpochSecond();
+
+        saveFile.writeToXML();
     }
 }

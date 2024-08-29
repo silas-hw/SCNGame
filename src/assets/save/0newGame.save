@@ -1,0 +1,10 @@
+<save>
+	<meta>
+		<displayName>New Game</displayName>
+		<saveDateEpoch>1724964731</saveDateEpoch>
+	</meta>
+	<map>
+		<mapPath>untitled.tmx</mapPath>
+		<spawnLocation>default</spawnLocation>
+	</map>
+</save>

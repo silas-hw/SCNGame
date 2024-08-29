@@ -23,6 +23,7 @@ import com.mygdx.scngame.entity.sprite.SpriteEntity;
 import com.mygdx.scngame.entity.trigger.Trigger;
 import com.mygdx.scngame.event.DialogEventBus;
 import com.mygdx.scngame.event.MapChangeEventBus;
+import com.mygdx.scngame.event.SaveEventBus;
 import com.mygdx.scngame.path.PathNode;
 import com.mygdx.scngame.path.PathNodes;
 import com.mygdx.scngame.physics.Box;
@@ -61,7 +62,8 @@ public class MapObjectLoader {
     public Map<String, Vector2> getSpawnLocations() {return spawnLocations;}
 
     public MapObjectLoader(TiledMap map, World<Box> world, EntityContext entityContext,
-                           AssetManager assets, DialogEventBus dialogBus, MapChangeEventBus mapBus) {
+                           AssetManager assets, DialogEventBus dialogBus, MapChangeEventBus mapBus,
+                           SaveEventBus bus) {
         this.world = world;
         this.entityContext = entityContext;
         this.spawnLocations = new HashMap<>();

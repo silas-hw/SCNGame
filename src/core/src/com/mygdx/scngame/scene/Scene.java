@@ -294,6 +294,8 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
     public void resize(int width, int height) {
         screenViewport.update(width, height, true);
 
+        if(width == 0 || height == 0) return;
+
         waterFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
     }
 
