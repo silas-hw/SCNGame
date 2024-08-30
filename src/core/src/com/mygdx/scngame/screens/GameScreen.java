@@ -184,7 +184,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
         bg.setVolume(screenData.settings().getTrueMusicVolume());
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.T)) {
-            this.save(spawnID);
+            this.save("untitled.tmx", spawnID, "Saved Manually");
         }
 
 
@@ -375,13 +375,14 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
     }
 
     @Override
-    public void save(String spawnLocation) {
+    public void save(String mapPath, String spawnLocation, String displayName) {
         // get filehandle
         // save current status and spawn location to file
 
         saveFile.spawnLocation = spawnID;
-        saveFile.map = "";
+        saveFile.map = mapPath;
         saveFile.saveDateEpoch = Instant.now().getEpochSecond();
+        saveFile.displayName = displayName;
 
         saveFile.writeToXML();
     }

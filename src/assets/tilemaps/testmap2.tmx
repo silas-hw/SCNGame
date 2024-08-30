@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="8" tileheight="8" infinite="0" nextlayerid="6" nextobjectid="95">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="8" tileheight="8" infinite="0" nextlayerid="6" nextobjectid="96">
  <properties>
   <property name="bg" value="bgtest2.mp3"/>
  </properties>
@@ -526,6 +526,12 @@
     <property name="Map" value="untitled.tmx"/>
     <property name="SpawnID" value="default"/>
    </properties>
+  </object>
+  <object id="95" type="SpawnLocation" x="310" y="622.667">
+   <properties>
+    <property name="SpawnID" value="pond"/>
+   </properties>
+   <point/>
   </object>
  </objectgroup>
 </map>

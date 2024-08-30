@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -60,6 +61,7 @@ public class MainMenuScreen extends InputAdapter implements Screen {
     }
 
     final Array<SaveFile> saves = new Array<SaveFile>();
+    private SaveFile newSave = null;
 
     @Override
     public void show() {
@@ -75,21 +77,21 @@ public class MainMenuScreen extends InputAdapter implements Screen {
 
         stage.addActor(container);
 
-        Gdx.app.log("MainMenu", "Music volume currently set to: " + screenData.settings().getMusicVolume());
-
         bg.setVolume(screenData.settings().getTrueMusicVolume());
         bg.setLooping(true);
         bg.play();
 
+        newSave = SaveFile.loadXMLSaveFile(Gdx.files.internal("saves/0newGame.save"));
+        saves.add(newSave);
 
-
-        for(FileHandle save : Gdx.files.internal("save/").list()) {
+        for(FileHandle save : Gdx.files.internal("saves/").list()) {
+            Gdx.app.log("MainMenuScreen","Loading debug save (doesn't persist): " + save.file());
             SaveFile sf = SaveFile.loadXMLSaveFile(save);
             sf.persist = false;
             saves.add(sf);
         }
 
-        for(FileHandle save : Gdx.files.internal("save/").list()) {
+        for(FileHandle save : Gdx.files.local("save/").list()) {
             saves.add(SaveFile.loadXMLSaveFile(save));
         }
 
@@ -159,7 +161,14 @@ public class MainMenuScreen extends InputAdapter implements Screen {
 
                 if(index >= saves.size) return false;
 
-                game.setScreen(new GameScreen(this.screenData, saves.get(index)));
+                SaveFile save = saves.get(index);
+
+                // if new save, create a local file
+                if(save == newSave) {
+                    save.file = Gdx.files.local("save/" + "prealphasave-" + Instant.now().getEpochSecond() + ".save");
+                }
+
+                game.setScreen(new GameScreen(this.screenData, save));
         }
 
         return false;

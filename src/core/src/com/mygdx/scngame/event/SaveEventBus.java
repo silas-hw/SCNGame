@@ -2,5 +2,5 @@ package com.mygdx.scngame.event;
 
 public interface SaveEventBus {
 
-    void save(String spawnLocation);
+    void save(String mapPath, String spawnLocation, String displayName);
 }
