@@ -70,19 +70,23 @@ public class SaveFile {
                 "file:\t" + file.name() + "\n";
     }
 
-    public static SaveFile loadXMLSaveFile(String fileName) {
+    public static SaveFile loadXMLSaveFile(String fileName) throws InvalidSaveFileException {
         return SaveFile.loadXMLSaveFile(Gdx.files.local(fileName));
     }
 
-    public static SaveFile loadXMLSaveFile(FileHandle file) {
+    public static SaveFile loadXMLSaveFile(FileHandle file) throws InvalidSaveFileException {
         XmlReader reader = new XmlReader();
         XmlReader.Element root = reader.parse(file);
 
 
         XmlReader.Element meta = root.getChildByName("meta");
 
-        String displayName = meta.getChildByName("displayName").getText();
+        if(meta == null) throw new InvalidSaveFileException();
+        if(!(meta.hasChild("displayName") &&
+             meta.hasChild("saveDateEpoch"))) throw new InvalidSaveFileException();
 
+
+        String displayName = meta.getChildByName("displayName").getText();
         String strSaveDateEpoch = meta.getChildByName("saveDateEpoch").getText();
 
         long saveDateEpoch = 0;
@@ -96,6 +100,10 @@ public class SaveFile {
 
         XmlReader.Element map = root.getChildByName("map");
 
+        if(map == null) throw new InvalidSaveFileException();
+        if(!(map.hasChild("mapPath")
+             && map.hasChild("spawnLocation"))) throw new InvalidSaveFileException();
+
         String mapPath = map.getChildByName("mapPath").getText();
         String spawnLocation = map.getChildByName("spawnLocation").getText();
 
@@ -104,5 +112,11 @@ public class SaveFile {
                 displayName, saveDateEpoch,
                 file);
 
+    }
+
+    public static class InvalidSaveFileException extends Exception {
+        public InvalidSaveFileException() {
+            super("Invalid save file");
+        }
     }
 }

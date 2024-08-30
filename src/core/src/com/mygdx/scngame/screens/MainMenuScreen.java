@@ -11,9 +11,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -63,39 +62,89 @@ public class MainMenuScreen extends InputAdapter implements Screen {
     final Array<SaveFile> saves = new Array<SaveFile>();
     private SaveFile newSave = null;
 
+    float scale = 1f;
     @Override
     public void show() {
         Skin skin = screenData.assets().get("skin/uiskin2.json", Skin.class);
 
-        TruetypeLabel label = new TruetypeLabel(screenData.assets().get("skin/MyFont2.ttf", FreeTypeFontGenerator.class), 16);
+        FreeTypeFontGenerator font = screenData.assets().get("skin/MyFont2.ttf", FreeTypeFontGenerator.class);
+        TruetypeLabel label = new TruetypeLabel(font, 12);
 
         Container<Label> container = new Container<>(label);
         container.center();
 
+        Table messageStack = new Table();
+        messageStack.left().top().setScale(scale);
+        messageStack.setFillParent(true);
+
+        messageStack.addAction(Actions.sequence(Actions.delay(3f), Actions.fadeOut(0.6f)));
+
+        scale = screenData.settings().getUIScale();
+
+        container.setScale(scale);
+        container.setFillParent(true);
+        label.setFontScale(scale);
+
         stage = new Stage();
         stage.setViewport(viewport);
+        stage.setDebugAll(true);
 
         stage.addActor(container);
+        stage.addActor(messageStack);
 
         bg.setVolume(screenData.settings().getTrueMusicVolume());
         bg.setLooping(true);
         bg.play();
 
-        newSave = SaveFile.loadXMLSaveFile(Gdx.files.internal("saves/0newGame.save"));
-        saves.add(newSave);
+        try {
+            newSave = SaveFile.loadXMLSaveFile(Gdx.files.internal("saves/0newGame.save"));
+            saves.add(newSave);
+        } catch (SaveFile.InvalidSaveFileException e) {
+            Gdx.app.error("SAVE FILE", "Failed to new save savefile");
+
+            TruetypeLabel msg = new TruetypeLabel(font, 12);
+            msg.setText("Failed to load new save savefile (can't create new saves)");
+            msg.setFontScale(scale);
+            msg.setColor(Color.RED);
+
+            messageStack.add(msg).row();
+        }
 
         for(FileHandle save : Gdx.files.internal("saves/").list()) {
-            Gdx.app.log("MainMenuScreen","Loading debug save (doesn't persist): " + save.file());
-            SaveFile sf = SaveFile.loadXMLSaveFile(save);
-            sf.persist = false;
-            saves.add(sf);
+
+            try {
+                Gdx.app.log("MainMenuScreen","Loading debug save (doesn't persist): " + save.file());
+                SaveFile sf = SaveFile.loadXMLSaveFile(save);
+                sf.persist = false;
+                saves.add(sf);
+            } catch (SaveFile.InvalidSaveFileException e) {
+                Gdx.app.error("SAVE FILE ERROR: ", e.getMessage() + " " + save.name());
+
+                TruetypeLabel msg = new TruetypeLabel(font, 12);
+                msg.setText("Failed to debug save: " + save.name());
+                msg.setFontScale(scale);
+                msg.setColor(Color.YELLOW);
+
+                messageStack.add(msg).row();
+            }
+
         }
 
         for(FileHandle save : Gdx.files.local("save/").list()) {
-            saves.add(SaveFile.loadXMLSaveFile(save));
+            try {
+                SaveFile sf = SaveFile.loadXMLSaveFile(save);
+                saves.add(sf);
+            } catch(SaveFile.InvalidSaveFileException e) {
+                Gdx.app.error("SAVE ERROR", e.getMessage() + " " + save.name());
+
+                TruetypeLabel msg = new TruetypeLabel(font, 12);
+                msg.setText("Failed to load save: " + save.name());
+                msg.setFontScale(scale);
+                msg.setColor(Color.ORANGE);
+
+                messageStack.add(msg).row();
+            }
         }
-
-
 
         String labelText = "SELECT SAVE: \n";
 
@@ -113,12 +162,13 @@ public class MainMenuScreen extends InputAdapter implements Screen {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.BLACK);
+        stage.act();
         stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
+        viewport.update(width, height, true);
     }
 
     @Override
