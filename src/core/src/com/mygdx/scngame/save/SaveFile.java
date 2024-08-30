@@ -81,9 +81,9 @@ public class SaveFile {
 
         XmlReader.Element meta = root.getChildByName("meta");
 
-        if(meta == null) throw new InvalidSaveFileException();
+        if(meta == null) throw new InvalidSaveFileException("meta tag missing");
         if(!(meta.hasChild("displayName") &&
-             meta.hasChild("saveDateEpoch"))) throw new InvalidSaveFileException();
+             meta.hasChild("saveDateEpoch"))) throw new InvalidSaveFileException("meta tag missing content");
 
 
         String displayName = meta.getChildByName("displayName").getText();
@@ -100,9 +100,9 @@ public class SaveFile {
 
         XmlReader.Element map = root.getChildByName("map");
 
-        if(map == null) throw new InvalidSaveFileException();
+        if(map == null) throw new InvalidSaveFileException("map tag missing");
         if(!(map.hasChild("mapPath")
-             && map.hasChild("spawnLocation"))) throw new InvalidSaveFileException();
+             && map.hasChild("spawnLocation"))) throw new InvalidSaveFileException("map tag missing content");
 
         String mapPath = map.getChildByName("mapPath").getText();
         String spawnLocation = map.getChildByName("spawnLocation").getText();
@@ -117,6 +117,10 @@ public class SaveFile {
     public static class InvalidSaveFileException extends Exception {
         public InvalidSaveFileException() {
             super("Invalid save file");
+        }
+
+        public InvalidSaveFileException(String message) {
+            super("Invalid save file, " + message);
         }
     }
 }

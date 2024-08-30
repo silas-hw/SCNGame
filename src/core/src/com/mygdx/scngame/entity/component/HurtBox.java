@@ -1,6 +1,7 @@
 package com.mygdx.scngame.entity.component;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.dongbat.jbump.Collision;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Response;
@@ -8,8 +9,14 @@ import com.dongbat.jbump.World;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.DamageBox;
 import com.mygdx.scngame.physics.HitBox;
+import org.jetbrains.annotations.NotNull;
 
 public class HurtBox {
+
+    public interface HurtListener {
+        void onHit();
+    }
+
     private HealthComponent health;
     private Item<Box> hitbox;
 
@@ -26,7 +33,7 @@ public class HurtBox {
 
     private boolean takesDamage = true;
 
-    public HurtBox(HealthComponent health, float width, float height, float invinceTime) {
+    public HurtBox(@NotNull HealthComponent health, float width, float height, float invinceTime) {
         this.health = health;
 
         Box hit = new HitBox();
@@ -45,6 +52,16 @@ public class HurtBox {
         hitbox.userData.setMask(maskLayer, set);
     }
 
+    private final Array<HurtListener> listeners = new Array<>();
+
+    public void addHurtListener(HurtListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeHurtListener(HurtListener listener) {
+        listeners.removeValue(listener, true);
+    }
+
     public void update(float delta, Vector2 position) {
         assert world != null : "Are you daft? You gotta set world before updating a hurtbox otherwise its got nothin'" +
                 "to move about in";
@@ -59,22 +76,32 @@ public class HurtBox {
 
         if(invincible && invinceTimer <= 0f) {
             invincible = false;
-        } else if(invincible) {
-            invinceTimer -= delta;
-        } else if(health != null){
-            for(int i = 0; i<res.projectedCollisions.size(); i++) {
-                Collision col = res.projectedCollisions.get(i);
-
-                if(col.other.userData instanceof DamageBox) {
-                    DamageBox dBox = (DamageBox) col.other.userData;
-
-                    health.applyDamage(dBox.damage);
-                    invincible = true;
-                    invinceTimer = invinceTime;
-                }
-
-            }
+            return;
         }
+
+        if(invincible) {
+            invinceTimer -= delta;
+            return;
+        }
+
+        for(int i = 0; i<res.projectedCollisions.size(); i++) {
+            Collision col = res.projectedCollisions.get(i);
+
+            if(col.other.userData instanceof DamageBox dBox) {
+
+                System.out.println("hit!");
+
+                health.applyDamage(dBox.damage);
+                invincible = true;
+                invinceTimer = invinceTime;
+
+                for(HurtListener listener : listeners) {
+                    listener.onHit();
+                }
+            }
+
+        }
+
     }
 
     public void setTakesDamage(boolean takesDamage) {

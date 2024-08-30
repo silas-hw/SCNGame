@@ -1,6 +1,7 @@
 package com.mygdx.scngame.entity.player;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,7 +17,7 @@ import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.TerrainBox;
 
 // TODO: add comments
-public class Player extends Entity {
+public class Player extends Entity implements HurtBox.HurtListener {
     private EntityState<? super Player> state;
 
     public Item<Box> collisionItem;
@@ -73,18 +74,25 @@ public class Player extends Entity {
         collisionItem = new Item<>(foot);
 
         health = new HealthComponent(500f);
-        hurtbox = new HurtBox(health, WIDTH, HEIGHT, 5f);
+        hurtbox = new HurtBox(health, WIDTH, HEIGHT, 0.7f);
         hurtbox.setCollisionMask(0, true);
+
+        hurtbox.addHurtListener(this);
 
         this.state = new PlayerMoveState();
         this.state.setContainer(this);
     }
+
+    private static final float hurtColorTime = 0.4f;
+    public float hurtColorTimer = 0f;
 
     @Override
     public void update(float delta) throws IllegalStateException {
         if(this.world == null) {
             throw new IllegalStateException("World must be set before calling update on Player");
         }
+
+        if(hurtColorTimer > 0f) hurtColorTimer -= delta;
 
         EntityState<? super Player> newState =  state.update(delta);
 
@@ -123,7 +131,14 @@ public class Player extends Entity {
 
     @Override
     public void draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
+
+        if(hurtColorTimer > 0f) {
+            batch.setColor(Color.RED);
+        }
+
         state.draw( batch, shape, alpha);
+
+        batch.setColor(Color.WHITE);
     }
 
     @Override
@@ -167,5 +182,10 @@ public class Player extends Entity {
     @Override
     public void dispose() {
         this.state.exit();
+    }
+
+    @Override
+    public void onHit() {
+        hurtColorTimer = hurtColorTime;
     }
 }

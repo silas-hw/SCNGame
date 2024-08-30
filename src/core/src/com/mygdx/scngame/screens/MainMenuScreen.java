@@ -103,7 +103,7 @@ public class MainMenuScreen extends InputAdapter implements Screen {
             Gdx.app.error("SAVE FILE", "Failed to new save savefile");
 
             TruetypeLabel msg = new TruetypeLabel(font, 12);
-            msg.setText("Failed to load new save savefile (can't create new saves)");
+            msg.setText("Failed to load new save savefile (can't create new saves): " + e.getMessage());
             msg.setFontScale(scale);
             msg.setColor(Color.RED);
 
@@ -121,7 +121,7 @@ public class MainMenuScreen extends InputAdapter implements Screen {
                 Gdx.app.error("SAVE FILE ERROR: ", e.getMessage() + " " + save.name());
 
                 TruetypeLabel msg = new TruetypeLabel(font, 12);
-                msg.setText("Failed to debug save: " + save.name());
+                msg.setText("Failed to debug save: " + save.name() + "   -   " + e.getMessage());
                 msg.setFontScale(scale);
                 msg.setColor(Color.YELLOW);
 
@@ -138,7 +138,7 @@ public class MainMenuScreen extends InputAdapter implements Screen {
                 Gdx.app.error("SAVE ERROR", e.getMessage() + " " + save.name());
 
                 TruetypeLabel msg = new TruetypeLabel(font, 12);
-                msg.setText("Failed to load save: " + save.name());
+                msg.setText("Failed to load save: " + save.name() + "   -   " + e.getMessage());
                 msg.setFontScale(scale);
                 msg.setColor(Color.ORANGE);
 
