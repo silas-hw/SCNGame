@@ -86,6 +86,8 @@ public class Controls implements InputProcessor, ControllerListener {
 
         return instance;
     }
+    public Actions leftMouseAlias = Actions.ATTACK;
+    public Actions rightMouseAlias = Actions.DASH;
 
     private final Array<ActionListener> listeners = new Array<>();
     private final Array<InputProcessor> inputProcessors = new Array<>();
@@ -159,6 +161,22 @@ public class Controls implements InputProcessor, ControllerListener {
             inputProcessor.touchDown(screenX, screenY, pointer, button);
         }
 
+        switch(button) {
+            case Input.Buttons.LEFT:
+                for(ActionListener listener : listeners) {
+                    listener.actionDown(leftMouseAlias);
+                }
+
+                break;
+
+            case Input.Buttons.RIGHT:
+                for(ActionListener listener : listeners) {
+                    listener.actionDown(rightMouseAlias);
+                }
+
+                break;
+        }
+
         return false;
     }
 
@@ -166,6 +184,22 @@ public class Controls implements InputProcessor, ControllerListener {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         for(InputProcessor inputProcessor : inputProcessors) {
             inputProcessor.touchUp(screenX, screenY, pointer, button);
+        }
+
+        switch(button) {
+            case Input.Buttons.LEFT:
+                for(ActionListener listener : listeners) {
+                    listener.actionUp(leftMouseAlias);
+                }
+
+                break;
+
+            case Input.Buttons.RIGHT:
+                for(ActionListener listener : listeners) {
+                    listener.actionUp(rightMouseAlias);
+                }
+
+                break;
         }
 
         return false;

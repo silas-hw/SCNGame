@@ -88,9 +88,6 @@ public class HurtBox {
             Collision col = res.projectedCollisions.get(i);
 
             if(col.other.userData instanceof DamageBox dBox) {
-
-                System.out.println("hit!");
-
                 health.applyDamage(dBox.damage);
                 invincible = true;
                 invinceTimer = invinceTime;
@@ -99,9 +96,7 @@ public class HurtBox {
                     listener.onHit();
                 }
             }
-
         }
-
     }
 
     public void setTakesDamage(boolean takesDamage) {

@@ -1,7 +1,8 @@
 package com.mygdx.scngame.dialog;
 
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -65,11 +66,15 @@ public class DialogView implements DialogEventListener, ActionListener, DialogEv
 
     DialogNode defaultDialog;
 
+    Sound blip;
+
 
     public DialogView(ScreenData screenData) {
         this.settings = screenData.settings();
         this.assets = screenData.assets();
         this.skin = screenData.assets().get("skin/uiskin2.json", Skin.class);
+
+        blip = Gdx.audio.newSound(Gdx.files.internal("sfx/blipc5.mp3"));
 
         DialogMessage defaultMessage = new DialogMessage();
         defaultMessage.speaker = "Error...";
@@ -133,10 +138,12 @@ public class DialogView implements DialogEventListener, ActionListener, DialogEv
 
     }
 
-    public void draw() {
+    public void draw(float delta) {
         if(!inFocus) {
             return;
         }
+
+        tickCharacter(delta);
 
         float scale = settings.getUIScale();
 
@@ -192,11 +199,61 @@ public class DialogView implements DialogEventListener, ActionListener, DialogEv
         this.nextMessage();
     }
 
+    String currentMessage = "";
+    int currentMessageIndex = 0;
+
+    float charTimer = 0f;
+    float baseCharTime = 0.07f;
+    float charTime = baseCharTime;
+
+    float nextMessageCooldown = 0.1f;
+    final float messageCooldownTime = 0.2f;
+
+    // tick to the next character if enough time has passed
+    void tickCharacter(float delta) {
+        charTimer += delta;
+
+        // scrolls through text one character at a time
+        if(charTimer >= charTime && currentMessageIndex < currentMessage.length()) {
+            charTimer = 0f;
+            char currentChar = currentMessage.charAt(currentMessageIndex);
+            label.setText(label.getText().append(currentChar).toString());
+            label.invalidate();
+            currentMessageIndex++;
+
+            if(currentChar != ' ') {
+                blip.play(0.2f, 0.6f, 0f);
+            }
+
+            if(currentChar == '.') {
+                charTime = baseCharTime * 2;
+            } else {
+                charTime = baseCharTime;
+            }
+
+            nextMessageCooldown = messageCooldownTime;
+        }
+
+        nextMessageCooldown -= delta;
+    }
+
+    // skips all the remaining character ticks, filling the display text with the full message
+    void skipCharacterTicks() {
+        String slice = currentMessage.substring(currentMessageIndex);
+        label.setText(label.getText().append(slice).toString());
+        label.invalidate();
+
+        currentMessageIndex = currentMessage.length();
+    }
+
     void nextMessage() {
         if(currentNode.hasNext()) {
             DialogMessage msg = currentNode.next();
 
-            label.setText(msg.speaker + ": \n " + msg.message);
+            currentMessage = msg.message;
+            currentMessageIndex = 0;
+
+            label.setText(msg.speaker + ": \n ");
 
             Image icon = new Image(msg.icon);
             icon.setScaling(Scaling.fit);
@@ -222,7 +279,11 @@ public class DialogView implements DialogEventListener, ActionListener, DialogEv
         if(!inFocus) return false;
 
         if(action == Controls.Actions.INTERACT) {
-            this.nextMessage();
+            if(this.currentMessageIndex < currentMessage.length()) {
+                this.skipCharacterTicks();
+            } else if(nextMessageCooldown <= 0f) {
+                this.nextMessage();
+            }
         }
 
         return true;

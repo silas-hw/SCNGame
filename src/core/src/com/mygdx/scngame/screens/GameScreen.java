@@ -230,7 +230,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
         mapRenderer.render();
 
         scene.draw();
-        dialogView.draw();
+        dialogView.draw(delta);
         settingsMenu.draw();
 
         ShapeRenderer shape = screenData.shapeRenderer();

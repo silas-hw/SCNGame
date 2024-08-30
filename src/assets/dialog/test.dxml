@@ -21,6 +21,24 @@
                 The trees are quiet.
             </message>
         </dialog>
+
+        <dialog id="sign_3">
+            <message speaker="Weird Sign :(" icon="sprites/sign.png">
+                ...testing out some. Weird timing stuff... I guess.
+            </message>
+
+            <message speaker="????" icon="sprites/testtree1.png">
+                GARHGHGHHG
+            </message>
+
+            <message speaker="Weird Sign :(" icon="sprites/sign.png">
+                Blurgh
+            </message>
+
+            <message speaker="????" icon="sprites/testtree1.png">
+                hehehehehehehehheeh hehehe... hehehehe.
+            </message>
+        </dialog>
     </group>
 
     <group id="test_npc">
