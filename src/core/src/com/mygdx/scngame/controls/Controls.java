@@ -8,6 +8,7 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.ControllerMapping;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.Arrays;
@@ -117,8 +118,24 @@ public class Controls implements InputProcessor, ControllerListener {
         mouseListeners.removeValue(listener, true);
     }
 
+    int mouseX = 0, mouseY = 0;
+    boolean mouseHidden = false;
+
     @Override
     public boolean keyDown(int keycode) {
+
+
+        if(!mouseHidden) {
+            mouseX = Gdx.input.getX();
+            mouseY = Gdx.input.getY();
+
+            Gdx.input.setCursorPosition(0, 0);
+            this.mouseMoved(0, 0);
+            Gdx.graphics.setSystemCursor(Cursor.SystemCursor.None);
+
+            mouseHidden = true;
+        }
+
         for(InputProcessor inputProcessor : inputProcessors) {
             inputProcessor.keyDown(keycode);
         }
@@ -166,6 +183,15 @@ public class Controls implements InputProcessor, ControllerListener {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if(mouseHidden) {
+
+            Gdx.input.setCursorPosition(mouseX, mouseY);
+            Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+
+            mouseHidden = false;
+            return false;
+        }
+
         for(InputProcessor inputProcessor : inputProcessors) {
             inputProcessor.touchDown(screenX, screenY, pointer, button);
         }
@@ -234,6 +260,9 @@ public class Controls implements InputProcessor, ControllerListener {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
+
+        if(mouseHidden) return false;
+
         for(InputProcessor inputProcessor : inputProcessors) {
             inputProcessor.mouseMoved(screenX, screenY);
         }

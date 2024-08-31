@@ -87,7 +87,7 @@ public class MainMenuScreen implements Screen, ActionListener {
 
         Table saveRoot = new Table();
 
-        Label saveLabel = new TruetypeLabel(font, 10);
+        Label saveLabel = new TruetypeLabel(font, 16);
         saveLabel.setText("Select Save: ");
         saveLabel.setFontScale(scale);
 
@@ -107,7 +107,7 @@ public class MainMenuScreen implements Screen, ActionListener {
 
         stage = new Stage();
         stage.setViewport(viewport);
-        stage.setDebugAll(true);
+        //stage.setDebugAll(true);
 
         stage.addActor(saveRoot);
         stage.addActor(messageStack);
@@ -122,12 +122,14 @@ public class MainMenuScreen implements Screen, ActionListener {
         } catch (SaveFile.InvalidSaveFileException e) {
             Gdx.app.error("SAVE FILE", "Failed to new save savefile");
 
-            TruetypeLabel msg = new TruetypeLabel(font, 12);
+            TruetypeLabel msg = new TruetypeLabel(font, 14);
             msg.setText("Failed to load new save savefile (can't create new saves): " + e.getMessage());
             msg.setFontScale(scale);
             msg.setColor(Color.RED);
 
-            messageStack.add(msg).row();
+            msg.setAlignment(Align.left);
+
+            messageStack.add(msg).left().expandX().row();
         }
 
         for(FileHandle save : Gdx.files.internal("saves/").list()) {
@@ -145,7 +147,9 @@ public class MainMenuScreen implements Screen, ActionListener {
                 msg.setFontScale(scale);
                 msg.setColor(Color.YELLOW);
 
-                messageStack.add(msg).row();
+                msg.setAlignment(Align.left);
+
+                messageStack.add(msg).left().expandX().row();
             }
 
         }
@@ -161,8 +165,9 @@ public class MainMenuScreen implements Screen, ActionListener {
                 msg.setText("Failed to load save: " + save.name() + "   -   " + e.getMessage());
                 msg.setFontScale(scale);
                 msg.setColor(Color.ORANGE);
+                msg.setAlignment(Align.left);
 
-                messageStack.add(msg).row();
+                messageStack.add(msg).left().expandX().row();
             }
         }
 
@@ -171,7 +176,7 @@ public class MainMenuScreen implements Screen, ActionListener {
 
             Button butt = new Button(skin);
 
-            Label displayLabel = new TruetypeLabel(font, 8);
+            Label displayLabel = new TruetypeLabel(font, 12);
             displayLabel.setText("[" + i + "] " + save.displayName + "\t " + Instant.ofEpochSecond(save.saveDateEpoch).toString());
             displayLabel.setFontScale(scale);
 
