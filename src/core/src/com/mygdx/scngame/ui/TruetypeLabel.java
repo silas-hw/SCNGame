@@ -9,7 +9,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import java.util.HashMap;
 
 /**
- * A hackjob solution to true type font labels. Really horrible. Like. Really really horrible.
+ * A hackjob solution to true type font labels. Generates a new bitmap font based on a given FreeTypeFontGenerator and
+ * a given base font size every time the label is rescaled.
+ * <p>
+ * Fonts generated using the same font generator, even across different labels, are cached, meaning 12 labels with the
+ * same font generator at the same size (base size * font scale) will all share the same bitmap font.
+ * <p>
+ * This will likely be a memory bottleneck, so should be on the list of places worth looking when optimising.
+ *
+ * @author Silas Hayes-Williams
  */
 public class TruetypeLabel extends Label {
 
@@ -62,18 +70,22 @@ public class TruetypeLabel extends Label {
             FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
             parameter.size = superSampleSize;
-            parameter.magFilter = Texture.TextureFilter.Linear;
-            parameter.minFilter = Texture.TextureFilter.Linear;
-            parameter.hinting = FreeTypeFontGenerator.Hinting.Full;
+            parameter.magFilter = Texture.TextureFilter.MipMapLinearLinear;
+            parameter.minFilter = Texture.TextureFilter.MipMapLinearLinear;
+            parameter.hinting = FreeTypeFontGenerator.Hinting.Medium;
+            parameter.genMipMaps = true;
             parameter.shadowColor = Color.BLACK;
-            parameter.shadowOffsetX = 3 * fontSize / 16;
-            parameter.shadowOffsetY = 3 * fontSize / 16;
+            parameter.shadowOffsetX = superSampleSize / 16;
+            parameter.shadowOffsetY = superSampleSize / 16;
             parameter.borderColor = Color.BLACK;
-            parameter.borderWidth = 2 * fontSize / 16;
+            parameter.borderWidth = superSampleSize / 32f;
             parameter.characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789↧↦↤↥↞↠↡↟↱↰⇷⇸⇋⇌()!@#$%^&*_+-=><,./?'\":;[]{}\\|~";
 
             newFont = fontGen.generateFont(parameter);
 
+            // currently un-used fonts still stay in the cache.
+            // we could add some reference counting so as soon as a cached bitmap font isn't being used
+            // we can dispose of it. Currently, not of significant importance.
             fontCache.get(fontGen).put(fontSize, newFont);
         }
 
