@@ -1,0 +1,10 @@
+<save>
+	<meta>
+		<displayName>DEBUG: testmap2</displayName>
+		<saveDateEpoch>1724964731</saveDateEpoch>
+	</meta>
+	<map>
+		<mapPath>testmap2.tmx</mapPath>
+		<spawnLocation>pond</spawnLocation>
+	</map>
+</save>

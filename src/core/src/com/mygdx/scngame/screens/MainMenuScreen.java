@@ -10,9 +10,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -21,6 +25,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.SCNGame;
+import com.mygdx.scngame.controls.ActionListener;
 import com.mygdx.scngame.controls.Controls;
 import com.mygdx.scngame.dialog.DialogFile;
 import com.mygdx.scngame.entity.player.Player;
@@ -33,9 +38,10 @@ import com.mygdx.scngame.settings.Settings;
 import com.mygdx.scngame.ui.TruetypeLabel;
 import com.mygdx.scngame.viewport.PixelFitScaling;
 
+import java.net.http.WebSocket;
 import java.time.Instant;
 
-public class MainMenuScreen extends InputAdapter implements Screen {
+public class MainMenuScreen implements Screen, ActionListener {
 
     private Stage stage;
 
@@ -62,16 +68,36 @@ public class MainMenuScreen extends InputAdapter implements Screen {
     final Array<SaveFile> saves = new Array<SaveFile>();
     private SaveFile newSave = null;
 
+    private Array<Actor> focusableArray = new Array<>();
+    private int focusIndex = 0;
+
     float scale = 1f;
     @Override
     public void show() {
+        scale = screenData.settings().getUIScale();
+
         Skin skin = screenData.assets().get("skin/uiskin2.json", Skin.class);
 
         FreeTypeFontGenerator font = screenData.assets().get("skin/MyFont2.ttf", FreeTypeFontGenerator.class);
-        TruetypeLabel label = new TruetypeLabel(font, 12);
 
-        Container<Label> container = new Container<>(label);
-        container.center();
+        Table saveList = new Table();
+        saveList.center().top();
+
+        ScrollPane saveScroll = new ScrollPane(saveList);
+
+        Table saveRoot = new Table();
+
+        Label saveLabel = new TruetypeLabel(font, 10);
+        saveLabel.setText("Select Save: ");
+        saveLabel.setFontScale(scale);
+
+        saveRoot.add(saveLabel).top().left().expandX().pad(5f).row();
+        saveRoot.add(saveScroll).grow().center();
+
+        saveRoot.pad(200f);
+
+        saveRoot.setFillParent(true);
+        saveRoot.center();
 
         Table messageStack = new Table();
         messageStack.left().top().setScale(scale);
@@ -79,17 +105,11 @@ public class MainMenuScreen extends InputAdapter implements Screen {
 
         messageStack.addAction(Actions.sequence(Actions.delay(3f), Actions.fadeOut(0.6f)));
 
-        scale = screenData.settings().getUIScale();
-
-        container.setScale(scale);
-        container.setFillParent(true);
-        label.setFontScale(scale);
-
         stage = new Stage();
         stage.setViewport(viewport);
         stage.setDebugAll(true);
 
-        stage.addActor(container);
+        stage.addActor(saveRoot);
         stage.addActor(messageStack);
 
         bg.setVolume(screenData.settings().getTrueMusicVolume());
@@ -146,17 +166,79 @@ public class MainMenuScreen extends InputAdapter implements Screen {
             }
         }
 
-        String labelText = "SELECT SAVE: \n";
-
         for(int i = 0; i < saves.size; i++) {
             SaveFile save = saves.get(i);
 
-            labelText += "[" + i + "] " + save.displayName + "\t " + Instant.ofEpochSecond(save.saveDateEpoch).toString() + "\n";
+            Button butt = new Button(skin);
+
+            Label displayLabel = new TruetypeLabel(font, 8);
+            displayLabel.setText("[" + i + "] " + save.displayName + "\t " + Instant.ofEpochSecond(save.saveDateEpoch).toString());
+            displayLabel.setFontScale(scale);
+
+            displayLabel.setAlignment(Align.left);
+
+            butt.add(displayLabel).left().expandX().padTop(50f).padBottom(50f);
+
+            butt.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    // if new save, create a local file
+                    if(save == newSave) {
+                        save.file = Gdx.files.local("save/" + "prealphasave-" + Instant.now().getEpochSecond() + ".save");
+                    }
+
+                    game.setScreen(new GameScreen(screenData, save));
+                }
+            });
+
+            butt.addListener(new FocusListener() {
+                @Override
+                public void keyboardFocusChanged(FocusEvent event, Actor actor, boolean focused) {
+                    if(focused) {
+                        float x = actor.getX();
+                        float y = actor.getY();
+                        float width = actor.getWidth();
+                        float height = actor.getHeight();
+
+                        y += height;
+
+                        saveScroll.scrollTo(x, y, width, height, true, false);
+                    }
+                }
+            });
+
+            focusableArray.add(butt);
+
+            saveList.add(butt).left().growX().space(5f).row();
         }
 
-        label.setText(labelText);
+        for(Actor actor : focusableArray) {
 
-        Controls.getInstance().addInputProcessor(this);
+            actor.addListener(new FocusListener() {
+                @Override
+                public void keyboardFocusChanged(FocusEvent event, Actor actor, boolean focused) {
+                    if(focused) {
+                        actor.setColor(Color.CYAN);
+                    } else {
+                        actor.setColor(Color.WHITE);
+                    }
+                }
+            });
+
+            actor.addListener(new ClickListener() {
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    focusIndex = focusableArray.indexOf(actor, true);
+                    stage.setKeyboardFocus(focusableArray.get(focusIndex));
+                }
+            });
+        }
+
+        stage.setScrollFocus(saveScroll);
+        stage.setKeyboardFocus(saveRoot);
+
+        Controls.getInstance().addInputProcessor(stage);
+        Controls.getInstance().addActionListener(this);
     }
 
     @Override
@@ -186,7 +268,9 @@ public class MainMenuScreen extends InputAdapter implements Screen {
         stage.dispose();
         bg.stop();
 
-        Controls.getInstance().removeInputProcessor(this);
+        Controls.getInstance().removeInputProcessor(stage);
+        Controls.getInstance().removeActionListener(this);
+
     }
 
     @Override
@@ -195,32 +279,39 @@ public class MainMenuScreen extends InputAdapter implements Screen {
     }
 
     @Override
-    public boolean keyDown(int keycode) {
-        switch(keycode) {
-            case Input.Keys.NUM_0:
-            case Input.Keys.NUM_1:
-            case Input.Keys.NUM_2:
-            case Input.Keys.NUM_3:
-            case Input.Keys.NUM_4:
-            case Input.Keys.NUM_5:
-            case Input.Keys.NUM_6:
-            case Input.Keys.NUM_7:
-            case Input.Keys.NUM_8:
-            case Input.Keys.NUM_9:
-                int index = keycode - Input.Keys.NUM_0;
+    public boolean actionDown(Controls.Actions action) {
+        switch (action) {
+            case DOWN:
+                focusIndex++;
+                focusIndex = focusIndex%focusableArray.size;
+                break;
 
-                if(index >= saves.size) return false;
+            case UP:
+                focusIndex--;
+                if(focusIndex < 0) focusIndex = focusableArray.size-1;
+                break;
 
-                SaveFile save = saves.get(index);
+            case ATTACK:
+                Actor actor = focusableArray.get(focusIndex);
 
-                // if new save, create a local file
-                if(save == newSave) {
-                    save.file = Gdx.files.local("save/" + "prealphasave-" + Instant.now().getEpochSecond() + ".save");
+                if(actor instanceof Button button) {
+                    for(EventListener listener : button.getListeners()) {
+                        if(listener instanceof ClickListener click) {
+                            click.clicked(null, 0, 0);
+                        }
+                    }
                 }
 
-                game.setScreen(new GameScreen(this.screenData, save));
+                break;
         }
 
+        stage.setKeyboardFocus(focusableArray.get(focusIndex));
+
+        return true;
+    }
+
+    @Override
+    public boolean actionUp(Controls.Actions action) {
         return false;
     }
 }
