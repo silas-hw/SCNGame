@@ -91,6 +91,7 @@ public class Controls implements InputProcessor, ControllerListener {
 
     private final Array<ActionListener> listeners = new Array<>();
     private final Array<InputProcessor> inputProcessors = new Array<>();
+    private final Array<ActionListener> mouseListeners = new Array<>();
 
     public void addActionListener(ActionListener listener) {
         listeners.add(listener);
@@ -106,6 +107,14 @@ public class Controls implements InputProcessor, ControllerListener {
 
     public void removeInputProcessor(InputProcessor inputProcessor) {
         inputProcessors.removeValue(inputProcessor, true);
+    }
+
+    public void addMouseActionListener(ActionListener listener) {
+        mouseListeners.add(listener);
+    }
+
+    public void removeMouseActionListener(ActionListener listener) {
+        mouseListeners.removeValue(listener, true);
     }
 
     @Override
@@ -163,14 +172,14 @@ public class Controls implements InputProcessor, ControllerListener {
 
         switch(button) {
             case Input.Buttons.LEFT:
-                for(ActionListener listener : listeners) {
+                for(ActionListener listener : mouseListeners) {
                     listener.actionDown(leftMouseAlias);
                 }
 
                 break;
 
             case Input.Buttons.RIGHT:
-                for(ActionListener listener : listeners) {
+                for(ActionListener listener : mouseListeners) {
                     listener.actionDown(rightMouseAlias);
                 }
 
@@ -188,14 +197,14 @@ public class Controls implements InputProcessor, ControllerListener {
 
         switch(button) {
             case Input.Buttons.LEFT:
-                for(ActionListener listener : listeners) {
+                for(ActionListener listener : mouseListeners) {
                     listener.actionUp(leftMouseAlias);
                 }
 
                 break;
 
             case Input.Buttons.RIGHT:
-                for(ActionListener listener : listeners) {
+                for(ActionListener listener : mouseListeners) {
                     listener.actionUp(rightMouseAlias);
                 }
 

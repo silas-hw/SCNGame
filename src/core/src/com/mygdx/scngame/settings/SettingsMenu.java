@@ -5,9 +5,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -150,7 +152,6 @@ public class SettingsMenu implements ActionListener {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 inFocus = false;
-                Controls.getInstance().removeInputProcessor(stage);
             }
         });
 
@@ -194,6 +195,15 @@ public class SettingsMenu implements ActionListener {
 
         window.padRight(10f).padLeft(10f);
         window.pack();
+
+        for(Actor actor : focusableArray) {
+            actor.addCaptureListener(new ClickListener() {
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    stage.setKeyboardFocus(actor);
+                }
+            });
+        }
     }
 
     public void draw() {
@@ -228,11 +238,14 @@ public class SettingsMenu implements ActionListener {
 
         Controls.getInstance().addInputProcessor(stage);
 
+
         Actor currentActor = focusableArray.get(focusIndex);
         switch(action) {
             case ATTACK:
                 if(currentActor instanceof CheckBox) {
                     ((CheckBox) currentActor).setChecked(!((CheckBox) currentActor).isChecked());
+                } else if(currentActor instanceof Button button) {
+                    button.toggle();
                 }
 
                 break;
