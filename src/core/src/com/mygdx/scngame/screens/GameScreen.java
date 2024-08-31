@@ -80,7 +80,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
         scene = new Scene(gameViewport, screenData.batch(), screenData.shapeRenderer(), world);
 
         dialogView = new DialogView(screenData);
-        settingsMenu = new SettingsMenu(screenData);
+        settingsMenu = new SettingsMenu(screenData, Controls.getInstance());
 
         this.tiledMap = screenData.assets().get("tilemaps/" + save.map);
         this.spawnID = save.spawnLocation;

@@ -44,9 +44,14 @@ public class SettingsMenu implements ActionListener {
 
     private final Array<Runnable> postRunners = new Array<>();
 
+    private Controls controls;
+
 
     private final Settings settings;
-    public SettingsMenu(ScreenData screenData) {
+    public SettingsMenu(ScreenData screenData, Controls controls) {
+
+        this.controls = controls;
+
         FreeTypeFontGenerator fontGenerator = screenData.assets().get("skin/MyFont2.ttf", FreeTypeFontGenerator.class);
 
         FocusListener focusListener = new FocusListener() {
@@ -232,11 +237,11 @@ public class SettingsMenu implements ActionListener {
         }
 
         if(!inFocus) {
-            Controls.getInstance().removeInputProcessor(stage);
+            controls.removeInputProcessor(stage);
             return false;
         }
 
-        Controls.getInstance().addInputProcessor(stage);
+        controls.addInputProcessor(stage);
 
 
         Actor currentActor = focusableArray.get(focusIndex);

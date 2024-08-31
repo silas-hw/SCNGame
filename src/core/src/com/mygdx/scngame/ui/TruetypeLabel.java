@@ -72,13 +72,14 @@ public class TruetypeLabel extends Label {
             parameter.size = superSampleSize;
             parameter.magFilter = Texture.TextureFilter.MipMapLinearLinear;
             parameter.minFilter = Texture.TextureFilter.MipMapLinearLinear;
-            parameter.hinting = FreeTypeFontGenerator.Hinting.Medium;
+            parameter.hinting = FreeTypeFontGenerator.Hinting.AutoFull;
+            parameter.kerning = false;
             parameter.genMipMaps = true;
             parameter.shadowColor = Color.BLACK;
             parameter.shadowOffsetX = superSampleSize / 16;
             parameter.shadowOffsetY = superSampleSize / 16;
             parameter.borderColor = Color.BLACK;
-            parameter.borderWidth = superSampleSize / 32f;
+            parameter.borderWidth = 3;
             parameter.characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789↧↦↤↥↞↠↡↟↱↰⇷⇸⇋⇌()!@#$%^&*_+-=><,./?'\":;[]{}\\|~";
 
             newFont = fontGen.generateFont(parameter);
