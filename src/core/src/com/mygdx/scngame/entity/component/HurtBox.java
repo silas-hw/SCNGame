@@ -104,11 +104,15 @@ public class HurtBox {
     }
 
     public void setWorld(World<Box> world) {
-        if(this.world != null) {
-            if(this.world.hasItem(hitbox)) this.world.remove(hitbox);
-        }
+        this.removeWorldItems();
 
         this.world = world;
         this.world.add(hitbox, pos.x, pos.y, width, height);
+    }
+
+    public void removeWorldItems(){
+        if(this.world != null) {
+            if(this.world.hasItem(hitbox)) this.world.remove(hitbox);
+        }
     }
 }

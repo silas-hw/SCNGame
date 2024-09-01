@@ -79,7 +79,6 @@ public class PlayerAttackState extends PlayerMoveState {
     public void exit() {
         if(this.world != null) {
             if(this.world.hasItem(attackBox)) this.world.remove(attackBox);
-
         }
 
         super.exit();

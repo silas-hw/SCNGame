@@ -55,5 +55,14 @@ public abstract class Entity implements Disposable {
         this.world = world;
     };
 
+    /**
+     * Remove the entities world {@link com.dongbat.jbump.Item items} from its currenlty set world, including any
+     * world items added as a result of any of the entities components (e.g. {@link EntityState} or
+     * {@link com.mygdx.scngame.entity.component.HurtBox}
+     */
+    public void removeWorldItems() {
+
+    }
+
     public World<Box> getWorld() {return this.world;}
 }

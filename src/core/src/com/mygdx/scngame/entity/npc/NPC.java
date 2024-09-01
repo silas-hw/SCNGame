@@ -55,7 +55,6 @@ public class NPC extends Entity {
         InteractBox interactBox = new InteractBox() {
             @Override
             public void interact() {
-
                 dialogBus.startDialog(breed.dialogFile.getDialogNode(breed.dialogID));
             }
         };
@@ -147,15 +146,20 @@ public class NPC extends Entity {
 
     @Override
     public void setWorld(World<Box> world) {
-        if(this.world != null) {
-            if(this.world.hasItem(interactItem)) this.world.remove(interactItem);
-            if(this.world.hasItem(collisionItem)) this.world.remove(collisionItem);
-        }
+        this.removeWorldItems();
 
         this.world = world;
 
         this.world.add(interactItem, position.x + 1, position.y + 1, 14, 14);
         this.world.add(collisionItem, position.x, position.y, 16, 16);
+    }
+
+    @Override
+    public void removeWorldItems() {
+        if(this.world != null) {
+            if(this.world.hasItem(interactItem)) this.world.remove(interactItem);
+            if(this.world.hasItem(collisionItem)) this.world.remove(collisionItem);
+        }
     }
 
     @Override

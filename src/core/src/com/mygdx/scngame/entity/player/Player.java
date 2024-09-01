@@ -169,6 +169,16 @@ public class Player extends Entity implements HurtBox.HurtListener {
         this.hurtbox.setWorld(world);
     }
 
+    @Override
+    public void removeWorldItems() {
+        if(this.world != null) {
+            if(this.world.hasItem(collisionItem)) this.world.remove(collisionItem);
+            if(this.world.hasItem(hitbox)) this.world.remove(hitbox);
+
+            this.state.exit();
+        }
+    }
+
     public void resetState() {
         this.state.exit();
 
