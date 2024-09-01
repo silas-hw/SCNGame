@@ -65,7 +65,7 @@ public class MainMenuScreen implements Screen, ActionListener {
         this.screenData = screenData;
     }
 
-    final Array<SaveFile> saves = new Array<SaveFile>();
+    final Array<SaveFile> saves = new Array<>();
     private SaveFile newSave = null;
 
     private Array<Actor> focusableArray = new Array<>();

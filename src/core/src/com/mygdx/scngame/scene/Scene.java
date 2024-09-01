@@ -138,8 +138,6 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
     }
 
     public void drawWaterReflection() {
-        entities.sort(this.renderComparator);
-
         waterFrameBuffer.begin();
 
         viewport.getCamera().update();

@@ -8,8 +8,8 @@ import com.mygdx.scngame.SCNGame;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-		config.setForegroundFPS(0);
-		config.useVsync(false);
+		config.setForegroundFPS(60);
+		config.useVsync(true);
 		config.setTitle("SCNGame");
 		config.setWindowedMode(1280, 720);
 		new Lwjgl3Application(new SCNGame(), config);

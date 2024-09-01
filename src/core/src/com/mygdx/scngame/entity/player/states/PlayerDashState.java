@@ -24,7 +24,7 @@ public class PlayerDashState implements EntityState<Player> {
         container.position.mulAdd(container.direction, (dashDist / dashTime)*delta);
 
         if(dashTimer >= dashTime) {
-            return new PlayerMoveState();
+            return new PlayerDefaultState();
         }
 
         return null;

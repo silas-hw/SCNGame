@@ -12,6 +12,7 @@ import com.dongbat.jbump.*;
 import com.mygdx.scngame.entity.*;
 import com.mygdx.scngame.entity.component.HealthComponent;
 import com.mygdx.scngame.entity.component.HurtBox;
+import com.mygdx.scngame.entity.player.states.PlayerDefaultState;
 import com.mygdx.scngame.entity.player.states.PlayerMoveState;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.TerrainBox;
@@ -79,7 +80,7 @@ public class Player extends Entity implements HurtBox.HurtListener {
 
         hurtbox.addHurtListener(this);
 
-        this.state = new PlayerMoveState();
+        this.state = new PlayerDefaultState();
         this.state.setContainer(this);
     }
 
@@ -182,7 +183,7 @@ public class Player extends Entity implements HurtBox.HurtListener {
     public void resetState() {
         this.state.exit();
 
-        this.state = new PlayerMoveState();
+        this.state = new PlayerDefaultState();
         this.state.setContainer(this);
         this.state.setWorld(this.world);
 

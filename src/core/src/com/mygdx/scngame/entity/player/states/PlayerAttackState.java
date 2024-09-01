@@ -36,7 +36,7 @@ public class PlayerAttackState extends PlayerMoveState {
         this.facing = attackDirection;
 
         if(attackTimer <= 0f) {
-            PlayerMoveState newState = new PlayerMoveState();
+            PlayerMoveState newState = new PlayerDefaultState();
             newState.facing = facing;
             return newState;
         }
