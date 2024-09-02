@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="xs3p.xsl"?>
+
+<xs:schema  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+targetNamespace="https://www.w3schools.com"
+xmlns="https://www.w3schools.com"
+elementFormDefault="qualified">
+
+<xs:element name="root">
+    <xs:complexType>
+
+    <xs:element name="group" minOccurs="1" maxOccurs="unbounded">
+    <xs:complexType>
+        <xs:element name="dialog" minOccurs="1" maxOccurs="unbounded">
+        <xs:complexType>
+            <xs:element name="message" type="xs:string"> 
+                <xs:attribute name="speaker" type="xs:string"/>
+                <xs:attribute name="icon" type="xs:string"/>
+            </xs:element>
+        </xs:complexType>
+        </xs:element>
+    </xs:complexType>
+    </xs:element>
+
+    </xs:complexType>
+</xs:element>
+
+</xs:schema> 

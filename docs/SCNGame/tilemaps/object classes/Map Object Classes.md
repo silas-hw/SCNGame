@@ -1,4 +1,4 @@
-> Warning: any value of a map object must be explicitly set when added to a tile map (even to its default value), otherwise the keys won't be included in the exported Tmx file
+> Warning: any value of a map object must be explicitly set when added to a tile map (even to its default value) in order to be included in the exported TMX file. Some values aren't needed for an object and are optional. These nullable values are indicated by a suffix `?`, such as "String?"
 ## Wall
 A wall represent a standard static collidable box, for which other entities will collide with given their collision mask matches the walls collision layer.
 
