@@ -39,3 +39,15 @@ Doors are interactable areas that cause the player to be transported to another 
 | ------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Map     | String | The path of the tmx map file to change to, relative to `assets/tilemaps/`                                                                                             |
 | SpawnID | String | The ID of the [[#Spawn Location]] to spawn at when loaded into the map. The SpawnID must be of a present spawn location, otherwise the player will spawn at `(0, 0)`. |
+## Portal
+Similar to a [[#Door]], but instead transports the player upon collision instead of interaction.
+
+| Value          | Type                    | Description                                                                                                                                                           |
+| -------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Map            | String                  | The path of the tmx map file to change to, relative to `assets/tilemaps/`                                                                                             |
+| SpawnID        | String                  | The ID of the [[#Spawn Location]] to spawn at when loaded into the map. The SpawnID must be of a present spawn location, otherwise the player will spawn at `(0, 0)`. |
+| Collision Mask | [[Value Types#Bitmask]] | The collision layers to check for collision on. Upon a collision on this layer, the map is changed.                                                                   |
+> **WARNING**: portals cause a map change event on ANY collision in the defined collision mask. It has no way of knowing whether such a collision was a player, a wall, or an NPC. Be careful with your collision masks and layers to avoid bugs. 
+> 
+> For example, if a portal overlaps a wall and the walls collision layer matches the portal collision mask, the map will instantly change upon being loaded.
+
