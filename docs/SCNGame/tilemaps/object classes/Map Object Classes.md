@@ -25,3 +25,17 @@ Spawn locations represent some specific point on a map that the player can be sp
 | Value   | Type   | Description                                                                                                                                                                                                                                                                                                                                                           |
 | ------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | SpawnID | String | The ID by which the spawn location is referenced by. This is used as opposed to using the Name of the object such that the Name can be used for visual purposes in the editor (the same name may be used by multiple spawn locations). Furthermore, the numeric ID isn't used as such wouldn't allow for the spawn location to be referenced in a different map file. |
+## Terrain Box
+These represent some unique ground that player may be walking over, causing them to speed up or slow down. 
+
+| Value             | Type                    | Description                                                                                                                                                                             |
+| ----------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Collision Layer   | [[Value Types#Bitmask]] | The layers for which entities residing on will be effected by the terrain                                                                                                               |
+| Speed Coefficient | float                   | The coefficient to multiply an entities speed by when they are on the terrain. For example, if some muddy ground needs to half an entities speed, it's speed coefficient would be `0.5` |
+## Door
+Doors are interactable areas that cause the player to be transported to another map.
+
+| Value   | Type   | Description                                                                                                                                                           |
+| ------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Map     | String | The path of the tmx map file to change to, relative to `assets/tilemaps/`                                                                                             |
+| SpawnID | String | The ID of the [[#Spawn Location]] to spawn at when loaded into the map. The SpawnID must be of a present spawn location, otherwise the player will spawn at `(0, 0)`. |
