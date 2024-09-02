@@ -1,41 +1,19 @@
 <root>
     <group id="sign">
-        <dialog id="sign_0">
-            <message speaker="Weird Sign" icon="sprites/sign.png">
-                Bleep Bloop.
-            </message>
-        </dialog>
-
-        <dialog id="sign_1">
-            <message speaker="Weird Sign" icon="sprites/sign.png">
-                Another message chosen randomly.
-            </message>
-        </dialog>
-
-        <dialog id="sign_2">
-            <message speaker="Weird Sign :(" icon="sprites/sign.png">
-                ...
-            </message>
-
-            <message speaker="????" icon="sprites/testtree1.png">
-                The trees are quiet.
-            </message>
-        </dialog>
-
         <dialog id="sign_3">
-            <message speaker="Weird Sign :(" icon="sprites/sign.png">
+            <message speaker="Weird Sign :(" icon="sprites/sign.png" pitch="0.8">
                 ...testing out some. Weird timing stuff... I guess.
             </message>
 
-            <message speaker="????" icon="sprites/testtree1.png">
+            <message speaker="????" icon="sprites/testtree1.png" sound="sfx/kbclick.mp3">
                 GARHGHGHHG
             </message>
 
-            <message speaker="Weird Sign :(" icon="sprites/sign.png">
+            <message speaker="Weird Sign :(" icon="sprites/sign.png" pitch="0.2">
                 Blurgh
             </message>
 
-            <message speaker="????" icon="sprites/testtree1.png">
+            <message speaker="????" icon="sprites/testtree1.png" sound="sfx/kbclick.mp3" pitch="1.5">
                 hehehehehehehehheeh hehehe... hehehehe.si
             </message>
         </dialog>

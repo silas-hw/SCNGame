@@ -209,6 +209,9 @@ public class DialogView implements DialogEventListener, ActionListener, DialogEv
     float nextMessageCooldown = 0.1f;
     final float messageCooldownTime = 0.2f;
 
+    Sound dialogSound = blip;
+    float pitch = 1f;
+
     // tick to the next character if enough time has passed
     void tickCharacter(float delta) {
         charTimer += delta;
@@ -222,7 +225,7 @@ public class DialogView implements DialogEventListener, ActionListener, DialogEv
             currentMessageIndex++;
 
             if(currentChar != ' ') {
-                blip.play(0.2f, 0.6f, 0f);
+                dialogSound.play(0.2f, pitch, 0f);
             }
 
             if(currentChar == '.') {
@@ -252,6 +255,9 @@ public class DialogView implements DialogEventListener, ActionListener, DialogEv
 
             currentMessage = msg.message;
             currentMessageIndex = 0;
+
+            dialogSound = msg.sound;
+            pitch = msg.pitch;
 
             label.setText(msg.speaker + ": \n ");
 

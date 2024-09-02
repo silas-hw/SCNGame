@@ -61,11 +61,11 @@
             "expandedObjectLayers": [
                 2
             ],
-            "scale": 5.5,
-            "selectedLayer": 3,
+            "scale": 3,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 286.1818181818182,
-                "y": 279.9090909090909
+                "x": 24.333333333333343,
+                "y": 302.3333333333333
             }
         },
         "tilemaps/untitled2.tmx": {

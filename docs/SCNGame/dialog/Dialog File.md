@@ -8,7 +8,7 @@ Messages are made up by their text body, the actual text shown to the player, as
 <root>
 	<group id:String> [1..*]
 		<dialog> [1..*]
-			<message speaker:String icon:String> [1..*]
+			<message speaker:String icon:String sound:String? pitch:Float?> [1..*]
 				# Text
 			</message>
 		</dialog>
