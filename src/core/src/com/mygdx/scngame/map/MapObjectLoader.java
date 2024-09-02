@@ -140,7 +140,7 @@ public class MapObjectLoader {
                 Box newWall = new Box();
                 newWall.solid = true;
 
-                MapProperties wallCollisionLayer = obj.getProperties().get("CollisionLayer", MapProperties.class);
+                MapProperties wallCollisionLayer = properties.get("CollisionLayer", MapProperties.class);
                 setBoxCollisionLayers(wallCollisionLayer, newWall);
 
                 world.add(new Item<>(newWall), x + offsetX, y + offsetY, width, height);
@@ -161,15 +161,16 @@ public class MapObjectLoader {
                 break;
 
             case "Sign":
-                String signDialogID = properties.get("DialogID", String.class);
-                String signDialogFilePath = properties.get("DialogFile", String.class);
+                MapProperties signDialog = properties.get("Dialog", MapProperties.class);
+                String signDialogGroup = signDialog.get("Group", String.class);
+                String signDialogFilePath = signDialog.get("DialogFile", String.class);
 
-                DialogFile signDialogFile = assets.get(signDialogFilePath, DialogFile.class);
+                DialogFile signDialogFile = assets.get("dialog/" + signDialogFilePath, DialogFile.class);
 
                 InteractBox signBox = new InteractBox() {
                     @Override
                     public void interact() {
-                        dialogBus.startDialog(signDialogFile.getDialogNode(signDialogID));
+                        dialogBus.startDialog(signDialogFile.getDialogNode(signDialogGroup));
                     }
                 };
 
@@ -227,8 +228,9 @@ public class MapObjectLoader {
                 break;
 
             case "NPC":
-                String npcDialogID = properties.get("DialogID", String.class);
-                String npcDialogFile = properties.get("DialogFile", String.class);
+                MapProperties npcDialog = properties.get("Dialog", MapProperties.class);
+                String npcDialogID = npcDialog.get("Group", String.class);
+                String npcDialogFile = npcDialog.get("DialogFile", String.class);
                 MapObject pathNode = properties.get("StartingNode", MapObject.class);
 
                 String walkUpAnimPath = properties.get("walkUpAnim", String.class);
@@ -248,7 +250,7 @@ public class MapObjectLoader {
                 NPC.NPCBreed breed = new NPC.NPCBreed();
                 breed.startingPathNode = startingNode;
                 breed.dialogID = npcDialogID;
-                breed.dialogFile = assets.get(npcDialogFile, DialogFile.class);
+                breed.dialogFile = assets.get("dialog/" + npcDialogFile, DialogFile.class);
 
                 breed.walkDownAnim = new Animation<>(0.2f, animAtlas.findRegions(walkDownAnimPath), playmode);
                 breed.walkUpAnim = new Animation<>(0.2f, animAtlas.findRegions(walkUpAnimPath), playmode);

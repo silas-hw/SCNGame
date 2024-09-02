@@ -3,11 +3,11 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "tilesets/testset2.tsx",
+    "activeFile": "tilemaps/testmap2.tmx",
     "automapping.whileDrawing": false,
     "expandedProjectPaths": [
-        "tilesets",
         ".",
+        "tilesets",
         "tilemaps"
     ],
     "fileStates": {
@@ -50,11 +50,11 @@
             "expandedObjectLayers": [
                 5
             ],
-            "scale": 4,
+            "scale": 1.5,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 762.25,
-                "y": 477.5
+                "x": 586.6666666666666,
+                "y": 578.6666666666666
             }
         },
         "tilemaps/untitled.tmx": {
@@ -75,8 +75,8 @@
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 276,
-                "y": 277
+                "x": 280,
+                "y": 280.5
             }
         },
         "tilesets/cobble.tsx": {
@@ -119,10 +119,10 @@
         "tilesets/testset2.tsx",
         "tilesets/cobble.tsx",
         "tilemaps/cobble.tmx",
-        "tilesets/testset2.tsx"
+        "tilemaps/testmap2.tmx"
     ],
     "project": "scngame.tiled-project",
-    "property.type": "string",
+    "property.type": "Dialog",
     "recentFiles": [
         "tilemaps/testmap1.tmx",
         "tilesets/testset1.tsx",
@@ -130,8 +130,9 @@
         "tilesets/trees.tsx",
         "tilemaps/untitled2.tmx",
         "tilesets/testset2.tsx",
-        "tilemaps/cobble.tmx",
         "tilesets/cobble.tsx",
+        "tilemaps/cobble.tmx",
+        "tilemaps/testmap2.tmx",
         "tilesets/set1.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",

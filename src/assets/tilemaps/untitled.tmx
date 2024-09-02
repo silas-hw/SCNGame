@@ -267,8 +267,12 @@
   <object id="40" gid="4198" x="240" y="384" width="16" height="16"/>
   <object id="41" type="Sign" x="240" y="376" width="16" height="8">
    <properties>
-    <property name="DialogFile" value="dialog/test.dxml"/>
-    <property name="DialogID" value="sign"/>
+    <property name="Dialog" type="class" propertytype="Dialog">
+     <properties>
+      <property name="DialogFile" value="test.dxml"/>
+      <property name="Group" value="sign"/>
+     </properties>
+    </property>
    </properties>
   </object>
   <object id="43" type="Portal" x="0" y="242.667" width="8" height="52.8333">
@@ -337,8 +341,12 @@
   </object>
   <object id="50" name="NPC" type="NPC" x="177.417" y="228.5" width="8" height="16">
    <properties>
-    <property name="DialogFile" value="dialog/test.dxml"/>
-    <property name="DialogID" value="test_npc"/>
+    <property name="Dialog" type="class" propertytype="Dialog">
+     <properties>
+      <property name="DialogFile" value="test.dxml"/>
+      <property name="Group" value="test_npc"/>
+     </properties>
+    </property>
     <property name="StartingNode" type="object" value="46"/>
     <property name="walkDownAnim" value="player/test_walk_down"/>
     <property name="walkRightAnim" value="testanim"/>

@@ -115,6 +115,28 @@
         {
             "color": "#ffa0a0a4",
             "drawFill": true,
+            "id": 16,
+            "members": [
+                {
+                    "name": "DialogFile",
+                    "type": "string",
+                    "value": "unset"
+                },
+                {
+                    "name": "Group",
+                    "type": "string",
+                    "value": "unset"
+                }
+            ],
+            "name": "Dialog",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
             "id": 12,
             "members": [
                 {
@@ -141,14 +163,11 @@
             "id": 14,
             "members": [
                 {
-                    "name": "DialogFile",
-                    "type": "string",
-                    "value": "unset"
-                },
-                {
-                    "name": "DialogID",
-                    "type": "string",
-                    "value": "unset"
+                    "name": "Dialog",
+                    "propertyType": "Dialog",
+                    "type": "class",
+                    "value": {
+                    }
                 },
                 {
                     "name": "StartingNode",
@@ -202,7 +221,6 @@
             "name": "PathNode",
             "type": "class",
             "useAs": [
-                "property",
                 "object",
                 "project"
             ]
@@ -243,14 +261,11 @@
             "id": 10,
             "members": [
                 {
-                    "name": "DialogFile",
-                    "type": "string",
-                    "value": "unset"
-                },
-                {
-                    "name": "DialogID",
-                    "type": "string",
-                    "value": "unset"
+                    "name": "Dialog",
+                    "propertyType": "Dialog",
+                    "type": "class",
+                    "value": {
+                    }
                 }
             ],
             "name": "Sign",
@@ -300,7 +315,6 @@
             "name": "TerrainBox",
             "type": "class",
             "useAs": [
-                "property",
                 "map",
                 "layer",
                 "object",
