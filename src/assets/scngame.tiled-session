@@ -50,11 +50,11 @@
             "expandedObjectLayers": [
                 5
             ],
-            "scale": 0.5,
+            "scale": 2,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 291,
-                "y": 238
+                "x": 842.25,
+                "y": 488.5
             }
         },
         "tilemaps/untitled.tmx": {

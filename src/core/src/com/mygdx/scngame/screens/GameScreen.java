@@ -376,10 +376,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
 
     @Override
     public void save(String mapPath, String spawnLocation, String displayName) {
-        // get filehandle
-        // save current status and spawn location to file
-
-        saveFile.spawnLocation = spawnID;
+        saveFile.spawnLocation = spawnLocation;
         saveFile.map = mapPath;
         saveFile.saveDateEpoch = Instant.now().getEpochSecond();
         saveFile.displayName = displayName;

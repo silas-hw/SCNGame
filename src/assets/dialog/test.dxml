@@ -31,4 +31,12 @@
         </dialog>
     </group>
 
+    <group id="save">
+        <dialog id="test">
+            <message speaker=" " icon="sprites/sign.png">
+                Saving progress...
+            </message>
+        </dialog>
+    </group>
+
 </root>

@@ -256,6 +256,41 @@
             ]
         },
         {
+            "color": "#ff53d1c9",
+            "drawFill": true,
+            "id": 17,
+            "members": [
+                {
+                    "name": "Dialog",
+                    "propertyType": "Dialog",
+                    "type": "class",
+                    "value": {
+                    }
+                },
+                {
+                    "name": "DisplayName",
+                    "type": "string",
+                    "value": "unset"
+                },
+                {
+                    "name": "Map",
+                    "type": "string",
+                    "value": "unset"
+                },
+                {
+                    "name": "SpawnID",
+                    "type": "string",
+                    "value": "unset"
+                }
+            ],
+            "name": "SavePoint",
+            "type": "class",
+            "useAs": [
+                "object",
+                "project"
+            ]
+        },
+        {
             "color": "#ffa0a0a4",
             "drawFill": true,
             "id": 10,

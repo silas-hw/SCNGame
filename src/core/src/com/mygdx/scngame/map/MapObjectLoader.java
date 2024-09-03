@@ -49,31 +49,32 @@ import java.util.*;
  */
 public class MapObjectLoader {
 
-    private World<Box> world;
-    private EntityContext entityContext;
-    private Map<String, Vector2> spawnLocations;
-    private TextureAtlas animAtlas;
+    private final World<Box> world;
+    private final EntityContext entityContext;
+    private final Map<String, Vector2> spawnLocations;
+    private final TextureAtlas animAtlas;
     PathNodes pathNodes;
 
-    private AssetManager assets;
+    private final AssetManager assets;
 
-    private DialogEventBus dialogBus;
-    private MapChangeEventBus mapBus;
+    private final DialogEventBus dialogBus;
+    private final MapChangeEventBus mapBus;
+    private SaveEventBus saveBus;
 
     public PathNodes getPathNodes() {return pathNodes;}
     public Map<String, Vector2> getSpawnLocations() {return spawnLocations;}
 
     public MapObjectLoader(TiledMap map, World<Box> world, EntityContext entityContext,
                            AssetManager assets, DialogEventBus dialogBus, MapChangeEventBus mapBus,
-                           SaveEventBus bus) {
+                           SaveEventBus saveBus) {
         this.world = world;
         this.entityContext = entityContext;
         this.spawnLocations = new HashMap<>();
         this.pathNodes = new PathNodes();
 
         this.mapBus = mapBus;
-
         this.dialogBus = dialogBus;
+        this.saveBus = saveBus;
 
         this.assets = assets;
         this.animAtlas = assets.get("animations/animation_atlas.atlas");
@@ -175,6 +176,29 @@ public class MapObjectLoader {
                 };
 
                 world.add(new Item<>(signBox), x + offsetX, y + offsetY, width, height);
+                break;
+
+            case "SavePoint":
+                MapProperties savePointDialog = properties.get("Dialog", MapProperties.class);
+                String savePointDialogGroup = savePointDialog.get("Group", String.class);
+                String savePointDialogFilePath = savePointDialog.get("DialogFile", String.class);
+
+                DialogFile savePointDialogFile = assets.get("dialog/" + savePointDialogFilePath, DialogFile.class);
+
+                String saveMap = properties.get("Map", String.class);
+                String saveSpawnPoint = properties.get("SpawnID", String.class);
+                String saveDisplayName = properties.get("DisplayName", String.class);
+
+                InteractBox saveBox = new InteractBox() {
+                    @Override
+                    public void interact() {
+                        dialogBus.startDialog(savePointDialogFile.getDialogNode(savePointDialogGroup));
+                        saveBus.save(saveMap, saveSpawnPoint, saveDisplayName);
+                    }
+                };
+
+                world.add(new Item<>(saveBox), x + offsetX, y + offsetY, width, height);
+
                 break;
 
             case "Portal":

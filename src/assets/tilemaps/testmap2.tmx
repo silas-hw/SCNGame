@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="8" tileheight="8" infinite="0" nextlayerid="6" nextobjectid="405">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="8" tileheight="8" infinite="0" nextlayerid="7" nextobjectid="409">
  <properties>
   <property name="bg" value="bgtest2.mp3"/>
  </properties>
@@ -847,20 +847,26 @@
   <object id="401" gid="101" x="184" y="760" width="16" height="32"/>
   <object id="402" gid="101" x="160" y="712" width="16" height="32"/>
   <object id="403" gid="101" x="112" y="672" width="16" height="32"/>
-  <object id="404" type="Wall" x="456" y="512" width="8" height="8">
+  <object id="405" gid="102" x="608" y="336" width="16" height="16"/>
+  <object id="407" name="SAVE SPAWN" type="SpawnLocation" x="616" y="352">
    <properties>
-    <property name="CollisionLayer" type="class" propertytype="BitMask">
+    <property name="SpawnID" value="saveSpawn1"/>
+   </properties>
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup id="6" name="Object Layer 2">
+  <object id="408" type="SavePoint" x="608" y="328" width="16" height="8">
+   <properties>
+    <property name="Dialog" type="class" propertytype="Dialog">
      <properties>
-      <property name="0" type="bool" value="true"/>
-      <property name="1" type="bool" value="false"/>
-      <property name="2" type="bool" value="false"/>
-      <property name="3" type="bool" value="false"/>
-      <property name="4" type="bool" value="false"/>
-      <property name="5" type="bool" value="true"/>
-      <property name="6" type="bool" value="false"/>
-      <property name="7" type="bool" value="false"/>
+      <property name="DialogFile" value="test.dxml"/>
+      <property name="Group" value="save"/>
      </properties>
     </property>
+    <property name="DisplayName" value="The Pond Woods"/>
+    <property name="Map" value="testmap2.tmx"/>
+    <property name="SpawnID" value="saveSpawn1"/>
    </properties>
   </object>
  </objectgroup>

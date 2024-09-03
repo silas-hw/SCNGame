@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="8" tileheight="8" infinite="0" nextlayerid="7" nextobjectid="52">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="8" tileheight="8" infinite="0" nextlayerid="8" nextobjectid="55">
  <properties>
   <property name="bg" value="bgtest2.mp3"/>
  </properties>
@@ -353,6 +353,28 @@
     <property name="walkUpAnim" value="player/test_walk_up"/>
     <property name="walkingSpeed" type="float" value="100"/>
    </properties>
+  </object>
+  <object id="52" gid="4198" x="280" y="424" width="16" height="16"/>
+ </objectgroup>
+ <objectgroup id="7" name="Object Layer 2">
+  <object id="53" type="SavePoint" x="280" y="416" width="16" height="8">
+   <properties>
+    <property name="Dialog" type="class" propertytype="Dialog">
+     <properties>
+      <property name="DialogFile" value="test.dxml"/>
+      <property name="Group" value="save"/>
+     </properties>
+    </property>
+    <property name="DisplayName" value="Great Lake"/>
+    <property name="Map" value="untitled.tmx"/>
+    <property name="SpawnID" value="savePoint1"/>
+   </properties>
+  </object>
+  <object id="54" type="SpawnLocation" x="288" y="440">
+   <properties>
+    <property name="SpawnID" value="savePoint1"/>
+   </properties>
+   <point/>
   </object>
  </objectgroup>
 </map>

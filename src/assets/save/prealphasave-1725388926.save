@@ -1,0 +1,10 @@
+<save>
+	<meta>
+		<displayName>Great Lake</displayName>
+		<saveDateEpoch>1725389239</saveDateEpoch>
+	</meta>
+	<map>
+		<mapPath>untitled.tmx</mapPath>
+		<spawnLocation>savePoint1</spawnLocation>
+	</map>
+</save>
