@@ -6,9 +6,9 @@
     "activeFile": "tilemaps/testmap2.tmx",
     "automapping.whileDrawing": false,
     "expandedProjectPaths": [
-        ".",
+        "tilemaps",
         "tilesets",
-        "tilemaps"
+        "."
     ],
     "fileStates": {
         "tilemap_rules/wall_rules.tmx": {
@@ -31,8 +31,8 @@
             "scale": 3,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 159.83333333333331,
-                "y": 159.83333333333331
+                "x": 159.5,
+                "y": 159.33333333333331
             }
         },
         "tilemaps/testmap1.tmx": {
@@ -42,30 +42,30 @@
             "scale": 3,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 119.83333333333331,
-                "y": 79.83333333333331
+                "x": 119.5,
+                "y": 79.66666666666666
             }
         },
         "tilemaps/testmap2.tmx": {
             "expandedObjectLayers": [
                 5
             ],
-            "scale": 1.5,
+            "scale": 0.5,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 586.6666666666666,
-                "y": 578.6666666666666
+                "x": 291,
+                "y": 238
             }
         },
         "tilemaps/untitled.tmx": {
             "expandedObjectLayers": [
                 2
             ],
-            "scale": 3,
-            "selectedLayer": 0,
+            "scale": 1.5,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 24.333333333333343,
-                "y": 302.3333333333333
+                "x": -81.66666666666663,
+                "y": 386.66666666666663
             }
         },
         "tilemaps/untitled2.tmx": {
@@ -105,6 +105,10 @@
     },
     "frame.defaultDuration": 300,
     "last.imagePath": "D:/silas/Summer Projects 2024/SCNGame/src/assets/tilesets",
+    "last.worldFilePath": "D:/silas/Summer Projects 2024/SCNGame/src/assets/tiled_world",
+    "loadedWorlds": [
+        "D:/silas/Summer Projects 2024/SCNGame/src/assets/tiled_world/world.world"
+    ],
     "map.height": 20,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
