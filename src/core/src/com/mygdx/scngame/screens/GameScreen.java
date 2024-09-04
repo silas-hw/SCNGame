@@ -18,10 +18,12 @@ import com.dongbat.jbump.Rect;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.controls.Controls;
 import com.mygdx.scngame.dialog.DialogView;
+import com.mygdx.scngame.entity.component.HealthComponent;
 import com.mygdx.scngame.entity.player.Player;
 import com.mygdx.scngame.event.MapChangeEventBus;
 import com.mygdx.scngame.event.MapChangeEventListener;
 import com.mygdx.scngame.event.SaveEventBus;
+import com.mygdx.scngame.hud.HUD;
 import com.mygdx.scngame.map.MapObjectLoader;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.save.SaveFile;
@@ -33,7 +35,7 @@ import com.mygdx.scngame.viewport.PixelFitScaling;
 import java.time.Instant;
 import java.util.Map;
 
-public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
+public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, HealthComponent.DeathListener {
     Game game;
     Scene scene;
 
@@ -46,6 +48,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
 
     DialogView dialogView;
     SettingsMenu settingsMenu;
+    HUD hud;
 
     TiledMapRenderer mapRenderer;
     TiledMap tiledMap;
@@ -69,6 +72,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
         this.screenData = screenData;
 
         this.player = new Player(screenData.assets());
+        player.health.addDeathListener(this);
 
         camera = new OrthographicCamera();
 
@@ -81,6 +85,8 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
 
         dialogView = new DialogView(screenData);
         settingsMenu = new SettingsMenu(screenData, Controls.getInstance());
+        hud = new HUD(screenData, player.health.getMaxHealth());
+        player.health.addHealthDamageListener(hud);
 
         this.tiledMap = screenData.assets().get("tilemaps/" + save.map);
         this.spawnID = save.spawnLocation;
@@ -101,8 +107,6 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
                 "ermm", Instant.now().toEpochMilli(),
                 Gdx.files.local("/save/" + (Gdx.files.local("/save/").list().length+1) + ".save")));
     }
-
-    // TODO: update docs to describe PathNode map object
 
     Music bg;
 
@@ -183,10 +187,9 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
 
         bg.setVolume(screenData.settings().getTrueMusicVolume());
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.T)) {
-            this.save("untitled.tmx", spawnID, "Saved Manually");
+        if(Gdx.input.isKeyPressed(Input.Keys.P)) {
+            game.setScreen(new MainMenuScreen(this.screenData));
         }
-
 
         // give some waiting time before doing anything.
         if(waitTime > 0f) {
@@ -230,6 +233,8 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
         mapRenderer.render();
 
         scene.draw();
+
+        hud.draw();
         dialogView.draw(delta);
         settingsMenu.draw();
 
@@ -308,6 +313,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
         dialogView.resize(width, height);
         settingsMenu.resize(width, height);
         scene.resize(width, height);
+        hud.resize(width, height);
     }
 
     @Override
@@ -318,22 +324,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
 
     @Override
     public void hide() {
-        // remove the player, so it doesn't get disposed of
-        // when disposing of the scene
-
-        scene.removeEntity(player);
-
-        // note to self: hide can be called in the middle of a render call (in fact, it almost always will)
-        // so disposing of things being currently rendered is a *bad* idea
-
-        // with everything using an asset manager now, it shouldn't be that bad however
-        scene.clearEntities();
-
-        world.reset();
-
         bg.stop();
-
-        dialogView.clearDialogListeners();
 
         Controls.getInstance().removeActionListener(dialogView);
         Controls.getInstance().removeActionListener(scene);
@@ -382,5 +373,10 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus {
         saveFile.displayName = displayName;
 
         saveFile.writeToXML();
+    }
+
+    @Override
+    public void onDeath() {
+        game.setScreen(new GameOverScreen(screenData, player, mapRenderer, gameViewport, saveFile, game, scene));
     }
 }

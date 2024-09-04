@@ -20,12 +20,14 @@ public class HealthComponent {
     public void applyDamage(float damage) {
         this.health -= damage;
 
-        if(this.health > 0) {
-            return;
+        for(HealthDamageListener listener : healthDamageListeners) {
+            listener.onDamage(damage, this.health, this.maxHealth);
         }
 
-        for(DeathListener listener : deathListeners) {
-            listener.onDeath();
+        if(this.health <= 0) {
+            for(DeathListener listener : deathListeners) {
+                listener.onDeath();
+            }
         }
     }
 
@@ -50,5 +52,19 @@ public class HealthComponent {
 
     public void removeDeathListener(DeathListener listener) {
         deathListeners.removeValue(listener, true);
+    }
+
+    public interface HealthDamageListener {
+        void onDamage(float damage, float currentHealth, float maxHealth);
+    }
+
+    final Array<HealthDamageListener> healthDamageListeners = new Array<>();
+
+    public void addHealthDamageListener(HealthDamageListener listener) {
+        healthDamageListeners.add(listener);
+    }
+
+    public void removeHealthDamageListener(HealthDamageListener listener) {
+        healthDamageListeners.removeValue(listener, true);
     }
 }

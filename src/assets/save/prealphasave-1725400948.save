@@ -1,0 +1,11 @@
+<save>
+	<meta>
+		<displayName>The Pond Woods</displayName>
+		<saveDateEpoch>1725400984</saveDateEpoch>
+	</meta>
+
+	<map>
+		<mapPath>testmap2.tmx</mapPath>
+		<spawnLocation>saveSpawn1</spawnLocation>
+	</map>
+</save>

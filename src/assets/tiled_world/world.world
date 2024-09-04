@@ -1,5 +1,19 @@
 {
     "maps": [
+        {
+            "fileName": "../tilemaps/untitled.tmx",
+            "height": 560,
+            "width": 560,
+            "x": 0,
+            "y": 0
+        },
+        {
+            "fileName": "../tilemaps/testmap2.tmx",
+            "height": 800,
+            "width": 800,
+            "x": -800,
+            "y": -16
+        }
     ],
     "onlyShowAdjacentMaps": false,
     "type": "world"

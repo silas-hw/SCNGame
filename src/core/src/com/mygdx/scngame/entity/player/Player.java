@@ -74,7 +74,7 @@ public class Player extends Entity implements HurtBox.HurtListener {
 
         collisionItem = new Item<>(foot);
 
-        health = new HealthComponent(500f);
+        health = new HealthComponent(5f);
         hurtbox = new HurtBox(health, WIDTH, HEIGHT, 0.7f);
         hurtbox.setCollisionMask(0, true);
 
