@@ -113,11 +113,15 @@ public class DialogView implements DialogEventListener, ActionListener, DialogEv
 
         icon = new Image(patchTexture);
         icon.setAlign(Align.center);
-        icon.setScaling(Scaling.fit);
+        icon.setScaling(Scaling.stretch);
+        icon.setScale(settings.getUIScale());
 
+        // colspan didn't work, so just manually setting the width of the icon and scaling it is best
         inside = new Table();
-        inside.add(wrapper).grow().colspan(2);
-        inside.add(icon).grow().colspan(1);
+        inside.add(wrapper).grow();
+        inside.add(icon).growY().width(200 * scale);
+
+        inside.layout();
 
         container = new Container<>(inside);
 
@@ -128,7 +132,6 @@ public class DialogView implements DialogEventListener, ActionListener, DialogEv
         npatch = TiledNinePatch.getInstanceFromDot9(patchTexture);
 
         container.setBackground(npatch, false);
-
 
         root.add(container);
 
@@ -168,15 +171,19 @@ public class DialogView implements DialogEventListener, ActionListener, DialogEv
 
         stage.act();
 
+        label.setFontScale(scale);
+
+        inside.getCell(icon).pad(5 * scale).width(200*scale);
+        inside.getCell(wrapper).pad(5 * scale);
+
+        inside.layout();
+
         container.width(WIDTH * scale);
         container.height(HEIGHT * scale);
         npatch.scale = 3 * scale;
         container.pad(npatch.getTopHeight(), npatch.getLeftWidth(), npatch.getBottomHeight(), npatch.getRightWidth());
 
-        label.setFontScale(scale);
-
-        inside.getCell(icon).pad(5 * scale);
-        inside.getCell(wrapper).pad(5 * scale);
+        container.layout();
 
         stage.getViewport().apply();
         stage.draw();
@@ -264,8 +271,7 @@ public class DialogView implements DialogEventListener, ActionListener, DialogEv
             Image icon = new Image(msg.icon);
             icon.setScaling(Scaling.fit);
 
-            inside.getCell(this.icon).setActor(icon).colspan(1);
-            inside.getCell(this.wrapper).colspan(2);
+            inside.getCell(this.icon).setActor(icon);
 
             this.icon = icon;
         } else {

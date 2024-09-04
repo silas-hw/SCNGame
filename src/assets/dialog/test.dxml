@@ -1,7 +1,7 @@
 <root>
     <group id="sign">
         <dialog id="sign_3">
-            <message speaker="Weird Sign :(" icon="sprites/sign.png" pitch="0.8">
+            <message speaker="Weird Sign :(" icon="dialog/icons/sign.png" pitch="0.8">
                 ...testing out some. Weird timing stuff... I guess.
             </message>
 
@@ -9,7 +9,7 @@
                 GARHGHGHHG
             </message>
 
-            <message speaker="Weird Sign :(" icon="sprites/sign.png" pitch="0.2">
+            <message speaker="Weird Sign :(" icon="dialog/icons/sign.png" pitch="0.2">
                 Blurgh
             </message>
 
