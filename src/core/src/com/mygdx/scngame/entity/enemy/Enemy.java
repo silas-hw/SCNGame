@@ -29,7 +29,7 @@ public class Enemy extends Entity {
             Animation<TextureAtlas.AtlasRegion> attackDownAnimation,
             Animation<TextureAtlas.AtlasRegion> attackRightAnimation,
 
-            EntityState<Enemy> idleState,
+            EnemyIdleState idleState,
             EntityState<Enemy> hostileState,
 
             float detectionRadius,
