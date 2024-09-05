@@ -174,4 +174,18 @@ public class Box {
             return null;
         }
     }
+
+    public record QueryFilter(int mask) implements CollisionFilter {
+
+        @Override
+            public Response filter(Item item, Item other) {
+                if (!(item.userData instanceof Box)) {
+                    return null;
+                }
+
+                if ((((Box) item.userData).layer & mask) == 0) return null;
+
+                return Response.cross;
+            }
+        }
 }

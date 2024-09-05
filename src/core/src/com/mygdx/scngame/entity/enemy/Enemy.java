@@ -13,8 +13,10 @@ Current Plan/Idea:
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.dongbat.jbump.CollisionFilter;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.EntityState;
+import com.mygdx.scngame.physics.Box;
 
 public class Enemy extends Entity {
 
@@ -37,9 +39,11 @@ public class Enemy extends Entity {
     ) {}
 
     public final EnemyType type;
+    public final CollisionFilter detectionFilter;
 
     public Enemy(EnemyType type) {
         this.type = type;
+        this.detectionFilter = new Box.QueryFilter(type.playerDetectionMask);
     }
 
     @Override

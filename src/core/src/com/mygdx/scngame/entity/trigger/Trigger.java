@@ -13,27 +13,13 @@ import java.util.ArrayList;
 
 public class Trigger extends Entity {
 
-    private float width;
-    private float height;
+    private final float width;
+    private final float height;
 
-    private int bitMask = 0;
+    private final CollisionFilter queryFilter;
 
-    private Runnable runnable;
+    private final Runnable runnable;
 
-    // could cache filters with the same mask but right now thats a premature optimisation
-    private final CollisionFilter triggerFilter = new CollisionFilter() {
-        @Override
-        public Response filter(Item item, Item other) {
-            if(!(item.userData instanceof Box)) {
-                return null;
-            }
-
-            if((((Box) item.userData).layer & bitMask) == 0) return null;
-
-            return Response.cross;
-
-        }
-    };
 
     public Trigger(float x, float y, float width, float height, int[] maskLayers, Runnable runnable) {
         position.x = x;
@@ -42,7 +28,9 @@ public class Trigger extends Entity {
         this.width = width;
         this.height = height;
 
-        this.bitMask = Box.getMaskFromIndices(maskLayers);
+        int bitMask = Box.getMaskFromIndices(maskLayers);
+
+        this.queryFilter = new Box.QueryFilter(bitMask);
         this.runnable = runnable;
     }
 
@@ -55,7 +43,7 @@ public class Trigger extends Entity {
         assert world != null : "Can't update when world is null";
 
         queryResult.clear();
-        world.queryRect(position.x, position.y, width, height, this.triggerFilter, queryResult);
+        world.queryRect(position.x, position.y, width, height, this.queryFilter, queryResult);
 
         // only trigger upon entry
         if(!queryResult.isEmpty() && !triggered) {
