@@ -21,8 +21,12 @@ Current Plan/Idea:
  */
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.dongbat.jbump.CollisionFilter;
+import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.EntityState;
 import com.mygdx.scngame.physics.Box;
@@ -44,15 +48,59 @@ public class Enemy extends Entity {
             float detectionRadius,
             float hostileCooldown,
 
-            int playerDetectionMask
+            int playerDetectionMask,
+
+            float width,
+            float height
+
     ) {}
 
     public final EnemyType type;
     public final CollisionFilter detectionFilter;
 
+    EntityState<? super Enemy> state;
+
     public Enemy(EnemyType type) {
         this.type = type;
         this.detectionFilter = new Box.QueryFilter(type.playerDetectionMask);
+
+        this.type.idleState.setContainer(this);
+        this.type.hostileState.setContainer(this);
+
+        this.state = this.type.idleState;
+    }
+
+    public Vector2 getCenterPoint() {
+        return new Vector2(
+                position.x + this.type.width/2f,
+                position.y + this.type.height/2f
+        );
+    }
+
+    @Override
+    public void update(float delta) {
+        EntityState<? super Enemy> newState = this.state.update(delta);
+
+        if (newState != null) {
+            System.out.println("Changing enemy state");
+            this.state.exit();
+
+            this.state = newState;
+            this.state.setContainer(this);
+            this.state.setWorld(this.world);
+            this.state.enter();
+        }
+    }
+
+    @Override
+    public void draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
+        this.state.draw(batch, shape, alpha);
+    }
+
+    @Override
+    public void setWorld(World<Box> world) {
+        this.state.setWorld(this.world);
+        this.world = world;
     }
 
     @Override

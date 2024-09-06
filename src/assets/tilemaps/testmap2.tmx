@@ -511,13 +511,13 @@
     <property name="CollisionMask" type="class" propertytype="BitMask">
      <properties>
       <property name="0" type="bool" value="true"/>
-      <property name="1" type="bool" value="true"/>
-      <property name="2" type="bool" value="true"/>
-      <property name="3" type="bool" value="true"/>
-      <property name="4" type="bool" value="true"/>
-      <property name="5" type="bool" value="true"/>
-      <property name="6" type="bool" value="true"/>
-      <property name="7" type="bool" value="true"/>
+      <property name="1" type="bool" value="false"/>
+      <property name="2" type="bool" value="false"/>
+      <property name="3" type="bool" value="false"/>
+      <property name="4" type="bool" value="false"/>
+      <property name="5" type="bool" value="false"/>
+      <property name="6" type="bool" value="false"/>
+      <property name="7" type="bool" value="false"/>
      </properties>
     </property>
     <property name="Map" value="untitled.tmx"/>

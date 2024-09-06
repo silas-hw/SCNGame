@@ -1,7 +1,9 @@
 package com.mygdx.scngame.entity.enemy;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.dongbat.jbump.CollisionFilter;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.World;
@@ -23,8 +25,10 @@ public class EnemyHostileState implements EntityState<Enemy> {
     float timer = 0f;
     @Override
     public EntityState<? super Enemy> update(float delta) {
-        float rectx = enemy.position.x - detectionRadius/2;
-        float recty = enemy.position.y - detectionRadius/2;
+        Vector2 center = enemy.getCenterPoint();
+
+        float rectx = center.x - detectionRadius/2;
+        float recty = center.y - detectionRadius/2;
 
         results.clear();
 
@@ -44,7 +48,28 @@ public class EnemyHostileState implements EntityState<Enemy> {
 
     @Override
     public void draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
+        Color ogColor = batch.getColor();
 
+        batch.setColor(Color.RED);
+
+        batch.draw(enemy.type.walkDownAnimation().getKeyFrame(0f), enemy.position.x, enemy.position.y);
+
+        batch.setColor(Color.WHITE);
+
+        batch.end();
+
+        shape.begin(ShapeRenderer.ShapeType.Line);
+
+        Vector2 center = enemy.getCenterPoint();
+
+        float rectx = center.x - detectionRadius/2;
+        float recty = center.y - detectionRadius/2;
+
+        shape.rect(rectx, recty, detectionRadius, detectionRadius);
+
+        shape.end();
+
+        batch.begin();
     }
 
     @Override

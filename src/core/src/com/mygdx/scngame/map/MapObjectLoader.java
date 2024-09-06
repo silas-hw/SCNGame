@@ -19,6 +19,10 @@ import com.dongbat.jbump.World;
 import com.mygdx.scngame.dialog.DialogFile;
 import com.mygdx.scngame.dialog.DialogNode;
 import com.mygdx.scngame.entity.context.EntityContext;
+import com.mygdx.scngame.entity.enemy.Enemy;
+import com.mygdx.scngame.entity.enemy.EnemyHostileState;
+import com.mygdx.scngame.entity.enemy.EnemyIdleState;
+import com.mygdx.scngame.entity.enemy.states.idle.EnemyWanderIdleState;
 import com.mygdx.scngame.entity.npc.NPC;
 import com.mygdx.scngame.entity.sprite.AnimatedSpriteEntity;
 import com.mygdx.scngame.entity.sprite.SpriteEntity;
@@ -63,6 +67,7 @@ public class MapObjectLoader {
 
     public PathNodes getPathNodes() {return pathNodes;}
     public Map<String, Vector2> getSpawnLocations() {return spawnLocations;}
+
 
     public MapObjectLoader(TiledMap map, World<Box> world, EntityContext entityContext,
                            AssetManager assets, DialogEventBus dialogBus, MapChangeEventBus mapBus,
@@ -137,6 +142,35 @@ public class MapObjectLoader {
         if(type == null) type = "";
 
         switch(type) {
+            case "Enemy":
+                Enemy.EnemyType enemyType = new Enemy.EnemyType(
+                        new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
+                        new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
+                        new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
+                        new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
+                        new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
+                        new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
+                        new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
+
+                        new EnemyWanderIdleState(),
+                        new EnemyHostileState(),
+
+                        30f,
+                        2f,
+
+                        0b0010,
+
+                        16,
+                        32
+                );
+
+                Enemy enemy = new Enemy(enemyType);
+
+                enemy.position.set(x, y);
+
+                this.entityContext.addEntity(enemy);
+
+                break;
             case "Wall":
                 Box newWall = new Box();
                 newWall.solid = true;

@@ -70,6 +70,7 @@ public class Player extends Entity implements HurtBox.HurtListener {
         // players collision mask is set to true for layer 0!!!
         foot.setMask(0, true);
         foot.setLayer(0, true);
+        foot.setLayer(1, true);
         foot.internalFilter = Box.SLIDE_FILTER;
 
         collisionItem = new Item<>(foot);
