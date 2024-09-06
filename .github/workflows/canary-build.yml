@@ -10,6 +10,8 @@ env:
 jobs:
   build:
 
+    name: canary-build
+
     runs-on: ubuntu-latest
     permissions:
       contents: write
