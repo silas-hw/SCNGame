@@ -84,7 +84,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
         scene = new Scene(gameViewport, screenData.batch(), screenData.shapeRenderer(), world);
 
         dialogView = new DialogView(screenData);
-        settingsMenu = new SettingsMenu(screenData, Controls.getInstance());
+        settingsMenu = new SettingsMenu(screenData);
         hud = new HUD(screenData, player.health.getMaxHealth());
         player.health.addHealthDamageListener(hud);
 
@@ -96,6 +96,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
         bg = screenData.assets().get("music/bgtest2.mp3", Music.class);
         bg.setLooping(true);
 
+        Controls.getInstance().addInputProcessor(settingsMenu);
         Controls.getInstance().addActionListener(settingsMenu);
         Controls.getInstance().addActionListener(dialogView);
         Controls.getInstance().addActionListener(scene);
@@ -326,6 +327,8 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
     public void hide() {
         bg.stop();
 
+        Controls.getInstance().removeInputProcessor(this.settingsMenu);
+        Controls.getInstance().removeActionListener(this.settingsMenu);
         Controls.getInstance().removeActionListener(dialogView);
         Controls.getInstance().removeActionListener(scene);
     }

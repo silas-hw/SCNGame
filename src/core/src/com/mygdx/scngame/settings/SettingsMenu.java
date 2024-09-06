@@ -1,5 +1,6 @@
 package com.mygdx.scngame.settings;
 
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -22,7 +23,7 @@ import com.mygdx.scngame.ui.TruetypeLabel;
 /**
  * The UI menu to allow the user to manipulate a given Settings instance.
  */
-public class SettingsMenu implements ActionListener {
+public class SettingsMenu implements ActionListener, InputProcessor {
 
     private final Stage stage;
 
@@ -44,14 +45,8 @@ public class SettingsMenu implements ActionListener {
 
     private final Array<Runnable> postRunners = new Array<>();
 
-    private Controls controls;
-
-
     private final Settings settings;
-    public SettingsMenu(ScreenData screenData, Controls controls) {
-
-        this.controls = controls;
-
+    public SettingsMenu(ScreenData screenData) {
         FreeTypeFontGenerator fontGenerator = screenData.assets().get("skin/MyFont2.ttf", FreeTypeFontGenerator.class);
 
         FocusListener focusListener = new FocusListener() {
@@ -237,12 +232,8 @@ public class SettingsMenu implements ActionListener {
         }
 
         if(!inFocus) {
-            controls.removeInputProcessor(stage);
             return false;
         }
-
-        controls.addInputProcessor(stage);
-
 
         Actor currentActor = focusableArray.get(focusIndex);
         switch(action) {
@@ -284,6 +275,78 @@ public class SettingsMenu implements ActionListener {
 
     @Override
     public boolean actionUp(Controls.Actions action) {
-        return false;
+        return inFocus;
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        if(!inFocus) return false;
+
+        stage.keyDown(keycode);
+        return true;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        if(!inFocus) return false;
+
+        stage.keyUp(keycode);
+        return true;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        if(!inFocus) return false;
+
+        stage.keyTyped(character);
+        return true;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if(!inFocus) return false;
+
+        stage.touchDown(screenX, screenY, pointer, button);
+        return true;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        if(!inFocus) return false;
+
+        stage.touchUp(screenX, screenY, pointer, button);
+        return true;
+    }
+
+    @Override
+    public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
+        if(!inFocus) return false;
+
+        stage.touchCancelled(screenX, screenY, pointer, button);
+        return true;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        if(!inFocus) return false;
+
+        stage.touchDragged(screenX, screenY, pointer);
+        return true;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        if(!inFocus) return false;
+
+        stage.mouseMoved(screenX, screenY);
+        return true;
+    }
+
+    @Override
+    public boolean scrolled(float amountX, float amountY) {
+        if(!inFocus) return false;
+
+        stage.scrolled(amountX, amountY);
+        return true;
     }
 }

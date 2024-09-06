@@ -35,6 +35,7 @@ import com.mygdx.scngame.scene.Scene;
 import com.mygdx.scngame.screens.data.ScreenData;
 import com.mygdx.scngame.settings.PrefSettings;
 import com.mygdx.scngame.settings.Settings;
+import com.mygdx.scngame.settings.SettingsMenu;
 import com.mygdx.scngame.ui.TruetypeLabel;
 import com.mygdx.scngame.viewport.PixelFitScaling;
 
@@ -54,6 +55,8 @@ public class MainMenuScreen implements Screen, ActionListener {
 
     ScreenData screenData;
 
+    SettingsMenu settingsMenu;
+
     public MainMenuScreen(ScreenData screenData) {
         this.game = screenData.game();
 
@@ -63,6 +66,8 @@ public class MainMenuScreen implements Screen, ActionListener {
         bg = screenData.assets().get("music/bgtest1.mp3", Music.class);
 
         this.screenData = screenData;
+
+        this.settingsMenu = new SettingsMenu(screenData);
     }
 
     final Array<SaveFile> saves = new Array<>();
@@ -74,6 +79,9 @@ public class MainMenuScreen implements Screen, ActionListener {
     float scale = 1f;
     @Override
     public void show() {
+        Controls.getInstance().addActionListener(this.settingsMenu);
+        Controls.getInstance().addInputProcessor(this.settingsMenu);
+
         scale = screenData.settings().getUIScale();
 
         Skin skin = screenData.assets().get("skin/uiskin2.json", Skin.class);
@@ -248,9 +256,12 @@ public class MainMenuScreen implements Screen, ActionListener {
 
     @Override
     public void render(float delta) {
+        bg.setVolume(screenData.settings().getTrueMusicVolume());
         ScreenUtils.clear(Color.BLACK);
         stage.act();
         stage.draw();
+
+        settingsMenu.draw();
     }
 
     @Override
@@ -274,6 +285,9 @@ public class MainMenuScreen implements Screen, ActionListener {
         bg.stop();
 
         Controls.getInstance().removeInputProcessor(stage);
+
+        Controls.getInstance().removeInputProcessor(this.settingsMenu);
+        Controls.getInstance().removeActionListener(this.settingsMenu);
         Controls.getInstance().removeActionListener(this);
 
     }
