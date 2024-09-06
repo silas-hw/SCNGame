@@ -266,7 +266,9 @@ public class MainMenuScreen implements Screen, ActionListener {
 
     @Override
     public void resize(int width, int height) {
+
         viewport.update(width, height, true);
+        settingsMenu.resize(width, height);
     }
 
     @Override
