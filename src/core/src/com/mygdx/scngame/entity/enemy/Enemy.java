@@ -82,7 +82,6 @@ public class Enemy extends Entity {
         EntityState<? super Enemy> newState = this.state.update(delta);
 
         if (newState != null) {
-            System.out.println("Changing enemy state");
             this.state.exit();
 
             this.state = newState;
