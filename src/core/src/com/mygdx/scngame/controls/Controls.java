@@ -137,7 +137,7 @@ public class Controls implements InputProcessor, ControllerListener {
         }
 
         for(InputProcessor inputProcessor : inputProcessors) {
-            inputProcessor.keyDown(keycode);
+            if(inputProcessor.keyDown(keycode)) break;
         }
 
         List<Actions> actions = Actions.fromKeycode(keycode);
@@ -156,7 +156,7 @@ public class Controls implements InputProcessor, ControllerListener {
     @Override
     public boolean keyUp(int keycode) {
         for(InputProcessor inputProcessor : inputProcessors) {
-            inputProcessor.keyUp(keycode);
+            if(inputProcessor.keyUp(keycode)) break;
         }
 
         List<Actions> actions = Actions.fromKeycode(keycode);
@@ -175,7 +175,7 @@ public class Controls implements InputProcessor, ControllerListener {
     @Override
     public boolean keyTyped(char character) {
         for(InputProcessor inputProcessor : inputProcessors) {
-            inputProcessor.keyTyped(character);
+            if(inputProcessor.keyTyped(character)) break;
         }
 
         return false;
@@ -193,7 +193,7 @@ public class Controls implements InputProcessor, ControllerListener {
         }
 
         for(InputProcessor inputProcessor : inputProcessors) {
-            inputProcessor.touchDown(screenX, screenY, pointer, button);
+            if(inputProcessor.touchDown(screenX, screenY, pointer, button)) break;
         }
 
         switch(button) {
@@ -218,7 +218,7 @@ public class Controls implements InputProcessor, ControllerListener {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         for(InputProcessor inputProcessor : inputProcessors) {
-            inputProcessor.touchUp(screenX, screenY, pointer, button);
+            if(inputProcessor.touchUp(screenX, screenY, pointer, button)) break;
         }
 
         switch(button) {
@@ -243,7 +243,7 @@ public class Controls implements InputProcessor, ControllerListener {
     @Override
     public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
         for(InputProcessor inputProcessor : inputProcessors) {
-            inputProcessor.touchCancelled(screenX, screenY, pointer, button);
+            if(inputProcessor.touchCancelled(screenX, screenY, pointer, button)) break;
         }
 
         return false;
@@ -252,7 +252,7 @@ public class Controls implements InputProcessor, ControllerListener {
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         for(InputProcessor inputProcessor : inputProcessors) {
-            inputProcessor.touchDragged(screenX, screenY, pointer);
+            if(inputProcessor.touchDragged(screenX, screenY, pointer)) break;
         }
 
         return false;
@@ -264,7 +264,7 @@ public class Controls implements InputProcessor, ControllerListener {
         if(mouseHidden) return false;
 
         for(InputProcessor inputProcessor : inputProcessors) {
-            inputProcessor.mouseMoved(screenX, screenY);
+            if(inputProcessor.mouseMoved(screenX, screenY)) break;
         }
 
         return false;
@@ -273,7 +273,7 @@ public class Controls implements InputProcessor, ControllerListener {
     @Override
     public boolean scrolled(float amountX, float amountY) {
         for(InputProcessor inputProcessor : inputProcessors) {
-            inputProcessor.scrolled(amountX, amountY);
+            if(inputProcessor.scrolled(amountX, amountY)) break;
         }
 
         return false;
