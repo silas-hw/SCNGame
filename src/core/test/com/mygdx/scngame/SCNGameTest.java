@@ -8,6 +8,6 @@ class SCNGameTest {
 
     @Test
     public void fails() {
-        assertTrue(true);
+        assertTrue(false);
     }
 }
