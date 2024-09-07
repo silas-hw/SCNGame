@@ -129,6 +129,7 @@ public class MapObjectLoader {
         }
     }
 
+    // TODO: decompose object loading of classes into their own methods
     private void parseMapObject(MapObject obj, float offsetX, float offsetY) {
         MapProperties properties = obj.getProperties();
 
