@@ -133,129 +133,37 @@ public class MapObjectLoader {
     private void parseMapObject(MapObject obj, float offsetX, float offsetY) {
         MapProperties properties = obj.getProperties();
 
-        float x = properties.get("x", float.class);
-        float y = properties.get("y", float.class);
+        float x = properties.get("x", float.class) + offsetX;
+        float y = properties.get("y", float.class) + offsetY;
         float width = properties.get("width", float.class);
         float height = properties.get("height", float.class);
-        String name = properties.get("Name", String.class);
 
         String type = obj.getProperties().get("type", String.class);
         if(type == null) type = "";
 
         switch(type) {
             case "Enemy":
-                Enemy.EnemyType enemyType = new Enemy.EnemyType(
-                        new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
-                        new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
-                        new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
-                        new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
-                        new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
-                        new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
-                        new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
-
-                        new EnemyWanderIdleState(),
-                        new EnemyHostileState(),
-
-                        30f,
-                        2f,
-
-                        0b0010,
-
-                        16,
-                        32
-                );
-
-                Enemy enemy = new Enemy(enemyType);
-
-                enemy.position.set(x, y);
-
-                this.entityContext.addEntity(enemy);
-
+                loadEnemy(properties, x, y);
                 break;
+
             case "Wall":
-                Box newWall = new Box();
-                newWall.solid = true;
-
-                MapProperties wallCollisionLayer = properties.get("CollisionLayer", MapProperties.class);
-                setBoxCollisionLayers(wallCollisionLayer, newWall);
-
-                world.add(new Item<>(newWall), x + offsetX, y + offsetY, width, height);
+                loadWall(properties, x, y, width, height);
                 break;
 
             case "DamageWall":
-                String dtype = properties.get("DamageType", String.class);
-                float damage = properties.get("damage", float.class);
-                DamageBox newDamage = new DamageBox(damage, DamageBox.DamageType.valueOf(dtype));
-
-                newDamage.solid = false;
-
-                MapProperties damageCollisionLayer = obj.getProperties().get("CollisionLayer", MapProperties.class);
-                setBoxCollisionLayers(damageCollisionLayer, newDamage);
-
-                world.add(new Item<>(newDamage), x + offsetX, y + offsetY, width, height);
-
+                loadDamageWall(properties, x, y, width, height);
                 break;
 
             case "Sign":
-                MapProperties signDialog = properties.get("Dialog", MapProperties.class);
-                String signDialogGroup = signDialog.get("Group", String.class);
-                String signDialogFilePath = signDialog.get("DialogFile", String.class);
-
-                DialogFile signDialogFile = assets.get("dialog/" + signDialogFilePath, DialogFile.class);
-
-                InteractBox signBox = new InteractBox() {
-                    @Override
-                    public void interact() {
-                        dialogBus.startDialog(signDialogFile.getDialogNode(signDialogGroup));
-                    }
-                };
-
-                world.add(new Item<>(signBox), x + offsetX, y + offsetY, width, height);
+                loadSign(properties, x, y, width, height);
                 break;
 
             case "SavePoint":
-                MapProperties savePointDialog = properties.get("Dialog", MapProperties.class);
-                String savePointDialogGroup = savePointDialog.get("Group", String.class);
-                String savePointDialogFilePath = savePointDialog.get("DialogFile", String.class);
-
-                DialogFile savePointDialogFile = assets.get("dialog/" + savePointDialogFilePath, DialogFile.class);
-
-                String saveMap = properties.get("Map", String.class);
-                String saveSpawnPoint = properties.get("SpawnID", String.class);
-                String saveDisplayName = properties.get("DisplayName", String.class);
-
-                InteractBox saveBox = new InteractBox() {
-                    @Override
-                    public void interact() {
-                        dialogBus.startDialog(savePointDialogFile.getDialogNode(savePointDialogGroup));
-                        saveBus.save(saveMap, saveSpawnPoint, saveDisplayName);
-                    }
-                };
-
-                world.add(new Item<>(saveBox), x + offsetX, y + offsetY, width, height);
-
+                loadSavePoint(properties, x, y, width, height);
                 break;
 
             case "Portal":
-                MapProperties collisionMask = obj.getProperties().get("CollisionMask", MapProperties.class);
-                int[] maskIndices = getMaskLayers(collisionMask);
-
-                String portalMapPath = properties.get("Map", String.class);
-                String portalSpawnID = properties.get("SpawnID", String.class);
-
-                TiledMap portalMap = assets.get("tilemaps/" + portalMapPath);
-
-                Trigger portal = new Trigger(
-                        x, y, width, height, maskIndices,
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                mapBus.changeMap(portalMap, portalSpawnID);
-                            }
-                        }
-                );
-
-                entityContext.addEntity(portal);
+                loadPortal(properties, x, y, width, height);
                 break;
 
             case "PathNode":
@@ -270,66 +178,15 @@ public class MapObjectLoader {
                 break;
 
             case "Door":
-                String doorMapPath = properties.get("Map", String.class);
-                String doorSpawnID = properties.get("SpawnID", String.class);
-
-                TiledMap doorMap = assets.get("tilemaps/" + doorMapPath);
-
-                InteractBox doorBox = new InteractBox() {
-
-                    @Override
-                    public void interact() {
-                        mapBus.changeMap(doorMap, doorSpawnID);
-                    }
-                };
-
-                world.add(new Item<>(doorBox), x + offsetX, y + offsetY, width, height);
+                loadDoor(properties, x, y, width, height);
                 break;
 
             case "NPC":
-                MapProperties npcDialog = properties.get("Dialog", MapProperties.class);
-                String npcDialogID = npcDialog.get("Group", String.class);
-                String npcDialogFile = npcDialog.get("DialogFile", String.class);
-                MapObject pathNode = properties.get("StartingNode", MapObject.class);
-
-                String walkUpAnimPath = properties.get("walkUpAnim", String.class);
-                String walkDownAnimPath = properties.get("walkDownAnim", String.class);
-                String walkRightAnimPath = properties.get("walkRightAnim", String.class);
-
-                assert walkUpAnimPath != null : "Walk Up animation not set for NPC: " + name;
-                assert walkDownAnimPath != null : "Walk down animation not set for NPC: " + name;
-                assert walkRightAnimPath != null : "Walk right animation not set for NPC: " + name;
-
-                Float walkingSpeed = properties.get("walkingSpeed", Float.class);
-
-                PathNode startingNode = pathNodes.put(pathNode);
-                // will eventually be configured in tile map
-                Animation.PlayMode playmode = Animation.PlayMode.LOOP;
-
-                NPC.NPCBreed breed = new NPC.NPCBreed();
-                breed.startingPathNode = startingNode;
-                breed.dialogID = npcDialogID;
-                breed.dialogFile = assets.get("dialog/" + npcDialogFile, DialogFile.class);
-
-                breed.walkDownAnim = new Animation<>(0.2f, animAtlas.findRegions(walkDownAnimPath), playmode);
-                breed.walkUpAnim = new Animation<>(0.2f, animAtlas.findRegions(walkUpAnimPath), playmode);
-                breed.walkRightAnim = new Animation<>(0.2f, animAtlas.findRegions(walkRightAnimPath), playmode);
-
-                if(walkingSpeed != null) breed.walkingSpeed = walkingSpeed;
-
-                NPC npc = new NPC(breed, dialogBus);
-
-                entityContext.addEntity(npc);
+                loadNPC(properties, x, y, width, height);
                 break;
 
             case "TerrainBox":
-                float terrainSpeedCoeffient = properties.get("speedCoefficient", Float.class);
-                MapProperties terrainCollisionLayer = properties.get("CollisionLayer", MapProperties.class);
-
-                TerrainBox terrainBox = new TerrainBox(terrainSpeedCoeffient);
-                setBoxCollisionLayers(terrainCollisionLayer, terrainBox);
-
-                world.add(new Item<>(terrainBox), x + offsetX, y + offsetY, width, height);
+                loadTerrainBox(properties, x, y, width, height);
                 break;
 
             default:
@@ -346,11 +203,185 @@ public class MapObjectLoader {
                     entityContext.addEntity(new SpriteEntity(texture, x, y));
                 }
 
-
                 // parse the tile held by the tiled map tile object - getting any child objects of that tile
                 parseTile(tile, x,  y);
                 break;
         }
+    }
+
+    private void loadEnemy(MapProperties properties, float x, float y) {
+        Enemy.EnemyType enemyType = new Enemy.EnemyType(
+                new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
+                new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
+                new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
+                new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
+                new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
+                new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
+                new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
+
+                new EnemyWanderIdleState(),
+                new EnemyHostileState(),
+
+                30f,
+                2f,
+
+                0b0010,
+
+                16,
+                32
+        );
+
+        Enemy enemy = new Enemy(enemyType);
+        enemy.position.set(x, y);
+        this.entityContext.addEntity(enemy);
+    }
+
+    private void loadNPC(MapProperties properties, float x, float y, float width, float height) {
+        MapProperties npcDialog = properties.get("Dialog", MapProperties.class);
+        String npcDialogID = npcDialog.get("Group", String.class);
+        String npcDialogFile = npcDialog.get("DialogFile", String.class);
+        MapObject pathNode = properties.get("StartingNode", MapObject.class);
+
+        String walkUpAnimPath = properties.get("walkUpAnim", String.class);
+        String walkDownAnimPath = properties.get("walkDownAnim", String.class);
+        String walkRightAnimPath = properties.get("walkRightAnim", String.class);
+
+        assert walkUpAnimPath != null : "Walk Up animation not set for NPC";
+        assert walkDownAnimPath != null : "Walk down animation not set for NPC";
+        assert walkRightAnimPath != null : "Walk right animation not set for NPC";
+
+        Float walkingSpeed = properties.get("walkingSpeed", Float.class);
+
+        PathNode startingNode = pathNodes.put(pathNode);
+        // will eventually be configured in tile map
+        Animation.PlayMode playmode = Animation.PlayMode.LOOP;
+
+        NPC.NPCBreed breed = new NPC.NPCBreed();
+        breed.startingPathNode = startingNode;
+        breed.dialogID = npcDialogID;
+        breed.dialogFile = assets.get("dialog/" + npcDialogFile, DialogFile.class);
+
+        breed.walkDownAnim = new Animation<>(0.2f, animAtlas.findRegions(walkDownAnimPath), playmode);
+        breed.walkUpAnim = new Animation<>(0.2f, animAtlas.findRegions(walkUpAnimPath), playmode);
+        breed.walkRightAnim = new Animation<>(0.2f, animAtlas.findRegions(walkRightAnimPath), playmode);
+
+        if(walkingSpeed != null) breed.walkingSpeed = walkingSpeed;
+
+        NPC npc = new NPC(breed, dialogBus);
+
+        entityContext.addEntity(npc);
+    }
+
+    private void loadWall(MapProperties properties, float x, float y, float width, float height) {
+        Box newWall = new Box();
+        newWall.solid = true;
+
+        MapProperties wallCollisionLayer = properties.get("CollisionLayer", MapProperties.class);
+        setBoxCollisionLayers(wallCollisionLayer, newWall);
+
+        world.add(new Item<>(newWall), x, y, width, height);
+    }
+
+    private void loadDamageWall(MapProperties properties, float x, float y, float width, float height) {
+        String dtype = properties.get("DamageType", String.class);
+        float damage = properties.get("damage", float.class);
+        DamageBox newDamage = new DamageBox(damage, DamageBox.DamageType.valueOf(dtype));
+
+        newDamage.solid = false;
+
+        MapProperties damageCollisionLayer = properties.get("CollisionLayer", MapProperties.class);
+        setBoxCollisionLayers(damageCollisionLayer, newDamage);
+
+        world.add(new Item<>(newDamage), x, y, width, height);
+    }
+
+    private void loadTerrainBox(MapProperties properties, float x, float y, float width, float height) {
+        float terrainSpeedCoeffient = properties.get("speedCoefficient", Float.class);
+        MapProperties terrainCollisionLayer = properties.get("CollisionLayer", MapProperties.class);
+
+        TerrainBox terrainBox = new TerrainBox(terrainSpeedCoeffient);
+        setBoxCollisionLayers(terrainCollisionLayer, terrainBox);
+
+        world.add(new Item<>(terrainBox), x, y, width, height);
+    }
+
+    private void loadSign(MapProperties properties, float x, float y, float width, float height) {
+        MapProperties signDialog = properties.get("Dialog", MapProperties.class);
+        String signDialogGroup = signDialog.get("Group", String.class);
+        String signDialogFilePath = signDialog.get("DialogFile", String.class);
+
+        DialogFile signDialogFile = assets.get("dialog/" + signDialogFilePath, DialogFile.class);
+
+        InteractBox signBox = new InteractBox() {
+            @Override
+            public void interact() {
+                dialogBus.startDialog(signDialogFile.getDialogNode(signDialogGroup));
+            }
+        };
+
+        world.add(new Item<>(signBox), x, y, width, height);
+    }
+
+    private void loadSavePoint(MapProperties properties, float x, float y, float width, float height) {
+        MapProperties savePointDialog = properties.get("Dialog", MapProperties.class);
+        String savePointDialogGroup = savePointDialog.get("Group", String.class);
+        String savePointDialogFilePath = savePointDialog.get("DialogFile", String.class);
+
+        DialogFile savePointDialogFile = assets.get("dialog/" + savePointDialogFilePath, DialogFile.class);
+
+        String saveMap = properties.get("Map", String.class);
+        String saveSpawnPoint = properties.get("SpawnID", String.class);
+        String saveDisplayName = properties.get("DisplayName", String.class);
+
+        InteractBox saveBox = new InteractBox() {
+            @Override
+            public void interact() {
+                dialogBus.startDialog(savePointDialogFile.getDialogNode(savePointDialogGroup));
+                saveBus.save(saveMap, saveSpawnPoint, saveDisplayName);
+            }
+        };
+
+        world.add(new Item<>(saveBox), x, y, width, height);
+
+    }
+
+    private void loadPortal(MapProperties properties, float x, float y, float width, float height) {
+        MapProperties collisionMask = properties.get("CollisionMask", MapProperties.class);
+        int[] maskIndices = getMaskLayers(collisionMask);
+
+        String portalMapPath = properties.get("Map", String.class);
+        String portalSpawnID = properties.get("SpawnID", String.class);
+
+        TiledMap portalMap = assets.get("tilemaps/" + portalMapPath);
+
+        Trigger portal = new Trigger(
+                x, y, width, height, maskIndices,
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        mapBus.changeMap(portalMap, portalSpawnID);
+                    }
+                }
+        );
+
+        entityContext.addEntity(portal);
+    }
+
+    private void loadDoor(MapProperties properties, float x, float y, float width, float height) {
+        String doorMapPath = properties.get("Map", String.class);
+        String doorSpawnID = properties.get("SpawnID", String.class);
+
+        TiledMap doorMap = assets.get("tilemaps/" + doorMapPath);
+
+        InteractBox doorBox = new InteractBox() {
+
+            @Override
+            public void interact() {
+                mapBus.changeMap(doorMap, doorSpawnID);
+            }
+        };
+
+        world.add(new Item<>(doorBox), x, y, width, height);
     }
 
     /**
