@@ -11,9 +11,6 @@ import com.badlogic.gdx.controllers.ControllerMapping;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.utils.Array;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Converts keycodes and controller codes into {@link Actions} for use by sub-systems.
  */
@@ -48,6 +45,9 @@ public class Controls implements InputProcessor, ControllerListener {
         }
 
         public void setKeycode(int keycode) {
+            keyBindings.get(this.getKeycode()).removeValue(this, true);
+            keyBindings.get(keycode).add(this);
+
             prefs.putInteger(this + "-key", keycode);
             prefs.flush();
         }
@@ -57,21 +57,49 @@ public class Controls implements InputProcessor, ControllerListener {
         }
 
         public void setControllerButton(ControllerButtons controllerButton) {
+            controllerBindings.get(this.getControllerButton().ordinal()).removeValue(this, true);
+            controllerBindings.get(controllerButton.ordinal()).add(this);
+
             prefs.putString(this + "-controller", controllerButton.name());
+            prefs.flush();
         }
 
-        public static List<Actions> fromKeycode(int keycode) {
-            return Arrays.stream(Actions.values()).filter(e -> e.getKeycode() == keycode).toList();
+        public static Array<Actions> fromKeycode(int keycode) {
+            return keyBindings.get(keycode);
         }
 
-        public static List<Actions> fromControllerButton(ControllerButtons controllerButton) {
-            return Arrays.stream(Actions.values()).filter(e -> e.getControllerButton() == controllerButton).toList();
+        public static Array<Actions> fromControllerButton(ControllerButtons controllerButton) {
+            return controllerBindings.get(controllerButton.ordinal());
         }
 
         /** only set to something else for testing. Could be final and private, but this makes it easier
          * to give a mock preferences to test with
          */
         public static Preferences prefs = new MockPreferences();
+
+        public static final Array<Array<Actions>> keyBindings = new Array<>();
+
+        static {
+            for(int i = 0; i <= Input.Keys.MAX_KEYCODE; i++) {
+                keyBindings.add(new Array<>());
+            }
+
+            for(Actions action : Actions.values()) {
+                keyBindings.get(action.getKeycode()).add(action);
+            }
+        }
+
+        public static final Array<Array<Actions>> controllerBindings = new Array<>();
+
+        static {
+            for(int i = 0; i< ControllerButtons.values().length; i++) {
+                controllerBindings.add(new Array<>());
+            }
+
+            for(Actions action : Actions.values()) {
+                controllerBindings.get(action.getControllerButton().ordinal()).add(action);
+            }
+        }
     }
 
     public static void initPreferences() {
@@ -140,7 +168,7 @@ public class Controls implements InputProcessor, ControllerListener {
             if(inputProcessor.keyDown(keycode)) break;
         }
 
-        List<Actions> actions = Actions.fromKeycode(keycode);
+        Array<Actions> actions = Actions.fromKeycode(keycode);
 
         if(actions.isEmpty()) return false;
 
@@ -159,7 +187,7 @@ public class Controls implements InputProcessor, ControllerListener {
             if(inputProcessor.keyUp(keycode)) break;
         }
 
-        List<Actions> actions = Actions.fromKeycode(keycode);
+        Array<Actions> actions = Actions.fromKeycode(keycode);
 
         if(actions.isEmpty()) return false;
 
@@ -291,7 +319,7 @@ public class Controls implements InputProcessor, ControllerListener {
 
     @Override
     public boolean buttonDown(Controller controller, int buttonCode) {
-        List<Actions> actions = Actions.fromControllerButton(getControllerButton(controller, buttonCode));
+        Array<Actions> actions = Actions.fromControllerButton(getControllerButton(controller, buttonCode));
 
         if(actions.isEmpty()) return false;
 
@@ -306,7 +334,7 @@ public class Controls implements InputProcessor, ControllerListener {
 
     @Override
     public boolean buttonUp(Controller controller, int buttonCode) {
-        List<Actions> actions = Actions.fromControllerButton(getControllerButton(controller, buttonCode));
+        Array<Actions> actions = Actions.fromControllerButton(getControllerButton(controller, buttonCode));
 
         if(actions.isEmpty()) return false;
 
