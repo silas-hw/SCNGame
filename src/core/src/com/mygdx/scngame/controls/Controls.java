@@ -45,7 +45,7 @@ public class Controls implements InputProcessor, ControllerListener {
         }
 
         public void setKeycode(int keycode) {
-            keyBindings.get(this.getKeycode()).removeValue(this, true);
+            keyBindings.get(this.getKeycode()).removeValue(this, false);
             keyBindings.get(keycode).add(this);
 
             prefs.putInteger(this + "-key", keycode);
@@ -57,7 +57,7 @@ public class Controls implements InputProcessor, ControllerListener {
         }
 
         public void setControllerButton(ControllerButtons controllerButton) {
-            controllerBindings.get(this.getControllerButton().ordinal()).removeValue(this, true);
+            controllerBindings.get(this.getControllerButton().ordinal()).removeValue(this, false);
             controllerBindings.get(controllerButton.ordinal()).add(this);
 
             prefs.putString(this + "-controller", controllerButton.name());
@@ -165,18 +165,16 @@ public class Controls implements InputProcessor, ControllerListener {
 
     @Override
     public boolean keyUp(int keycode) {
-        for(InputProcessor inputProcessor : inputProcessors) {
-            if(inputProcessor.keyUp(keycode)) break;
-        }
-
         Array<Actions> actions = Actions.fromKeycode(keycode);
-
-        if(actions.isEmpty()) return false;
 
         for(Actions action : actions) {
             for(ActionListener listener : listeners) {
                 if(listener.actionUp(action)) break;
             }
+        }
+
+        for(InputProcessor inputProcessor : inputProcessors) {
+            if(inputProcessor.keyUp(keycode)) break;
         }
 
         return true;
@@ -193,10 +191,6 @@ public class Controls implements InputProcessor, ControllerListener {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        for(InputProcessor inputProcessor : inputProcessors) {
-            if(inputProcessor.touchDown(screenX, screenY, pointer, button)) break;
-        }
-
         switch(button) {
             case Input.Buttons.LEFT:
                 for(ActionListener listener : mouseListeners) {
@@ -213,15 +207,15 @@ public class Controls implements InputProcessor, ControllerListener {
                 break;
         }
 
+        for(InputProcessor inputProcessor : inputProcessors) {
+            if(inputProcessor.touchDown(screenX, screenY, pointer, button)) break;
+        }
+
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        for(InputProcessor inputProcessor : inputProcessors) {
-            if(inputProcessor.touchUp(screenX, screenY, pointer, button)) break;
-        }
-
         switch(button) {
             case Input.Buttons.LEFT:
                 for(ActionListener listener : mouseListeners) {
@@ -237,6 +231,11 @@ public class Controls implements InputProcessor, ControllerListener {
 
                 break;
         }
+
+        for(InputProcessor inputProcessor : inputProcessors) {
+            if(inputProcessor.touchUp(screenX, screenY, pointer, button)) break;
+        }
+
 
         return false;
     }
@@ -277,26 +276,42 @@ public class Controls implements InputProcessor, ControllerListener {
         return false;
     }
 
+    private final Array<ControllerListener> controllerListeners = new Array<>();
+
+    public void addControllerListener(ControllerListener listener) {
+        controllerListeners.add(listener);
+    }
+
+    public void removeControllerListener(ControllerListener listener) {
+        controllerListeners.removeValue(listener, true);
+    }
+
     @Override
     public void connected(Controller controller) {
-
+        for(ControllerListener listener : controllerListeners) {
+            listener.connected(controller);
+        }
     }
 
     @Override
     public void disconnected(Controller controller) {
-
+        for(ControllerListener listener : controllerListeners) {
+            listener.disconnected(controller);
+        }
     }
 
     @Override
     public boolean buttonDown(Controller controller, int buttonCode) {
         Array<Actions> actions = Actions.fromControllerButton(getControllerButton(controller, buttonCode));
 
-        if(actions.isEmpty()) return false;
-
         for(Actions action : actions) {
             for(ActionListener listener : listeners) {
                 if(listener.actionDown(action)) break;
             }
+        }
+
+        for(ControllerListener listener : controllerListeners) {
+            if(listener.buttonDown(controller, buttonCode)) break;
         }
 
         return true;
@@ -306,12 +321,14 @@ public class Controls implements InputProcessor, ControllerListener {
     public boolean buttonUp(Controller controller, int buttonCode) {
         Array<Actions> actions = Actions.fromControllerButton(getControllerButton(controller, buttonCode));
 
-        if(actions.isEmpty()) return false;
-
         for(Actions action : actions) {
             for(ActionListener listener : listeners) {
                 if(listener.actionUp(action)) break;
             }
+        }
+
+        for(ControllerListener listener : controllerListeners) {
+            if(listener.buttonUp(controller, buttonCode)) break;
         }
 
         return true;
@@ -319,7 +336,11 @@ public class Controls implements InputProcessor, ControllerListener {
 
     @Override
     public boolean axisMoved(Controller controller, int axisCode, float value) {
-        return false;
+        for(ControllerListener listener : controllerListeners) {
+            if(listener.axisMoved(controller, axisCode, value)) break;
+        }
+
+        return true;
     }
 
     public enum ControllerButtons {

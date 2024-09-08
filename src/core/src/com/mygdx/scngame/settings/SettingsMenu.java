@@ -2,6 +2,8 @@ package com.mygdx.scngame.settings;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -204,12 +206,15 @@ public class SettingsMenu implements ActionListener, InputProcessor {
             Label actionLabel = new TruetypeLabel(fontGenerator, 14);
             actionLabel.setText(action.name());
 
-            actionTable.add(actionLabel).width(200f).left();
+            actionTable.add(actionLabel).expandX().left();
 
             Label keyLabel = new TruetypeLabel(fontGenerator, 14);
             keyLabel.setText(Input.Keys.toString(action.getKeycode()));
+            actionTable.add(keyLabel).width(120f).left();
 
-            actionTable.add(keyLabel).width(200f).left();
+            Label controllerLabel = new TruetypeLabel(fontGenerator, 14);
+            controllerLabel.setText(action.getControllerButton().getDisplayText());
+            actionTable.add(controllerLabel).width(120f).left();
 
             TextButton setButton = new TextButton("Set", skin);
             setButton.setLabel(new TruetypeLabel(fontGenerator, 14));
@@ -223,7 +228,8 @@ public class SettingsMenu implements ActionListener, InputProcessor {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     actionToCapture = action;
-                    labelToSet = keyLabel;
+                    keyLabelToSet = keyLabel;
+                    controllerLabelToSet = controllerLabel;
                     window.setTouchable(Touchable.disabled);
                 }
             });
@@ -251,7 +257,8 @@ public class SettingsMenu implements ActionListener, InputProcessor {
     }
 
     Controls.Actions actionToCapture = null;
-    Label labelToSet = null;
+    Label keyLabelToSet = null;
+    Label controllerLabelToSet = null;
 
     public void draw() {
         if(!inFocus) return;
@@ -272,6 +279,8 @@ public class SettingsMenu implements ActionListener, InputProcessor {
         stage.getViewport().update(width, height, true);
     }
 
+    boolean actionJustHandled = false;
+
     @Override
     public boolean actionDown(Controls.Actions action) {
         if (action == Controls.Actions.MENU) {
@@ -283,6 +292,8 @@ public class SettingsMenu implements ActionListener, InputProcessor {
         }
 
         if(actionToCapture != null) return true;
+
+        actionJustHandled = true;
 
         Actor currentActor = focusableArray.get(focusIndex);
         switch(action) {
@@ -331,12 +342,18 @@ public class SettingsMenu implements ActionListener, InputProcessor {
     public boolean keyDown(int keycode) {
         if(!inFocus) return false;
 
+        if(actionJustHandled) {
+            actionJustHandled = false;
+            return true;
+        }
+
         if(actionToCapture != null) {
             actionToCapture.setKeycode(keycode);
-            labelToSet.setText(Input.Keys.toString(keycode));
+            keyLabelToSet.setText(Input.Keys.toString(keycode));
 
             actionToCapture = null;
-            labelToSet = null;
+            keyLabelToSet = null;
+            controllerLabelToSet = null;
 
             window.setTouchable(Touchable.enabled);
         } else {

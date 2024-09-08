@@ -95,11 +95,6 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
 
         bg = screenData.assets().get("music/bgtest2.mp3", Music.class);
         bg.setLooping(true);
-
-        Controls.getInstance().addInputProcessor(settingsMenu);
-        Controls.getInstance().addActionListener(settingsMenu);
-        Controls.getInstance().addActionListener(dialogView);
-        Controls.getInstance().addActionListener(scene);
     }
 
     public GameScreen(ScreenData screenData) {
@@ -110,9 +105,21 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
     }
 
     Music bg;
+    boolean hidden = true;
 
     @Override
     public void show() {
+
+        // show can be called when changing a map, without calling hide
+        // and there are some things we only want to do if show is called after hide
+        if(hidden) {
+            Controls.getInstance().addInputProcessor(settingsMenu);
+            Controls.getInstance().addActionListener(settingsMenu);
+            Controls.getInstance().addActionListener(dialogView);
+            Controls.getInstance().addActionListener(scene);
+
+            hidden = false;
+        }
 
         gameViewport.setCamera(camera);
 
@@ -325,6 +332,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
 
     @Override
     public void hide() {
+        hidden = true;
         bg.stop();
 
         Controls.getInstance().removeInputProcessor(this.settingsMenu);
