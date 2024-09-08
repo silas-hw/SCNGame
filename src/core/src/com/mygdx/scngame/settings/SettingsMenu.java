@@ -1,5 +1,6 @@
 package com.mygdx.scngame.settings;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -91,7 +93,7 @@ public class SettingsMenu implements ActionListener, InputProcessor {
 
         window.setScale(settings.getUIScale());
 
-        root.add(window);
+        root.add(window).width(600f);
 
         musicOn = new CheckBox("music enabled", skin);
         musicOn.setChecked(settings.isMusicOn());
@@ -191,6 +193,48 @@ public class SettingsMenu implements ActionListener, InputProcessor {
         buttons.add(applyButton).colspan(1).expandX().fillX().pad(5f);
         window.add(buttons).expandX().fillX().row();
 
+        Label controlsSetLabel = new TruetypeLabel(fontGenerator, 18);
+        controlsSetLabel.setText("Controls");
+
+        window.add(controlsSetLabel).expandX().row();
+
+        for(Controls.Actions action : Controls.Actions.values()) {
+            Table actionTable = new Table();
+
+            Label actionLabel = new TruetypeLabel(fontGenerator, 14);
+            actionLabel.setText(action.name());
+
+            actionTable.add(actionLabel).width(200f).left();
+
+            Label keyLabel = new TruetypeLabel(fontGenerator, 14);
+            keyLabel.setText(Input.Keys.toString(action.getKeycode()));
+
+            actionTable.add(keyLabel).width(200f).left();
+
+            TextButton setButton = new TextButton("Set", skin);
+            setButton.setLabel(new TruetypeLabel(fontGenerator, 14));
+            setButton.getLabel().setText("Set");
+            setButton.getLabel().setAlignment(Align.center);
+
+            setButton.addListener(focusListener);
+
+            setButton.addListener(new ChangeListener() {
+
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    actionToCapture = action;
+                    labelToSet = keyLabel;
+                    window.setTouchable(Touchable.disabled);
+                }
+            });
+
+            focusableArray.add(setButton);
+
+            actionTable.add(setButton).width(30f).right();
+
+            window.add(actionTable).expandX().fillX().row();
+        }
+
         stage.setKeyboardFocus(focusableArray.get(focusIndex));
 
         window.padRight(10f).padLeft(10f);
@@ -205,6 +249,9 @@ public class SettingsMenu implements ActionListener, InputProcessor {
             });
         }
     }
+
+    Controls.Actions actionToCapture = null;
+    Label labelToSet = null;
 
     public void draw() {
         if(!inFocus) return;
@@ -234,6 +281,8 @@ public class SettingsMenu implements ActionListener, InputProcessor {
         if(!inFocus) {
             return false;
         }
+
+        if(actionToCapture != null) return true;
 
         Actor currentActor = focusableArray.get(focusIndex);
         switch(action) {
@@ -282,7 +331,18 @@ public class SettingsMenu implements ActionListener, InputProcessor {
     public boolean keyDown(int keycode) {
         if(!inFocus) return false;
 
-        stage.keyDown(keycode);
+        if(actionToCapture != null) {
+            actionToCapture.setKeycode(keycode);
+            labelToSet.setText(Input.Keys.toString(keycode));
+
+            actionToCapture = null;
+            labelToSet = null;
+
+            window.setTouchable(Touchable.enabled);
+        } else {
+            stage.keyDown(keycode);
+        }
+
         return true;
     }
 

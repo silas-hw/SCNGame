@@ -146,36 +146,18 @@ public class Controls implements InputProcessor, ControllerListener {
         mouseListeners.removeValue(listener, true);
     }
 
-    int mouseX = 0, mouseY = 0;
-    boolean mouseHidden = false;
-
     @Override
     public boolean keyDown(int keycode) {
-
-
-        if(!mouseHidden) {
-            mouseX = Gdx.input.getX();
-            mouseY = Gdx.input.getY();
-
-            Gdx.input.setCursorPosition(0, 0);
-            this.mouseMoved(0, 0);
-            Gdx.graphics.setSystemCursor(Cursor.SystemCursor.None);
-
-            mouseHidden = true;
-        }
-
-        for(InputProcessor inputProcessor : inputProcessors) {
-            if(inputProcessor.keyDown(keycode)) break;
-        }
-
         Array<Actions> actions = Actions.fromKeycode(keycode);
-
-        if(actions.isEmpty()) return false;
 
         for(Actions action : actions) {
             for(ActionListener listener : listeners) {
                 if(listener.actionDown(action)) break;
             }
+        }
+
+        for(InputProcessor inputProcessor : inputProcessors) {
+            if(inputProcessor.keyDown(keycode)) break;
         }
 
         return true;
@@ -211,15 +193,6 @@ public class Controls implements InputProcessor, ControllerListener {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if(mouseHidden) {
-
-            Gdx.input.setCursorPosition(mouseX, mouseY);
-            Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-
-            mouseHidden = false;
-            return false;
-        }
-
         for(InputProcessor inputProcessor : inputProcessors) {
             if(inputProcessor.touchDown(screenX, screenY, pointer, button)) break;
         }
@@ -288,9 +261,6 @@ public class Controls implements InputProcessor, ControllerListener {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-
-        if(mouseHidden) return false;
-
         for(InputProcessor inputProcessor : inputProcessors) {
             if(inputProcessor.mouseMoved(screenX, screenY)) break;
         }
