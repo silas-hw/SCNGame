@@ -34,6 +34,19 @@ public class SaveFile {
         this.file = file;
     }}
 
+    /*
+    Conventional OOP wisdom may tell you to separate these write and read methods to their own
+    reader and writer classes to separate them from the actual SaveFile.
+
+    However, since I'm only using XML for saves, the locality of the methods is much more beneficial
+    over separation of concerns.
+
+    If I ultimately end up actually needing a separate reader, it wouldn't be too hard to make it. You'd basically
+    just end up copy and pasting this method into its own class.
+
+    9/8/2024 10:33pm
+     */
+
     public void writeToXML() {
         if(!persist) return;
 
