@@ -80,8 +80,8 @@ public class Enemy extends Entity implements HealthComponent.DeathListener {
 
         this.stateManager = new StateManager<>(this.type.idleState(), this);
 
-        this.health = new HealthComponent(10);
-        this.hurtBox = new HurtBox(health, type.width(), type.height(), 0.5f);
+        this.health = new HealthComponent(6);
+        this.hurtBox = new HurtBox(health, type.width(), type.height(), 0.2f);
         this.hurtBox.setCollisionMask(4, true);
 
         health.addDeathListener(this);

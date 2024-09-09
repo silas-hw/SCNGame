@@ -22,7 +22,7 @@ public class PlayerAttackState extends PlayerMoveState {
     public PlayerAttackState(Direction direction) {
         this.attackDirection = direction;
 
-        Box attackBox = new DamageBox(5f, DamageBox.DamageType.DEFAULT);
+        Box attackBox = new DamageBox(1f, DamageBox.DamageType.DEFAULT);
         attackBox.setLayer(4, true);
 
         this.attackBox = new Item<>(attackBox);
