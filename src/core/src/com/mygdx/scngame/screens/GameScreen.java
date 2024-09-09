@@ -97,13 +97,6 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
         bg.setLooping(true);
     }
 
-    public GameScreen(ScreenData screenData) {
-        // internally name the save as the length of the number of saves+1
-        this(screenData, new SaveFile("untitled.tmx", "test_spawn",
-                "ermm", Instant.now().toEpochMilli(),
-                Gdx.files.local("/save/" + (Gdx.files.local("/save/").list().length+1) + ".save")));
-    }
-
     Music bg;
     boolean hidden = true;
 

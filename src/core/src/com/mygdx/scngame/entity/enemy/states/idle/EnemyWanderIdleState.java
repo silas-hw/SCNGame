@@ -30,6 +30,9 @@ public class EnemyWanderIdleState extends EnemyIdleState {
 
             enemy.direction.set(dx, dy);
             enemy.direction.nor();
+
+            enemy.position.x = MathUtils.round(enemy.position.x);
+            enemy.position.y = MathUtils.round(enemy.position.y);
         }
 
         stateTime += delta;
