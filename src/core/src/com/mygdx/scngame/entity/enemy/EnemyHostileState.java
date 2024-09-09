@@ -3,6 +3,7 @@ package com.mygdx.scngame.entity.enemy;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.dongbat.jbump.CollisionFilter;
 import com.dongbat.jbump.Item;
@@ -92,7 +93,10 @@ public class EnemyHostileState implements EntityState<Enemy> {
 
     @Override
     public void enter() {
+        enemy.position.x = MathUtils.round(enemy.position.x);
+        enemy.position.y = MathUtils.round(enemy.position.y);
 
+        timer = 0f;
     }
 
     @Override
