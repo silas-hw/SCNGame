@@ -107,8 +107,6 @@ public class Enemy extends Entity implements HealthComponent.DeathListener {
         }
 
         hurtBox.update(delta, this.position);
-
-        System.out.println(health.getHealth());
     }
 
     @Override

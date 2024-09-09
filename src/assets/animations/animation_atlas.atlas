@@ -34,97 +34,118 @@ testanim
   index: 3
 
 animation_atlas2.png
-size: 64, 128
+size: 128, 128
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
+player/test_attack_right
+  rotate: false
+  xy: 2, 38
+  size: 32, 64
+  orig: 32, 64
+  offset: 0, 0
+  index: 0
+player/test_attack_right
+  rotate: false
+  xy: 36, 38
+  size: 32, 64
+  orig: 32, 64
+  offset: 0, 0
+  index: 1
+player/test_attack_right
+  rotate: false
+  xy: 70, 38
+  size: 32, 64
+  orig: 32, 64
+  offset: 0, 0
+  index: 2
 player/test_idle
   rotate: false
-  xy: 2, 70
+  xy: 2, 4
   size: 16, 32
   orig: 16, 32
   offset: 0, 0
   index: 0
 player/test_walk_right
   rotate: false
-  xy: 2, 70
+  xy: 2, 4
   size: 16, 32
   orig: 16, 32
   offset: 0, 0
   index: 1
 player/test_walk_right
   rotate: false
-  xy: 2, 70
+  xy: 2, 4
   size: 16, 32
   orig: 16, 32
   offset: 0, 0
   index: 3
 player/test_walk_down
   rotate: false
-  xy: 2, 36
+  xy: 104, 70
   size: 16, 32
   orig: 16, 32
   offset: 0, 0
   index: 0
 player/test_walk_down
   rotate: false
-  xy: 2, 36
+  xy: 104, 70
   size: 16, 32
   orig: 16, 32
   offset: 0, 0
   index: 2
 player/test_walk_down
   rotate: false
-  xy: 20, 70
+  xy: 20, 4
   size: 16, 32
   orig: 16, 32
   offset: 0, 0
   index: 1
 player/test_walk_down
   rotate: false
-  xy: 2, 2
+  xy: 38, 4
   size: 16, 32
   orig: 16, 32
   offset: 0, 0
   index: 3
 player/test_walk_right
   rotate: false
-  xy: 20, 36
+  xy: 56, 4
   size: 16, 32
   orig: 16, 32
   offset: 0, 0
   index: 0
 player/test_walk_right
   rotate: false
-  xy: 38, 70
+  xy: 74, 4
   size: 16, 32
   orig: 16, 32
   offset: 0, 0
   index: 2
 player/test_walk_up
   rotate: false
-  xy: 20, 2
+  xy: 104, 36
   size: 16, 32
   orig: 16, 32
   offset: 0, 0
   index: 0
 player/test_walk_up
   rotate: false
-  xy: 20, 2
+  xy: 104, 36
   size: 16, 32
   orig: 16, 32
   offset: 0, 0
   index: 2
 player/test_walk_up
   rotate: false
-  xy: 38, 36
+  xy: 92, 2
   size: 16, 32
   orig: 16, 32
   offset: 0, 0
   index: 1
 player/test_walk_up
   rotate: false
-  xy: 38, 2
+  xy: 110, 2
   size: 16, 32
   orig: 16, 32
   offset: 0, 0

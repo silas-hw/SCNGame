@@ -15,6 +15,7 @@ import com.mygdx.scngame.controls.Controls;
 import com.mygdx.scngame.physics.Interactable;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class PlayerMoveState implements EntityState<Player> {
 
@@ -78,7 +79,9 @@ public class PlayerMoveState implements EntityState<Player> {
         return null;
     }
 
-    private TextureAtlas.AtlasRegion lastFrame;
+    protected TextureAtlas.AtlasRegion lastFrame;
+    float offsetX = 0f;
+    float offsetY = 0f;
 
 
     @Override
@@ -108,7 +111,10 @@ public class PlayerMoveState implements EntityState<Player> {
 
         lastFrame.flip(flipx, flipy);
 
-        batch.draw(lastFrame, container.position.x, container.position.y);
+        offsetX = (lastFrame.getRegionWidth() - container.WIDTH)/2f;
+        offsetY = (lastFrame.getRegionHeight() - container.HEIGHT)/2f;
+
+        batch.draw(lastFrame, container.position.x - offsetX, container.position.y - offsetY);
 
         lastFrame.flip(flipx, flipy);
 
@@ -130,22 +136,17 @@ public class PlayerMoveState implements EntityState<Player> {
 
     @Override
     public void drawWaterReflection(SpriteBatch batch, ShapeRenderer shape, float alpha) {
-        boolean flipx = false;
-
-        switch(facing) {
-            case LEFT:
-                flipx = true;
-                break;
-        }
+        boolean flipx = facing == Direction.LEFT;
 
         lastFrame.flip(flipx, true);
-        batch.draw(lastFrame, (int) container.position.x, ((int) container.position.y) - lastFrame.getRegionHeight());
+        batch.draw(lastFrame, (int) (container.position.x - offsetX), ((int) (container.position.y-offsetY)) - lastFrame.getRegionHeight());
         lastFrame.flip(flipx, true);
     }
 
     @Override
     public void setContainer(Player container) {
         this.container = container;
+        lastFrame = container.walkDownAnim.getKeyFrame(0f);
     }
 
     @Override

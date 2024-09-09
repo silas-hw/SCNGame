@@ -1,5 +1,7 @@
 package com.mygdx.scngame.entity.player.states;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.World;
@@ -25,6 +27,21 @@ public class PlayerAttackState extends PlayerMoveState {
 
         this.attackBox = new Item<>(attackBox);
         this.facing = direction;
+
+        attackBoxWidth = 16f;
+        attackBoxHeight = 18f;
+
+        switch(direction) {
+            case UP:
+            case DOWN:
+                attackBoxHeight*=0.5f;
+                break;
+
+            case LEFT:
+            case RIGHT:
+                attackBoxWidth*=0.5f;
+                break;
+        }
     }
 
     private float attackTimer = 0.5f;
@@ -36,13 +53,16 @@ public class PlayerAttackState extends PlayerMoveState {
         super.update(delta);
         this.facing = attackDirection;
 
+        attackTimer -= delta;
+
+
         if(attackTimer <= 0f) {
             PlayerMoveState newState = new PlayerDefaultState();
             newState.facing = facing;
             return newState;
         }
 
-        attackTimer -= delta;
+
 
         world.move(attackBox, container.position.x + attackBoxOffset.x, container.position.y + attackBoxOffset.y,
                    Box.GLOBAL_FILTER);
@@ -54,26 +74,54 @@ public class PlayerAttackState extends PlayerMoveState {
     public void setContainer(Player container) {
         super.setContainer(container);
 
-        this.attackBoxWidth = container.WIDTH;
-        this.attackBoxHeight = container.HEIGHT;
-
         switch (this.attackDirection) {
             case LEFT:
-                attackBoxOffset.set(- attackBoxWidth, 0);
+                attackBoxOffset.set(- attackBoxWidth, (container.HEIGHT - attackBoxHeight)/2f);
                 break;
 
             case RIGHT:
-                attackBoxOffset.set(container.WIDTH,0);
+                attackBoxOffset.set(container.WIDTH, (container.HEIGHT - attackBoxHeight)/2f);
                 break;
 
             case UP:
-                attackBoxOffset.set(0, container.HEIGHT);
+                attackBoxOffset.set((container.WIDTH - attackBoxWidth)/2f, container.HEIGHT);
                 break;
 
             case DOWN:
-                attackBoxOffset.set(0, -attackBoxHeight);
+                attackBoxOffset.set((container.WIDTH - attackBoxWidth)/2f, -attackBoxHeight);
                 break;
         }
+    }
+
+    @Override
+    public void draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
+        boolean flipx = false;
+
+        switch (facing) {
+            case UP:
+                this.lastFrame = container.attackUpAnimation.getKeyFrame(stateTime, true);
+                break;
+
+            case DOWN:
+                this.lastFrame = container.attackDownAnimation.getKeyFrame(stateTime, true);
+                break;
+
+            case LEFT:
+                flipx = true;
+
+            case RIGHT:
+                this.lastFrame = container.attackRightAnimation.getKeyFrame(stateTime, true);
+                break;
+        }
+
+        lastFrame.flip(flipx, false);
+
+        offsetX = (lastFrame.getRegionWidth() - container.WIDTH)/2f;
+        offsetY = (lastFrame.getRegionHeight() - container.HEIGHT)/2f;
+
+        batch.draw(lastFrame, container.position.x - offsetX, container.position.y - offsetY);
+
+        lastFrame.flip(flipx, false);
     }
 
     @Override
@@ -83,6 +131,12 @@ public class PlayerAttackState extends PlayerMoveState {
         }
 
         super.exit();
+    }
+
+    @Override
+    public void enter() {
+        this.attackTimer = container.attackTime;
+        stateTime = 0f;
     }
 
     @Override

@@ -34,9 +34,14 @@ public class Player extends Entity implements HurtBox.HurtListener {
     public Animation<TextureAtlas.AtlasRegion> walkDownAnim;
     public Animation<TextureAtlas.AtlasRegion> walkUpAnim;
 
-    public final int WIDTH = 16;
-    public final int HEIGHT = 16;
+    public Animation<TextureAtlas.AtlasRegion> attackUpAnimation;
+    public Animation<TextureAtlas.AtlasRegion> attackDownAnimation;
+    public Animation<TextureAtlas.AtlasRegion> attackRightAnimation;
 
+    public final int WIDTH = 16;
+    public final int HEIGHT = 32;
+
+    public float attackTime = 0.5f;
     private float speed = 100;
     private float speedCoeff = 1f;
 
@@ -62,6 +67,13 @@ public class Player extends Entity implements HurtBox.HurtListener {
         walkRightAnim = new Animation<>(animDuration, atlas.findRegions("player/test_walk_right"), Animation.PlayMode.LOOP);
         walkDownAnim = new Animation<>(animDuration, atlas.findRegions("player/test_walk_down"), Animation.PlayMode.LOOP);
         walkUpAnim = new Animation<>(animDuration, atlas.findRegions("player/test_walk_up"), Animation.PlayMode.LOOP);
+
+        float attackAnimDuration = 0.05f;
+        attackUpAnimation = new Animation<>(attackAnimDuration, atlas.findRegions("player/test_walk_up"), Animation.PlayMode.LOOP);
+        attackDownAnimation = new Animation<>(attackAnimDuration, atlas.findRegions("player/test_walk_down"), Animation.PlayMode.LOOP);
+        attackRightAnimation = new Animation<>(attackAnimDuration, atlas.findRegions("player/test_attack_right"), Animation.PlayMode.LOOP);
+
+        attackTime = attackRightAnimation.getKeyFrames().length * attackAnimDuration;
 
         Box foot;
         foot = new Box();
