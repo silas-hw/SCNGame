@@ -201,7 +201,9 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
     }
 
     public void removeEntity(Entity entity) {
+
         this.entities.removeValue(entity, false);
+        entity.removeWorldItems();
     }
 
     public void clearEntities() {

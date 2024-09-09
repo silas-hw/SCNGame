@@ -46,6 +46,8 @@ public interface EntityState<T extends Entity> {
      */
     void setWorld(World<Box> world);
 
+    void removeWorldItems();
+
     /**
      * Marks the state as active, resetting its internal state, potenitally
      * adding physics objects to the {@link World}, and changing the external state

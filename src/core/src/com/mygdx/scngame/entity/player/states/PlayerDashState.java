@@ -53,6 +53,11 @@ public class PlayerDashState implements EntityState<Player> {
     }
 
     @Override
+    public void removeWorldItems() {
+
+    }
+
+    @Override
     public void enter() {
         container.collisionItem.userData.internalFilter = Box.TOUCH_FILTER;
         dashTimer = 0f;

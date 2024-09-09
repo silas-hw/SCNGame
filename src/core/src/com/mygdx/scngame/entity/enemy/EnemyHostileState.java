@@ -92,6 +92,11 @@ public class EnemyHostileState implements EntityState<Enemy> {
     }
 
     @Override
+    public void removeWorldItems() {
+
+    }
+
+    @Override
     public void enter() {
         enemy.position.x = MathUtils.round(enemy.position.x);
         enemy.position.y = MathUtils.round(enemy.position.y);

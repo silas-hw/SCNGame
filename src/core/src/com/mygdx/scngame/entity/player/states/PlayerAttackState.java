@@ -21,6 +21,7 @@ public class PlayerAttackState extends PlayerMoveState {
         this.attackDirection = direction;
 
         Box attackBox = new DamageBox(5f, DamageBox.DamageType.DEFAULT);
+        attackBox.setLayer(4, true);
 
         this.attackBox = new Item<>(attackBox);
         this.facing = direction;
@@ -95,5 +96,14 @@ public class PlayerAttackState extends PlayerMoveState {
         this.world = world;
         this.world.add(attackBox, container.position.x + attackBoxOffset.x,
                     container.position.y + attackBoxOffset.y, attackBoxWidth, attackBoxHeight);
+    }
+
+    @Override
+    public void removeWorldItems() {
+        super.removeWorldItems();
+
+        if(this.world != null) {
+            if(this.world.hasItem(attackBox)) this.world.remove(attackBox);
+        }
     }
 }

@@ -154,6 +154,11 @@ public class PlayerMoveState implements EntityState<Player> {
     }
 
     @Override
+    public void removeWorldItems() {
+
+    }
+
+    @Override
     public void enter() {
         lastFrame = container.idleRightAnim.getKeyFrame(stateTime, true);
         container.hurtbox.setTakesDamage(true);

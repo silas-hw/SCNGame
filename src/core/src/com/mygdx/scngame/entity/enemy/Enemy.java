@@ -29,9 +29,16 @@ import com.dongbat.jbump.CollisionFilter;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.EntityState;
+import com.mygdx.scngame.entity.component.HealthComponent;
+import com.mygdx.scngame.entity.component.HurtBox;
 import com.mygdx.scngame.physics.Box;
 
-public class Enemy extends Entity {
+public class Enemy extends Entity implements HealthComponent.DeathListener {
+
+    @Override
+    public void onDeath() {
+        context.removeEntity(this);
+    }
 
     public record EnemyType(
             Animation<TextureAtlas.AtlasRegion> walkUpAnimation,
@@ -58,6 +65,9 @@ public class Enemy extends Entity {
     public final EnemyType type;
     public final CollisionFilter detectionFilter;
 
+    HurtBox hurtBox;
+    HealthComponent health;
+
     EntityState<? super Enemy> state;
 
     public Enemy(EnemyType type) {
@@ -68,6 +78,12 @@ public class Enemy extends Entity {
         this.type.hostileState.setContainer(this);
 
         this.state = this.type.idleState;
+
+        this.health = new HealthComponent(10);
+        this.hurtBox = new HurtBox(health, type.width(), type.height(), 0.5f);
+        this.hurtBox.setCollisionMask(4, true);
+
+        health.addDeathListener(this);
     }
 
     public Vector2 getCenterPoint() {
@@ -89,6 +105,10 @@ public class Enemy extends Entity {
             this.state.setWorld(this.world);
             this.state.enter();
         }
+
+        hurtBox.update(delta, this.position);
+
+        System.out.println(health.getHealth());
     }
 
     @Override
@@ -99,7 +119,14 @@ public class Enemy extends Entity {
     @Override
     public void setWorld(World<Box> world) {
         this.state.setWorld(this.world);
+        this.hurtBox.setWorld(world);
         this.world = world;
+    }
+
+    @Override
+    public void removeWorldItems() {
+        this.hurtBox.removeWorldItems();
+        this.state.removeWorldItems();
     }
 
     @Override

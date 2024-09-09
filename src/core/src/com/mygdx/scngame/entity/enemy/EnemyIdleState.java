@@ -86,6 +86,11 @@ public class EnemyIdleState implements EntityState<Enemy> {
     }
 
     @Override
+    public void removeWorldItems() {
+
+    }
+
+    @Override
     public void enter() {
 
     }
