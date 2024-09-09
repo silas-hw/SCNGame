@@ -29,6 +29,7 @@ import com.dongbat.jbump.CollisionFilter;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.EntityState;
+import com.mygdx.scngame.entity.StateManager;
 import com.mygdx.scngame.entity.component.HealthComponent;
 import com.mygdx.scngame.entity.component.HurtBox;
 import com.mygdx.scngame.physics.Box;
@@ -68,7 +69,7 @@ public class Enemy extends Entity implements HealthComponent.DeathListener {
     HurtBox hurtBox;
     HealthComponent health;
 
-    EntityState<? super Enemy> state;
+    StateManager<Enemy> stateManager;
 
     public Enemy(EnemyType type) {
         this.type = type;
@@ -77,7 +78,7 @@ public class Enemy extends Entity implements HealthComponent.DeathListener {
         this.type.idleState.setContainer(this);
         this.type.hostileState.setContainer(this);
 
-        this.state = this.type.idleState;
+        this.stateManager = new StateManager<>(this.type.idleState(), this);
 
         this.health = new HealthComponent(10);
         this.hurtBox = new HurtBox(health, type.width(), type.height(), 0.5f);
@@ -95,28 +96,18 @@ public class Enemy extends Entity implements HealthComponent.DeathListener {
 
     @Override
     public void update(float delta) {
-        EntityState<? super Enemy> newState = this.state.update(delta);
-
-        if (newState != null) {
-            this.state.exit();
-
-            this.state = newState;
-            this.state.setContainer(this);
-            this.state.setWorld(this.world);
-            this.state.enter();
-        }
-
+        stateManager.update(delta);
         hurtBox.update(delta, this.position);
     }
 
     @Override
     public void draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
-        this.state.draw(batch, shape, alpha);
+        this.stateManager.draw(batch, shape, alpha);
     }
 
     @Override
     public void setWorld(World<Box> world) {
-        this.state.setWorld(this.world);
+        this.stateManager.setWorld(this.world);
         this.hurtBox.setWorld(world);
         this.world = world;
     }
@@ -124,7 +115,7 @@ public class Enemy extends Entity implements HealthComponent.DeathListener {
     @Override
     public void removeWorldItems() {
         this.hurtBox.removeWorldItems();
-        this.state.removeWorldItems();
+        this.stateManager.removeWorldItems();
     }
 
     @Override

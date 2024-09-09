@@ -19,8 +19,6 @@ import com.mygdx.scngame.physics.TerrainBox;
 
 // TODO: add comments
 public class Player extends Entity implements HurtBox.HurtListener {
-    private EntityState<? super Player> state;
-
     public Item<Box> collisionItem;
     public Item<Box> hitbox;
 
@@ -55,6 +53,8 @@ public class Player extends Entity implements HurtBox.HurtListener {
 
     // from center of body, so account for half of width/height
     public final float interactDistance = 14f;
+
+    StateManager<Player> stateManager;
 
     public Player(AssetManager assets) {
         float animDuration = 0.1f;
@@ -93,8 +93,7 @@ public class Player extends Entity implements HurtBox.HurtListener {
 
         hurtbox.addHurtListener(this);
 
-        this.state = new PlayerDefaultState();
-        this.state.setContainer(this);
+        this.stateManager = new StateManager<>(new PlayerDefaultState(), this);
     }
 
     private static final float hurtColorTime = 0.4f;
@@ -108,7 +107,7 @@ public class Player extends Entity implements HurtBox.HurtListener {
 
         if(hurtColorTimer > 0f) hurtColorTimer -= delta;
 
-        EntityState<? super Player> newState =  state.update(delta);
+        stateManager.update(delta);
 
         Response.Result res = world.move(collisionItem, position.x, position.y, Box.GLOBAL_FILTER);
 
@@ -130,16 +129,6 @@ public class Player extends Entity implements HurtBox.HurtListener {
         position.x = rect.x;
         position.y = rect.y;
 
-        if(newState != null) {
-            this.state.exit();
-
-            this.state = newState;
-
-            this.state.setContainer(this);
-            this.state.setWorld(this.world);
-            this.state.enter();
-        }
-
         hurtbox.update(delta, this.position);
     }
 
@@ -150,26 +139,21 @@ public class Player extends Entity implements HurtBox.HurtListener {
             batch.setColor(Color.RED);
         }
 
-        state.draw( batch, shape, alpha);
+        stateManager.draw( batch, shape, alpha);
 
         batch.setColor(Color.WHITE);
     }
 
     @Override
     public void drawWaterReflection(SpriteBatch batch, ShapeRenderer shape, float alpha) {
-        state.drawWaterReflection(batch, shape, alpha);
+        stateManager.drawWaterReflection(batch, shape, alpha);
     }
 
     @Override
     public void setWorld(World<Box> world) throws IllegalArgumentException {
         if(world == null) throw new IllegalArgumentException("World cannot be null");
 
-        this.state.setWorld(world);
-
-        // if it's the first time settings the world, we can now enter the initial state
-        if(this.world == null) {
-            this.state.enter();
-        }
+        this.stateManager.setWorld(world);
 
         if(this.world != null) {
             if(this.world.hasItem(collisionItem)) this.world.remove(collisionItem);
@@ -189,23 +173,16 @@ public class Player extends Entity implements HurtBox.HurtListener {
             if(this.world.hasItem(collisionItem)) this.world.remove(collisionItem);
             if(this.world.hasItem(hitbox)) this.world.remove(hitbox);
 
-            this.state.exit();
+            this.stateManager.removeWorldItems();
         }
     }
 
     public void resetState() {
-        this.state.exit();
-
-        this.state = new PlayerDefaultState();
-        this.state.setContainer(this);
-        this.state.setWorld(this.world);
-
-        this.state.enter();
+        this.stateManager.reset();
     }
 
     @Override
     public void dispose() {
-        this.state.exit();
     }
 
     @Override
