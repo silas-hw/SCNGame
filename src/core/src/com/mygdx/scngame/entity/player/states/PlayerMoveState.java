@@ -139,7 +139,7 @@ public class PlayerMoveState implements EntityState<Player> {
         boolean flipx = facing == Direction.LEFT;
 
         lastFrame.flip(flipx, true);
-        batch.draw(lastFrame, (int) (container.position.x - offsetX), ((int) (container.position.y-offsetY)) - lastFrame.getRegionHeight());
+        batch.draw(lastFrame, (int) (container.position.x - offsetX), ((int) (container.position.y + offsetY)) - lastFrame.getRegionHeight());
         lastFrame.flip(flipx, true);
     }
 
