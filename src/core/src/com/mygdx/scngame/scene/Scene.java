@@ -19,6 +19,7 @@ import com.mygdx.scngame.controls.ActionListener;
 import com.mygdx.scngame.dialog.DialogNode;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.context.EntityContext;
+import com.mygdx.scngame.entity.enemy.Enemy;
 import com.mygdx.scngame.event.DialogEventListener;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.controls.Controls;
@@ -199,14 +200,20 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
         assert entity != null : "Can't add a null entity to a scene";
 
         // change entity context to this if it currently belongs to another context
-        if(entity.context != null) {
+        if(entity.context != null && entity.context != this) {
             entity.context.removeEntity(entity);
+        } else if(entity.context == this) {
+            this.entities.removeValue(entity, true);
         }
 
         entity.context = this;
 
         // change entity world if it doesn't match the scenes world
         entity.setWorld(this.world);
+
+        if(entity instanceof Enemy) {
+            System.out.println(world);
+        }
 
         this.entities.add(entity);
     }
