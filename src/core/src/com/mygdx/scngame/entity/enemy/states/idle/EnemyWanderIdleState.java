@@ -11,6 +11,8 @@ import com.mygdx.scngame.entity.enemy.EnemyIdleState;
 public class EnemyWanderIdleState extends EnemyIdleState {
 
     float stateTime = 0f;
+
+    float wanderTimer = 0f;
     float maxWanderTime = 2f;
     float minWanderTime = 0.5f;
 
@@ -25,8 +27,8 @@ public class EnemyWanderIdleState extends EnemyIdleState {
     @Override
     public EntityState<? super Enemy> update(float delta) {
 
-        if(stateTime >= currentWanderTime) {
-            stateTime = 0f;
+        if(wanderTimer >= currentWanderTime) {
+            wanderTimer = 0f;
 
             float dx = MathUtils.random(-1, 1);
             float dy = MathUtils.random(-1, 1);
@@ -39,6 +41,7 @@ public class EnemyWanderIdleState extends EnemyIdleState {
         }
 
         stateTime += delta;
+        wanderTimer += delta;
 
         enemy.position.mulAdd(enemy.direction, speed*delta);
 
@@ -47,22 +50,20 @@ public class EnemyWanderIdleState extends EnemyIdleState {
 
     @Override
     public void draw(SpriteBatch batch, ShapeRenderer shape, float alpha) {
-        float walkTime = enemy.direction.isZero() ? 0f : stateTime;
-
         boolean flipx = false;
 
         TextureAtlas.AtlasRegion frame = enemy.type.walkDownAnimation().getKeyFrame(0f);
 
         if(enemy.direction.x != 0) {
-            frame = enemy.type.walkRightAnimation().getKeyFrame(walkTime, true);
+            frame = enemy.type.walkRightAnimation().getKeyFrame(stateTime, true);
 
             if(enemy.direction.x < 0) {
                 flipx = true;
             }
         } else if(enemy.direction.y > 0) {
-            frame = enemy.type.walkUpAnimation().getKeyFrame(walkTime, true);
-        } else if(enemy.direction.y <= 0) {
-            frame = enemy.type.walkDownAnimation().getKeyFrame(walkTime, true);
+            frame = enemy.type.walkUpAnimation().getKeyFrame(stateTime, true);
+        } else if(enemy.direction.y < 0) {
+            frame = enemy.type.walkDownAnimation().getKeyFrame(stateTime, true);
         }
 
         float offsetx = (frame.getRegionWidth() - enemy.type.width())/2f;

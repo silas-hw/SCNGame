@@ -170,7 +170,6 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
 
         player.resetState();
         scene.addEntity(player);
-        scene.setWorld(world);
     }
 
     float transitionAlpha = 1f;
