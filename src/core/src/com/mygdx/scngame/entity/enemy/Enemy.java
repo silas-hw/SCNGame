@@ -109,7 +109,7 @@ public class Enemy extends Entity implements HealthComponent.DeathListener {
 
     @Override
     public void setWorld(World<Box> world) {
-        this.stateManager.setWorld(this.world);
+        this.stateManager.setWorld(world);
         this.hurtBox.setWorld(world);
         this.world = world;
     }
