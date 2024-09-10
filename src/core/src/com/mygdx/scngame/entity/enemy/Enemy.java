@@ -38,7 +38,7 @@ public class Enemy extends Entity implements HealthComponent.DeathListener {
 
     @Override
     public void onDeath() {
-        context.removeEntity(this);
+        this.stateManager.setState(new EnemyDeathState());
     }
 
     public record EnemyType(
@@ -49,6 +49,8 @@ public class Enemy extends Entity implements HealthComponent.DeathListener {
             Animation<TextureAtlas.AtlasRegion> attackUpAnimation,
             Animation<TextureAtlas.AtlasRegion> attackDownAnimation,
             Animation<TextureAtlas.AtlasRegion> attackRightAnimation,
+
+            Animation<TextureAtlas.AtlasRegion> deathAnimation,
 
             EnemyIdleState idleState,
             EnemyHostileState hostileState,

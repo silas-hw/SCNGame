@@ -210,14 +210,17 @@ public class MapObjectLoader {
     }
 
     private void loadEnemy(MapProperties properties, float x, float y) {
+        String testAnimPath = "enemy/slime/test_walk";
         Enemy.EnemyType enemyType = new Enemy.EnemyType(
-                new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
-                new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
-                new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
-                new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
-                new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
-                new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
-                new Animation<>(0.3f, animAtlas.findRegions("player/test_idle"), Animation.PlayMode.LOOP),
+                new Animation<>(0.3f, animAtlas.findRegions(testAnimPath), Animation.PlayMode.LOOP),
+                new Animation<>(0.3f, animAtlas.findRegions(testAnimPath), Animation.PlayMode.LOOP),
+                new Animation<>(0.3f, animAtlas.findRegions(testAnimPath), Animation.PlayMode.LOOP),
+                new Animation<>(0.3f, animAtlas.findRegions(testAnimPath), Animation.PlayMode.LOOP),
+                new Animation<>(0.3f, animAtlas.findRegions(testAnimPath), Animation.PlayMode.LOOP),
+                new Animation<>(0.3f, animAtlas.findRegions(testAnimPath), Animation.PlayMode.LOOP),
+                new Animation<>(0.3f, animAtlas.findRegions(testAnimPath), Animation.PlayMode.LOOP),
+
+                new Animation<>(0.03f, animAtlas.findRegions("enemy/slime/test_death"), Animation.PlayMode.LOOP),
 
                 new EnemyWanderIdleState(),
                 new EnemyHostileState(),
@@ -228,7 +231,7 @@ public class MapObjectLoader {
                 0b0010,
 
                 16,
-                32
+                16
         );
 
         Enemy enemy = new Enemy(enemyType);

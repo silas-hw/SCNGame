@@ -23,7 +23,6 @@ public class EnemyIdleState implements EntityState<Enemy> {
 
     ArrayList<Item> results = new ArrayList<>();
 
-
     @Override
     public EntityState<? super Enemy> update(float delta) {
         Vector2 center = enemy.getCenterPoint();

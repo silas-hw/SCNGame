@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.SnapshotArray;
@@ -46,6 +47,8 @@ import java.util.Comparator;
 public class Scene extends InputAdapter implements Disposable, EntityContext, DialogEventListener, ActionListener {
     protected SnapshotArray<Entity> entities;
     protected Comparator<Entity> renderComparator;
+
+    protected final Array<Entity> entitiesToRemove = new Array<>();
 
     protected SpriteBatch batch;
     protected ShapeRenderer shape;
@@ -96,6 +99,14 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
     private boolean freeze = false;
 
     public void update(float delta) {
+
+        for(Entity entity : entitiesToRemove) {
+            this.entities.removeValue(entity, false);
+            entity.removeWorldItems();
+        }
+
+        entitiesToRemove.clear();
+
         stateTime += delta;
 
         if(freeze) return;
@@ -201,9 +212,7 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
     }
 
     public void removeEntity(Entity entity) {
-
-        this.entities.removeValue(entity, false);
-        entity.removeWorldItems();
+        entitiesToRemove.add(entity);
     }
 
     public void clearEntities() {

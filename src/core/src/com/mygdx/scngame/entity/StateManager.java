@@ -27,13 +27,7 @@ public class StateManager<T extends Entity> {
         EntityState<? super T> newState = currentState.update(delta);
 
         if(newState != null) {
-            currentState.exit();
-
-            currentState = newState;
-            currentState.setContainer(container);
-            currentState.setWorld(world);
-
-            currentState.enter();
+            this.setState(newState);
         }
     }
 
@@ -61,6 +55,16 @@ public class StateManager<T extends Entity> {
 
     public void exit() {
         this.currentState.exit();
+    }
+
+    public void setState(EntityState<? super T> newState) {
+        currentState.exit();
+
+        currentState = newState;
+        currentState.setContainer(container);
+        currentState.setWorld(world);
+
+        currentState.enter();
     }
 
     public void reset() {

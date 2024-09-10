@@ -34,6 +34,75 @@ testanim
   index: 3
 
 animation_atlas2.png
+size: 256, 32
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+enemy/slime/test_death
+  rotate: false
+  xy: 2, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 0
+enemy/slime/test_walk
+  rotate: false
+  xy: 2, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 0
+enemy/slime/test_death
+  rotate: false
+  xy: 20, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 1
+enemy/slime/test_death
+  rotate: false
+  xy: 38, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 2
+enemy/slime/test_death
+  rotate: false
+  xy: 56, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 3
+enemy/slime/test_death
+  rotate: false
+  xy: 74, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 4
+enemy/slime/test_walk
+  rotate: false
+  xy: 92, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 1
+enemy/slime/test_walk
+  rotate: false
+  xy: 110, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 2
+enemy/slime/test_walk
+  rotate: false
+  xy: 128, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 3
+
+animation_atlas3.png
 size: 128, 128
 format: RGBA8888
 filter: Nearest, Nearest
