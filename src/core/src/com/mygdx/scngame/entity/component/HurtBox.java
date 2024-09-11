@@ -2,10 +2,7 @@ package com.mygdx.scngame.entity.component;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.dongbat.jbump.Collision;
-import com.dongbat.jbump.Item;
-import com.dongbat.jbump.Response;
-import com.dongbat.jbump.World;
+import com.dongbat.jbump.*;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.DamageBox;
 import com.mygdx.scngame.physics.HitBox;
@@ -14,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public class HurtBox {
 
     public interface HurtListener {
-        void onHit();
+        void onHit(Vector2 knockback);
     }
 
     private HealthComponent health;
@@ -92,8 +89,13 @@ public class HurtBox {
                 invincible = true;
                 invinceTimer = invinceTime;
 
+                Rect rect = col.otherRect;
+                Vector2 dBoxPos = new Vector2(rect.x + rect.w/2f, col.otherRect.y + rect.h/2f);
+
+                Vector2 knockbackVec = dBoxPos.sub(position.cpy().add(width/2f, height/2f)).nor().scl(dBox.knockback);
+
                 for(HurtListener listener : listeners) {
-                    listener.onHit();
+                    listener.onHit(knockbackVec);
                 }
             }
         }

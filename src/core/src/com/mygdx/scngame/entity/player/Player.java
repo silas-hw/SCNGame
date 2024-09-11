@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.dongbat.jbump.*;
 import com.mygdx.scngame.entity.*;
 import com.mygdx.scngame.entity.component.HealthComponent;
@@ -186,7 +187,7 @@ public class Player extends Entity implements HurtBox.HurtListener {
     }
 
     @Override
-    public void onHit() {
+    public void onHit(Vector2 knockback) {
         hurtColorTimer = hurtColorTime;
     }
 }

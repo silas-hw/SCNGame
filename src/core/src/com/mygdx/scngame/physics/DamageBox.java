@@ -10,6 +10,7 @@ import java.awt.*;
  */
 public class DamageBox extends Box {
     public float damage;
+    public float knockback = 0f;
     public DamageType type;
 
     public boolean solid = false;
@@ -19,8 +20,13 @@ public class DamageBox extends Box {
     }
 
     public DamageBox(float damage, DamageType type) {
+        this(damage, 15f, type);
+    }
+
+    public DamageBox(float damage, float knockback, DamageType type) {
         this.damage = damage;
         this.type = type;
+        this.knockback = knockback;
 
         super.setDebugColor(Color.RED);
     }

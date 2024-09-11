@@ -26,6 +26,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.dongbat.jbump.CollisionFilter;
+import com.dongbat.jbump.Item;
+import com.dongbat.jbump.Rect;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.EntityState;
@@ -34,11 +36,16 @@ import com.mygdx.scngame.entity.component.HealthComponent;
 import com.mygdx.scngame.entity.component.HurtBox;
 import com.mygdx.scngame.physics.Box;
 
-public class Enemy extends Entity implements HealthComponent.DeathListener {
+public class Enemy extends Entity implements HealthComponent.DeathListener, HurtBox.HurtListener {
 
     @Override
     public void onDeath() {
         this.stateManager.setState(new EnemyDeathState());
+    }
+
+    @Override
+    public void onHit(Vector2 knockback) {
+        this.position.sub(knockback);
     }
 
     public record EnemyType(
@@ -71,6 +78,8 @@ public class Enemy extends Entity implements HealthComponent.DeathListener {
     HurtBox hurtBox;
     HealthComponent health;
 
+    Item<Box> collider;
+
     StateManager<Enemy> stateManager;
 
     public Enemy(EnemyType type) {
@@ -87,6 +96,21 @@ public class Enemy extends Entity implements HealthComponent.DeathListener {
         this.hurtBox.setCollisionMask(4, true);
 
         health.addDeathListener(this);
+        hurtBox.addHurtListener(this);
+
+        Box collider = new Box();
+        collider.setMask(0, true);
+        collider.setMask(1, true);
+
+        collider.setLayer(0, true);
+        collider.setLayer(1, true);
+
+        collider.solid = true;
+
+        collider.internalFilter = Box.SLIDE_FILTER;
+
+        this.collider = new Item<>(collider);
+
     }
 
     public Vector2 getCenterPoint() {
@@ -100,6 +124,12 @@ public class Enemy extends Entity implements HealthComponent.DeathListener {
     public void update(float delta) {
         stateManager.update(delta);
         hurtBox.update(delta, this.position);
+
+        this.world.move(collider, position.x, position.y, Box.GLOBAL_FILTER);
+
+        Rect rect = this.world.getRect(collider);
+
+        position.set(rect.x, rect.y);
     }
 
     @Override
@@ -111,13 +141,21 @@ public class Enemy extends Entity implements HealthComponent.DeathListener {
     public void setWorld(World<Box> world) {
         this.stateManager.setWorld(world);
         this.hurtBox.setWorld(world);
+
+        if(this.world != null) {
+            if(this.world.hasItem(collider))  this.world.remove(collider);
+        }
         this.world = world;
+
+        this.world.add(collider, position.x, position.y, type.width, type.height);
     }
 
     @Override
     public void removeWorldItems() {
         this.hurtBox.removeWorldItems();
         this.stateManager.removeWorldItems();
+
+        if(this.world.hasItem(collider)) this.world.remove(collider);
     }
 
     @Override
