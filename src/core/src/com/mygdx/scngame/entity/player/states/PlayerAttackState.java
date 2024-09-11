@@ -76,15 +76,15 @@ public class PlayerAttackState extends PlayerMoveState {
 
         switch (this.attackDirection) {
             case LEFT:
-                attackBoxOffset.set(- attackBoxWidth, (container.HEIGHT - attackBoxHeight)/2f);
+                attackBoxOffset.set(- attackBoxWidth, (container.HEIGHT/2f - attackBoxHeight)/2f);
                 break;
 
             case RIGHT:
-                attackBoxOffset.set(container.WIDTH, (container.HEIGHT - attackBoxHeight)/2f);
+                attackBoxOffset.set(container.WIDTH, (container.HEIGHT/2f - attackBoxHeight)/2f);
                 break;
 
             case UP:
-                attackBoxOffset.set((container.WIDTH - attackBoxWidth)/2f, container.HEIGHT);
+                attackBoxOffset.set((container.WIDTH - attackBoxWidth)/2f, container.HEIGHT/2f);
                 break;
 
             case DOWN:

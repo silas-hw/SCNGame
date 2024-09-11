@@ -103,7 +103,6 @@ public class Enemy extends Entity implements HealthComponent.DeathListener, Hurt
         collider.setMask(1, true);
 
         collider.setLayer(0, true);
-        collider.setLayer(1, true);
 
         collider.solid = true;
 
