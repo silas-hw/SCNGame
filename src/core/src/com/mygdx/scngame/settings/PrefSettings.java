@@ -25,17 +25,6 @@ public class PrefSettings implements Settings {
         return prefs;
     };
 
-    private static PrefSettings instance = null;
-
-    private PrefSettings() {};
-    public static PrefSettings getInstance() {
-        if(instance == null) {
-            instance = new PrefSettings();
-        }
-
-        return instance;
-    }
-
     public float getSfxVol() {
         return getPrefs().getFloat(PREF_SFX_VOL, 1.0f);
     }

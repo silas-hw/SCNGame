@@ -36,7 +36,7 @@ public class SCNGame extends Game {
 				this,
 				batch,
 				shape,
-				PrefSettings.getInstance(),
+				new PrefSettings(),
 				assetManager,
 				controls
 		);
