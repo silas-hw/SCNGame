@@ -108,13 +108,6 @@ public class Controls implements InputProcessor, ControllerListener {
 
     private static Controls instance = null;
 
-    public static Controls getInstance() {
-        if (instance == null) {
-            instance = new Controls();
-        }
-
-        return instance;
-    }
     public Actions leftMouseAlias = Actions.ATTACK;
     public Actions rightMouseAlias = Actions.DASH;
 

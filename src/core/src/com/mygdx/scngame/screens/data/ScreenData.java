@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.mygdx.scngame.controls.Controls;
 import com.mygdx.scngame.settings.Settings;
 
 /**
@@ -34,25 +35,29 @@ public record ScreenData(Game game,
                          SpriteBatch batch,
                          ShapeRenderer shapeRenderer,
                          Settings settings,
-                         AssetManager assets
+                         AssetManager assets,
+                         Controls controls
 ) {
 
     public ScreenData(Game game,
                       SpriteBatch batch,
                       ShapeRenderer shapeRenderer,
                       Settings settings,
-                      AssetManager assets) {
+                      AssetManager assets,
+                      Controls controls) {
         assert game != null : "Game cannot be null. How can we do anything without a game?";
         assert batch != null : "Wow. Just... I can't believe it. You didn't set batch? Common... Yeah. Batch is null";
         assert shapeRenderer != null : "Really? shapeRenderer is null? That's a rookie mistake my friend.";
         assert settings != null : "Settings is null";
         assert assets != null : "Asset manager is null";
+        assert controls != null : "Controls is null";
 
         this.game = game;
         this.batch = batch;
         this.shapeRenderer = shapeRenderer;
         this.settings = settings;
         this.assets = assets;
+        this.controls = controls;
 
     }
 }

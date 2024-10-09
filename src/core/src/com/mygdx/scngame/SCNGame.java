@@ -24,8 +24,9 @@ public class SCNGame extends Game {
 		Gdx.app.log(logTag, "Version num: " + version);
 
 		Controls.initPreferences();
-		Gdx.input.setInputProcessor(Controls.getInstance());
-		Controllers.addListener(Controls.getInstance());
+		Controls controls = new Controls();
+		Gdx.input.setInputProcessor(controls);
+		Controllers.addListener(controls);
 
 		batch = new SpriteBatch();
 		shape = new ShapeRenderer();
@@ -36,7 +37,8 @@ public class SCNGame extends Game {
 				batch,
 				shape,
 				PrefSettings.getInstance(),
-				assetManager
+				assetManager,
+				controls
 		);
 
 		this.setScreen(new AssetLoadingScreen(screenData));

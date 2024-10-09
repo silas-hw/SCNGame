@@ -79,8 +79,8 @@ public class MainMenuScreen implements Screen, ActionListener {
     float scale = 1f;
     @Override
     public void show() {
-        Controls.getInstance().addActionListener(this.settingsMenu);
-        Controls.getInstance().addInputProcessor(this.settingsMenu);
+        screenData.controls().addActionListener(this.settingsMenu);
+        screenData.controls().addInputProcessor(this.settingsMenu);
 
         scale = screenData.settings().getUIScale();
 
@@ -250,8 +250,8 @@ public class MainMenuScreen implements Screen, ActionListener {
         stage.setScrollFocus(saveScroll);
         stage.setKeyboardFocus(saveRoot);
 
-        Controls.getInstance().addInputProcessor(stage);
-        Controls.getInstance().addActionListener(this);
+        screenData.controls().addInputProcessor(stage);
+        screenData.controls().addActionListener(this);
     }
 
     @Override
@@ -286,11 +286,11 @@ public class MainMenuScreen implements Screen, ActionListener {
         stage.dispose();
         bg.stop();
 
-        Controls.getInstance().removeInputProcessor(stage);
+        screenData.controls().removeInputProcessor(stage);
 
-        Controls.getInstance().removeInputProcessor(this.settingsMenu);
-        Controls.getInstance().removeActionListener(this.settingsMenu);
-        Controls.getInstance().removeActionListener(this);
+        screenData.controls().removeInputProcessor(this.settingsMenu);
+        screenData.controls().removeActionListener(this.settingsMenu);
+        screenData.controls().removeActionListener(this);
 
     }
 

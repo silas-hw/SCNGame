@@ -106,10 +106,10 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
         // show can be called when changing a map, without calling hide
         // and there are some things we only want to do if show is called after hide
         if(hidden) {
-            Controls.getInstance().addInputProcessor(settingsMenu);
-            Controls.getInstance().addActionListener(settingsMenu);
-            Controls.getInstance().addActionListener(dialogView);
-            Controls.getInstance().addActionListener(scene);
+            screenData.controls().addInputProcessor(settingsMenu);
+            screenData.controls().addActionListener(settingsMenu);
+            screenData.controls().addActionListener(dialogView);
+            screenData.controls().addActionListener(scene);
 
             hidden = false;
         }
@@ -327,10 +327,10 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
         hidden = true;
         bg.stop();
 
-        Controls.getInstance().removeInputProcessor(this.settingsMenu);
-        Controls.getInstance().removeActionListener(this.settingsMenu);
-        Controls.getInstance().removeActionListener(dialogView);
-        Controls.getInstance().removeActionListener(scene);
+        screenData.controls().removeInputProcessor(this.settingsMenu);
+        screenData.controls().removeActionListener(this.settingsMenu);
+        screenData.controls().removeActionListener(dialogView);
+        screenData.controls().removeActionListener(scene);
     }
 
     @Override

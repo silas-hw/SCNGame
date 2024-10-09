@@ -32,7 +32,7 @@ void main()
 
 	float offsetX = u_amplitude * sin(pix_y * u_frequency + u_time*u_timeCoefficient);
 
-	offsetX = (trunc((offsetX * viewportWidth)/(viewportWidth/worldWidth)))/worldWidth;;
+	offsetX = (trunc((offsetX * viewportWidth)/(viewportWidth/worldWidth)))/worldWidth;
 
 	vec2 texCoords = v_texCoords + vec2(offsetX, 0);
 
