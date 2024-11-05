@@ -16,7 +16,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Rect;
 import com.dongbat.jbump.World;
-import com.mygdx.scngame.controls.Controls;
 import com.mygdx.scngame.dialog.DialogView;
 import com.mygdx.scngame.entity.component.HealthComponent;
 import com.mygdx.scngame.entity.player.Player;
@@ -55,6 +54,9 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
 
     ScreenData screenData;
 
+    ShapeRenderer shape;
+
+
     private int MAP_WIDTH;
     private int MAP_HEIGHT;
 
@@ -68,6 +70,8 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
         this.saveFile = save;
 
         this.screenData = screenData;
+
+        shape = screenData.shapeRenderer();
 
         this.player = new Player(screenData.assets());
         player.health.addDeathListener(this);
@@ -113,7 +117,6 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
             }
 
             bg = newBg;
-
             bg.setLooping(true);
         }
 
@@ -164,14 +167,9 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
         gameViewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
-    float transitionAlpha = 1f;
-    boolean fadeIn = true;
+    public static float fadeSpeed = 2f;
 
-    float waitTime = 0.5f;
-
-    TiledMap nextMap = null;
-    String nextSpawn = "";
-
+    RenderState fadeRenderState = new FadeInRenderState();
 
     @Override
     public void render(float delta) {
@@ -179,24 +177,9 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
 
         bg.setVolume(screenData.settings().getTrueMusicVolume());
 
-        if(Gdx.input.isKeyPressed(Input.Keys.P)) {
-            game.setScreen(new MainMenuScreen(this.screenData));
-        }
-
-        // give some waiting time before doing anything.
-        if(waitTime > 0f) {
-            waitTime -= delta;
-
-            // if waiting has finished turn the tunes up!!!
-            if(waitTime <= 0f) {
-                bg.play();
-            }
-            return;
-        }
-
         Gdx.graphics.setTitle("" + Gdx.graphics.getFramesPerSecond());
 
-        if(fadeIn) scene.update(Math.min(Gdx.graphics.getDeltaTime(), 1/30f));
+        scene.update(Math.min(Gdx.graphics.getDeltaTime(), 1/30f));
 
         float worldWidth = gameViewport.getWorldWidth();
         float worldHeight = gameViewport.getWorldHeight();
@@ -230,39 +213,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
         dialogView.draw(delta);
         settingsMenu.draw();
 
-        ShapeRenderer shape = screenData.shapeRenderer();
-
-        if(transitionAlpha > 0f && fadeIn) {
-            transitionAlpha -= delta * 2;
-        } else if(transitionAlpha < 1f && !fadeIn) {
-            transitionAlpha += delta * 2;
-        }
-
-        // if a next map has been set and we've finished fading out, switch map
-        if(nextMap != null && transitionAlpha >=  1f && !fadeIn) {
-            this.fadeIn = true;
-            this.waitTime = 0.5f;
-
-            this.initialise(nextMap, nextSpawn);
-
-            this.nextMap = null;
-            this.nextSpawn = "";
-        }
-
-        screenViewport.apply();
-        shape.setProjectionMatrix(screenViewport.getCamera().combined);
-
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_BLEND);
-
-        shape.begin(ShapeRenderer.ShapeType.Filled);
-        shape.setColor(0, 0, 0, transitionAlpha);
-        shape.rect(0, 0, screenViewport.getScreenWidth(), screenViewport.getScreenHeight());
-
-        shape.end();
-
-        Gdx.gl.glDisable(GL20.GL_BLEND);
-
+        fadeRenderState.render(delta);
 
         if(!Boolean.getBoolean("debugRender")) return;
 
@@ -346,9 +297,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
 
         Gdx.app.log("GameScreen", "Changing map to: " + map + " with spawnID: " + spawnID);
 
-        nextMap = map;
-        nextSpawn = spawnID;
-        fadeIn = false;
+        fadeRenderState = new FadeOutRenderState(map, spawnID);
 
         for(MapChangeEventListener listener : listeners) {
             listener.onMapChange(map, spawnID);
@@ -368,5 +317,92 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
     @Override
     public void onDeath() {
         game.setScreen(new GameOverScreen(screenData, player, mapRenderer, gameViewport, saveFile, game, scene));
+    }
+
+    private interface RenderState {
+        public void render(float delta);
+    }
+
+    private class FadeInRenderState implements RenderState {
+
+        private float waitTime = 0.5f;
+        private float transitionAlpha = 1f;
+
+        @Override
+        public void render(float delta) {
+            waitTime -= delta;
+
+            if(transitionAlpha <= 0) {
+                transitionAlpha = 0;
+
+                fadeRenderState = new DefaultRenderState();
+            }
+
+            screenViewport.apply();
+            shape.setProjectionMatrix(screenViewport.getCamera().combined);
+
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_BLEND);
+
+            shape.begin(ShapeRenderer.ShapeType.Filled);
+            shape.setColor(0, 0, 0, transitionAlpha);
+            shape.rect(0, 0, screenViewport.getScreenWidth(), screenViewport.getScreenHeight());
+
+            shape.end();
+
+            Gdx.gl.glDisable(GL20.GL_BLEND);
+
+            if(waitTime > 0f) return;
+
+            transitionAlpha -= fadeSpeed * delta;
+        }
+    }
+
+    private class DefaultRenderState implements RenderState {
+
+        @Override
+        public void render(float delta) {
+
+        }
+    }
+
+    private class FadeOutRenderState implements RenderState {
+
+        private float transitionAlpha = 0f;
+
+        private final TiledMap tiledMap;
+        private final String spawnID;
+
+        public FadeOutRenderState(TiledMap tiledMap, String spawnID){
+            this.spawnID = spawnID;
+            this.tiledMap = tiledMap;
+        }
+
+        @Override
+        public void render(float delta) {
+            if(transitionAlpha >= 1f) {
+                transitionAlpha = 1f;
+
+                initialise(tiledMap, spawnID);
+
+                fadeRenderState = new FadeInRenderState();
+            }
+
+            screenViewport.apply();
+            shape.setProjectionMatrix(screenViewport.getCamera().combined);
+
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_BLEND);
+
+            shape.begin(ShapeRenderer.ShapeType.Filled);
+            shape.setColor(0, 0, 0, transitionAlpha);
+            shape.rect(0, 0, screenViewport.getScreenWidth(), screenViewport.getScreenHeight());
+
+            shape.end();
+
+            Gdx.gl.glDisable(GL20.GL_BLEND);
+
+            transitionAlpha += fadeSpeed * delta;
+        }
     }
 }
