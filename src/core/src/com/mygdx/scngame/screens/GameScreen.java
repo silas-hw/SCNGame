@@ -358,7 +358,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
         }
     }
 
-    private class DefaultRenderState implements RenderState {
+    private static class DefaultRenderState implements RenderState {
 
         @Override
         public void render(float delta) {
