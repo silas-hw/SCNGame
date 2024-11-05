@@ -45,7 +45,7 @@ public class Controls implements InputProcessor, ControllerListener {
         }
 
         public void setKeycode(int keycode) {
-            keyBindings.get(this.getKeycode()).removeValue(this, false);
+            keyBindings.get(this.getKeycode()).removeValue(this, true);
             keyBindings.get(keycode).add(this);
 
             prefs.putInteger(this + "-key", keycode);
@@ -75,11 +75,13 @@ public class Controls implements InputProcessor, ControllerListener {
         /** only set to something else for testing. Could be final and private, but this makes it easier
          * to give a mock preferences to test with
          */
-        public static Preferences prefs = new MockPreferences();
+        public static final Preferences prefs = Gdx.app.getPreferences("scngame/controls");;
 
         public static final Array<Array<Actions>> keyBindings = new Array<>();
 
         static {
+            keyBindings.clear();
+
             for(int i = 0; i <= Input.Keys.MAX_KEYCODE; i++) {
                 keyBindings.add(new Array<>());
             }
@@ -101,12 +103,6 @@ public class Controls implements InputProcessor, ControllerListener {
             }
         }
     }
-
-    public static void initPreferences() {
-        Actions.prefs =  Gdx.app.getPreferences("scngame/controls");
-    }
-
-    private static Controls instance = null;
 
     public Actions leftMouseAlias = Actions.ATTACK;
     public Actions rightMouseAlias = Actions.DASH;

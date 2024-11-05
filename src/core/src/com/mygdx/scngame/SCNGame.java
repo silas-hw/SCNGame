@@ -23,7 +23,6 @@ public class SCNGame extends Game {
 		String version = Gdx.files.internal("version.info").readString();
 		Gdx.app.log(logTag, "Version num: " + version);
 
-		Controls.initPreferences();
 		Controls controls = new Controls();
 		Gdx.input.setInputProcessor(controls);
 		Controllers.addListener(controls);
