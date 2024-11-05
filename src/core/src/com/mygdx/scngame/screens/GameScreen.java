@@ -58,8 +58,6 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
     private int MAP_WIDTH;
     private int MAP_HEIGHT;
 
-    String spawnID;
-
     ScreenViewport screenViewport;
 
     SaveFile saveFile;
@@ -88,50 +86,32 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
         hud = new HUD(screenData, player.health.getMaxHealth());
         player.health.addHealthDamageListener(hud);
 
-        this.tiledMap = screenData.assets().get("tilemaps/" + save.map);
-        this.spawnID = save.spawnLocation;
-
         screenViewport = new ScreenViewport();
 
-        bg = screenData.assets().get("music/bgtest2.mp3", Music.class);
-        bg.setLooping(true);
+        initialise(screenData.assets().get("tilemaps/" + save.map), save.spawnLocation);
     }
 
     Music bg;
     boolean hidden = true;
 
-    @Override
-    public void show() {
-
-        // show can be called when changing a map, without calling hide
-        // and there are some things we only want to do if show is called after hide
-        if(hidden) {
-            screenData.controls().addInputProcessor(settingsMenu);
-            screenData.controls().addActionListener(settingsMenu);
-            screenData.controls().addActionListener(dialogView);
-            screenData.controls().addActionListener(scene);
-
-            hidden = false;
-        }
-
-        gameViewport.setCamera(camera);
-
+    protected void initialise(TiledMap tiledMap, String spawnID) {
         world.reset();
 
         scene.clearEntities();
         scene.setWorld(world);
         scene.setViewport(gameViewport);
 
-        dialogView.clearDialogListeners();
-        dialogView.addDialogListener(scene);
-
         this.mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1f, screenData.batch());
+        this.tiledMap = tiledMap;
 
         String bgPath = tiledMap.getProperties().get("bg", String.class);
         Music newBg = screenData.assets().get("music/" + bgPath, Music.class);
 
         if(newBg != bg && newBg != null) {
-            bg.stop();
+            if(bg != null) {
+                bg.stop();
+            }
+
             bg = newBg;
 
             bg.setLooping(true);
@@ -141,7 +121,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
         MAP_WIDTH = tiledMap.getProperties().get("width", Integer.class) * tiledMap.getProperties().get("tilewidth", Integer.class);
 
         MapObjectLoader mapObjects = new MapObjectLoader(tiledMap, this.world, this.scene,
-                                                         screenData.assets(), this.dialogView, this, this);
+                screenData.assets(), this.dialogView, this, this);
 
         Map<String, Vector2> spawnLocations = mapObjects.getSpawnLocations();
 
@@ -154,8 +134,6 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
             player.position.x = 0;
             player.position.y = 0;
         }
-
-        gameViewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         float worldWidth = gameViewport.getWorldWidth();
         float worldHeight = gameViewport.getWorldHeight();
@@ -170,6 +148,20 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
 
         player.resetState();
         scene.addEntity(player);
+    }
+
+    @Override
+    public void show() {
+        screenData.controls().addInputProcessor(settingsMenu);
+        screenData.controls().addActionListener(settingsMenu);
+        screenData.controls().addActionListener(dialogView);
+        screenData.controls().addActionListener(scene);
+
+        gameViewport.setCamera(camera);
+        dialogView.clearDialogListeners();
+        dialogView.addDialogListener(scene);
+
+        gameViewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
     float transitionAlpha = 1f;
@@ -248,18 +240,13 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
 
         // if a next map has been set and we've finished fading out, switch map
         if(nextMap != null && transitionAlpha >=  1f && !fadeIn) {
-            this.tiledMap = nextMap;
-            this.spawnID = nextSpawn;
-
             this.fadeIn = true;
             this.waitTime = 0.5f;
 
+            this.initialise(nextMap, nextSpawn);
+
             this.nextMap = null;
             this.nextSpawn = "";
-
-            // show loads the map and map renderer again
-            // resetting and then repopulating the world and scene
-            this.show();
         }
 
         screenViewport.apply();
