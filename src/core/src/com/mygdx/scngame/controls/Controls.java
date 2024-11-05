@@ -93,6 +93,27 @@ public class Controls implements InputProcessor, ControllerListener {
 
         public static final Array<Array<Actions>> controllerBindings = new Array<>();
 
+        // this doesn't work right if we use MockPreferences from the get-go
+        // it'll just use the default values instead of the persisted ones
+        // i don't see myself ever really wanting to test this, or at least care about it changing my own preferences
+        // when testing (either way, most of the time testing will be done in it's own environment with its own files)
+        // so i don't see it as that bad of an issue to have the preferences variable be statically set to an actual
+        // file
+
+        // i won't lie, this entire class and enum go against the grain with everything else in this codebase
+        // it *feels* nice to use, and it's certainly elegant for what it is, but it might not be right
+
+        // it seems very tightly coupled and untestable. but i suppose the *controls* is something that unit testing
+        // doesn't really apply to
+
+        // at the very least, there's seems to be a lot of redunancy between the 'keybindings' and the keycodes
+        // held per enum. I believe that bindings arrays could be generated on-the-fly when `fromKeyCode` is called;
+        // it would make the code a lot nicer, but may affect performance because a new object would be created everytime
+        // an input is received, and then immediately be garbage collected
+
+        // tl;dr, right now it works, but if there are any further issues with anything to do with controllers, this
+        // class will need to be heavily refactored
+
         static {
             for(int i = 0; i< ControllerButtons.values().length; i++) {
                 controllerBindings.add(new Array<>());
