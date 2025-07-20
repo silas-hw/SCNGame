@@ -16,26 +16,25 @@ import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.World;
+import com.mygdx.scngame.dialog.DialogEvent;
 import com.mygdx.scngame.dialog.DialogFile;
-import com.mygdx.scngame.dialog.DialogNode;
 import com.mygdx.scngame.entity.context.EntityContext;
 import com.mygdx.scngame.entity.enemy.Enemy;
 import com.mygdx.scngame.entity.enemy.EnemyHostileState;
-import com.mygdx.scngame.entity.enemy.EnemyIdleState;
 import com.mygdx.scngame.entity.enemy.states.idle.EnemyWanderIdleState;
 import com.mygdx.scngame.entity.npc.NPC;
 import com.mygdx.scngame.entity.sprite.AnimatedSpriteEntity;
 import com.mygdx.scngame.entity.sprite.SpriteEntity;
 import com.mygdx.scngame.entity.trigger.Trigger;
-import com.mygdx.scngame.event.DialogEventBus;
+import com.mygdx.scngame.event.EventBus;
 import com.mygdx.scngame.event.MapChangeEventBus;
-import com.mygdx.scngame.event.SaveEventBus;
 import com.mygdx.scngame.path.PathNode;
 import com.mygdx.scngame.path.PathNodes;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.DamageBox;
 import com.mygdx.scngame.physics.InteractBox;
 import com.mygdx.scngame.physics.TerrainBox;
+import com.mygdx.scngame.save.SaveSystem;
 
 import java.util.*;
 
@@ -61,17 +60,18 @@ public class MapObjectLoader {
 
     private final AssetManager assets;
 
-    private final DialogEventBus dialogBus;
+    private final EventBus<DialogEvent> dialogBus;
     private final MapChangeEventBus mapBus;
-    private SaveEventBus saveBus;
+
+    private SaveSystem saveSystem;
 
     public PathNodes getPathNodes() {return pathNodes;}
     public Map<String, Vector2> getSpawnLocations() {return spawnLocations;}
 
 
     public MapObjectLoader(TiledMap map, World<Box> world, EntityContext entityContext,
-                           AssetManager assets, DialogEventBus dialogBus, MapChangeEventBus mapBus,
-                           SaveEventBus saveBus) {
+                           AssetManager assets, EventBus<DialogEvent> dialogBus, MapChangeEventBus mapBus,
+                           SaveSystem saveSystem) {
         this.world = world;
         this.entityContext = entityContext;
         this.spawnLocations = new HashMap<>();
@@ -79,7 +79,8 @@ public class MapObjectLoader {
 
         this.mapBus = mapBus;
         this.dialogBus = dialogBus;
-        this.saveBus = saveBus;
+
+        this.saveSystem = saveSystem;
 
         this.assets = assets;
         this.animAtlas = assets.get("animations/animation_atlas.atlas");
@@ -318,7 +319,7 @@ public class MapObjectLoader {
         InteractBox signBox = new InteractBox() {
             @Override
             public void interact() {
-                dialogBus.startDialog(signDialogFile.getDialogNode(signDialogGroup));
+                dialogBus.publish(new DialogEvent(signDialogFile.getDialogNode(signDialogGroup), DialogEvent.EventType.DIALOG_START));
             }
         };
 
@@ -339,8 +340,8 @@ public class MapObjectLoader {
         InteractBox saveBox = new InteractBox() {
             @Override
             public void interact() {
-                dialogBus.startDialog(savePointDialogFile.getDialogNode(savePointDialogGroup));
-                saveBus.save(saveMap, saveSpawnPoint, saveDisplayName);
+                dialogBus.publish(new DialogEvent(savePointDialogFile.getDialogNode(savePointDialogGroup), DialogEvent.EventType.DIALOG_START));
+                saveSystem.save(saveMap, saveSpawnPoint, saveDisplayName);
             }
         };
 

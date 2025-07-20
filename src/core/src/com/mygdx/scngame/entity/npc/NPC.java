@@ -7,9 +7,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Rect;
 import com.dongbat.jbump.World;
+import com.mygdx.scngame.dialog.DialogEvent;
 import com.mygdx.scngame.dialog.DialogFile;
 import com.mygdx.scngame.entity.Entity;
-import com.mygdx.scngame.event.DialogEventBus;
+import com.mygdx.scngame.event.EventBus;
 import com.mygdx.scngame.path.PathNode;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.physics.InteractBox;
@@ -17,7 +18,7 @@ import com.mygdx.scngame.physics.InteractBox;
 /**
  * Simple NPC that randomly moves between a predefined set of {@link com.mygdx.scngame.path.PathNodes}
  * and contains an {@link com.mygdx.scngame.physics.InteractBox} that upon interaction fires of a
- * pre-defined dialog event ({@link com.mygdx.scngame.event.DialogEventListener})
+ * pre-defined dialog event.
  */
 public class NPC extends Entity {
 
@@ -46,7 +47,7 @@ public class NPC extends Entity {
 
     public NPCBreed breed;
 
-    public NPC(NPCBreed breed, DialogEventBus dialogBus) {
+    public NPC(NPCBreed breed, EventBus<DialogEvent> dialogBus) {
         assert breed != null;
         assert breed.valid();
 
@@ -55,7 +56,7 @@ public class NPC extends Entity {
         InteractBox interactBox = new InteractBox() {
             @Override
             public void interact() {
-                dialogBus.startDialog(breed.dialogFile.getDialogNode(breed.dialogID));
+                dialogBus.publish(new DialogEvent(breed.dialogFile.getDialogNode(breed.dialogID), DialogEvent.EventType.DIALOG_START));
             }
         };
 

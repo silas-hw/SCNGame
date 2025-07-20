@@ -16,16 +16,16 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Rect;
 import com.dongbat.jbump.World;
+import com.mygdx.scngame.dialog.DialogEvent;
 import com.mygdx.scngame.dialog.DialogView;
 import com.mygdx.scngame.entity.component.HealthComponent;
 import com.mygdx.scngame.entity.player.Player;
-import com.mygdx.scngame.event.MapChangeEventBus;
-import com.mygdx.scngame.event.MapChangeEventListener;
-import com.mygdx.scngame.event.SaveEventBus;
+import com.mygdx.scngame.event.*;
 import com.mygdx.scngame.hud.HUD;
 import com.mygdx.scngame.map.MapObjectLoader;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.save.SaveFile;
+import com.mygdx.scngame.save.SaveSystem;
 import com.mygdx.scngame.scene.Scene;
 import com.mygdx.scngame.screens.data.ScreenData;
 import com.mygdx.scngame.settings.SettingsMenu;
@@ -34,7 +34,7 @@ import com.mygdx.scngame.viewport.PixelFitScaling;
 import java.time.Instant;
 import java.util.Map;
 
-public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, HealthComponent.DeathListener {
+public class GameScreen implements Screen, MapChangeEventBus, HealthComponent.DeathListener {
     Game game;
     Scene scene;
 
@@ -64,11 +64,17 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
 
     SaveFile saveFile;
 
+    EventBus<DialogEvent> dialogEventBus;
+
+    SaveSystem saveSystem;
+
     public GameScreen(ScreenData screenData, SaveFile save) {
+        dialogEventBus = new SyncEventBus<>();
+
         this.game = screenData.game();
 
         this.saveFile = save;
-
+        this.saveSystem = new SaveSystem(save);
         this.screenData = screenData;
 
         shape = screenData.shapeRenderer();
@@ -85,7 +91,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
 
         scene = new Scene(gameViewport, screenData.batch(), screenData.shapeRenderer(), world);
 
-        dialogView = new DialogView(screenData);
+        dialogView = new DialogView(screenData, dialogEventBus);
         settingsMenu = new SettingsMenu(screenData);
         hud = new HUD(screenData, player.health.getMaxHealth());
         player.health.addHealthDamageListener(hud);
@@ -124,7 +130,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
         MAP_WIDTH = tiledMap.getProperties().get("width", Integer.class) * tiledMap.getProperties().get("tilewidth", Integer.class);
 
         MapObjectLoader mapObjects = new MapObjectLoader(tiledMap, this.world, this.scene,
-                screenData.assets(), this.dialogView, this, this);
+                screenData.assets(), this.dialogEventBus, this, saveSystem);
 
         Map<String, Vector2> spawnLocations = mapObjects.getSpawnLocations();
 
@@ -161,8 +167,9 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
         screenData.controls().addActionListener(scene);
 
         gameViewport.setCamera(camera);
-        dialogView.clearDialogListeners();
-        dialogView.addDialogListener(scene);
+
+        dialogEventBus.addListener(dialogView);
+        dialogEventBus.addListener(scene);
 
         gameViewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
@@ -302,16 +309,6 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
         for(MapChangeEventListener listener : listeners) {
             listener.onMapChange(map, spawnID);
         }
-    }
-
-    @Override
-    public void save(String mapPath, String spawnLocation, String displayName) {
-        saveFile.spawnLocation = spawnLocation;
-        saveFile.map = mapPath;
-        saveFile.saveDateEpoch = Instant.now().getEpochSecond();
-        saveFile.displayName = displayName;
-
-        saveFile.writeToXML();
     }
 
     @Override
