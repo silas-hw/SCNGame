@@ -27,7 +27,6 @@ import com.mygdx.scngame.entity.sprite.AnimatedSpriteEntity;
 import com.mygdx.scngame.entity.sprite.SpriteEntity;
 import com.mygdx.scngame.entity.trigger.Trigger;
 import com.mygdx.scngame.event.EventBus;
-import com.mygdx.scngame.event.MapChangeEventBus;
 import com.mygdx.scngame.path.PathNode;
 import com.mygdx.scngame.path.PathNodes;
 import com.mygdx.scngame.physics.Box;
@@ -61,7 +60,7 @@ public class MapObjectLoader {
     private final AssetManager assets;
 
     private final EventBus<DialogEvent> dialogBus;
-    private final MapChangeEventBus mapBus;
+    private final MapManager mapBus;
 
     private SaveSystem saveSystem;
 
@@ -70,7 +69,7 @@ public class MapObjectLoader {
 
 
     public MapObjectLoader(TiledMap map, World<Box> world, EntityContext entityContext,
-                           AssetManager assets, EventBus<DialogEvent> dialogBus, MapChangeEventBus mapBus,
+                           AssetManager assets, EventBus<DialogEvent> dialogBus, MapManager mapBus,
                            SaveSystem saveSystem) {
         this.world = world;
         this.entityContext = entityContext;
@@ -356,14 +355,12 @@ public class MapObjectLoader {
         String portalMapPath = properties.get("Map", String.class);
         String portalSpawnID = properties.get("SpawnID", String.class);
 
-        TiledMap portalMap = assets.get("tilemaps/" + portalMapPath);
-
         Trigger portal = new Trigger(
                 x, y, width, height, maskIndices,
                 new Runnable() {
                     @Override
                     public void run() {
-                        mapBus.changeMap(portalMap, portalSpawnID);
+                        mapBus.changeMap("tilemaps/" + portalMapPath, portalSpawnID);
                     }
                 }
         );
@@ -375,13 +372,11 @@ public class MapObjectLoader {
         String doorMapPath = properties.get("Map", String.class);
         String doorSpawnID = properties.get("SpawnID", String.class);
 
-        TiledMap doorMap = assets.get("tilemaps/" + doorMapPath);
-
         InteractBox doorBox = new InteractBox() {
 
             @Override
             public void interact() {
-                mapBus.changeMap(doorMap, doorSpawnID);
+                mapBus.changeMap("tilemaps/" + doorMapPath, doorSpawnID);
             }
         };
 
