@@ -187,6 +187,7 @@ public class GameScreen implements Screen, MapManager, HealthComponent.DeathList
 
         scene.update(Math.min(Gdx.graphics.getDeltaTime(), 1/30f));
 
+        // Camera Logic
         float worldWidth = gameViewport.getWorldWidth();
         float worldHeight = gameViewport.getWorldHeight();
 
@@ -201,32 +202,28 @@ public class GameScreen implements Screen, MapManager, HealthComponent.DeathList
         camera.position.x = MathUtils.lerp(camera.position.x, targetX, 4f * delta);
         camera.position.y = MathUtils.lerp(camera.position.y, targetY, 4f * delta);
 
-        camera.update();
-
-        gameViewport.apply();
-
+        // render calls
         scene.drawWaterReflection();
 
-        gameViewport.apply();
         camera.update();
-
+        gameViewport.apply();
         mapRenderer.setView(camera);
+
         mapRenderer.render();
-
         scene.draw();
-
         hud.draw();
         dialogView.draw(delta);
         settingsMenu.draw();
 
         fadeRenderState.render(delta);
 
+        // DEBUG rendering
         if(!Boolean.getBoolean("debugRender")) return;
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_BLEND);
 
-        gameViewport.apply();
+        gameViewport.apply(); // some previous draw calls alter the current viewport - so we need to reset it!
 
         drawWorld(ShapeRenderer.ShapeType.Filled, shape, 0.6f);
         drawWorld(ShapeRenderer.ShapeType.Line, shape, 1f);
@@ -234,6 +231,9 @@ public class GameScreen implements Screen, MapManager, HealthComponent.DeathList
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
+    /***
+     * Draws boxes of a given ShapeType for every rectangle in a JBump world
+     ***/
     private void drawWorld(ShapeRenderer.ShapeType shapeType, ShapeRenderer shape, float alpha) {
         shape.setProjectionMatrix(camera.combined);
         shape.begin(shapeType);

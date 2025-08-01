@@ -186,6 +186,7 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Ev
 
         screenViewport.apply();
         screenViewport.getCamera().update();
+
         batch.setProjectionMatrix(screenViewport.getCamera().combined);
         batch.begin();
 
