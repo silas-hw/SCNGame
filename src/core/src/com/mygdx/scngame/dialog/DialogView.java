@@ -61,7 +61,7 @@ public class DialogView implements ActionListener, EventListener<DialogEvent> {
 
     AssetManager assets;
 
-    Iterator<DialogMessage> currentNode;
+    Iterator<DialogMessage> currentMessages;
 
     DialogNode defaultDialog;
 
@@ -86,7 +86,7 @@ public class DialogView implements ActionListener, EventListener<DialogEvent> {
         defaultDialog = new DialogNode();
         defaultDialog.messages.add(defaultMessage);
 
-        currentNode = defaultDialog.iterator();
+        currentMessages = defaultDialog.iterator();
 
         float scale = settings.getUIScale();
 
@@ -205,7 +205,7 @@ public class DialogView implements ActionListener, EventListener<DialogEvent> {
 
     public void onDialogStart(DialogNode dialogNode) {
         inFocus = true;
-        currentNode = dialogNode.iterator();
+        currentMessages = dialogNode.iterator();
         node = dialogNode;
         this.nextMessage();
     }
@@ -261,8 +261,8 @@ public class DialogView implements ActionListener, EventListener<DialogEvent> {
     }
 
     void nextMessage() {
-        if(currentNode.hasNext()) {
-            DialogMessage msg = currentNode.next();
+        if(currentMessages.hasNext()) {
+            DialogMessage msg = currentMessages.next();
 
             currentMessage = msg.message;
             currentMessageIndex = 0;
@@ -285,7 +285,7 @@ public class DialogView implements ActionListener, EventListener<DialogEvent> {
 
     public void onDialogEnd() {
         inFocus = false;
-        currentNode = defaultDialog.iterator();
+        currentMessages = defaultDialog.iterator();
         node = defaultDialog;
     }
 
