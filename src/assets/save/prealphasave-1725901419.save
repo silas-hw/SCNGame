@@ -1,10 +1,10 @@
 <save>
 	<meta>
-		<displayName>The Pond Woods</displayName>
-		<saveDateEpoch>1725901426</saveDateEpoch>
+		<displayName>Great Lake</displayName>
+		<saveDateEpoch>1730824179</saveDateEpoch>
 	</meta>
 	<map>
-		<mapPath>testmap2.tmx</mapPath>
-		<spawnLocation>saveSpawn1</spawnLocation>
+		<mapPath>untitled.tmx</mapPath>
+		<spawnLocation>savePoint1</spawnLocation>
 	</map>
 </save>

@@ -8,13 +8,12 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.scngame.controls.ActionListener;
-import com.mygdx.scngame.event.DialogEventBus;
-import com.mygdx.scngame.event.DialogEventListener;
+import com.mygdx.scngame.event.EventBus;
+import com.mygdx.scngame.event.EventListener;
 import com.mygdx.scngame.screens.data.ScreenData;
 import com.mygdx.scngame.controls.Controls;
 import com.mygdx.scngame.settings.Settings;
@@ -29,7 +28,7 @@ import java.util.Iterator;
  * Encapsulates the handling of dialog events, including capturing events, drawing dialog boxes, and
  * firing dialog end events.
  */
-public class DialogView implements DialogEventListener, ActionListener, DialogEventBus {
+public class DialogView implements ActionListener, EventListener<DialogEvent> {
 
     private boolean inFocus = false;
 
@@ -68,8 +67,11 @@ public class DialogView implements DialogEventListener, ActionListener, DialogEv
 
     Sound blip;
 
+    EventBus<DialogEvent> eventBus;
 
-    public DialogView(ScreenData screenData) {
+    public DialogView(ScreenData screenData, EventBus<DialogEvent> eventBus) {
+        this.eventBus = eventBus;
+
         this.settings = screenData.settings();
         this.assets = screenData.assets();
         this.skin = screenData.assets().get("skin/uiskin2.json", Skin.class);
@@ -199,10 +201,12 @@ public class DialogView implements DialogEventListener, ActionListener, DialogEv
         stage.getViewport().update(width, height, true);
     }
 
-    @Override
+    private DialogNode node;
+
     public void onDialogStart(DialogNode dialogNode) {
         inFocus = true;
         currentNode = dialogNode.iterator();
+        node = dialogNode;
         this.nextMessage();
     }
 
@@ -275,14 +279,14 @@ public class DialogView implements DialogEventListener, ActionListener, DialogEv
 
             this.icon = icon;
         } else {
-            endDialog();
+            eventBus.publish(new DialogEvent(node, DialogEvent.EventType.DIALOG_END));
         }
     }
 
-    @Override
     public void onDialogEnd() {
         inFocus = false;
         currentNode = defaultDialog.iterator();
+        node = defaultDialog;
     }
 
 
@@ -306,38 +310,15 @@ public class DialogView implements DialogEventListener, ActionListener, DialogEv
         return inFocus;
     }
 
-    private final Array<DialogEventListener> listeners = new Array<>();
+    public void onEvent(DialogEvent event) {
+        switch(event.eventType) {
+            case DIALOG_END:
+                onDialogEnd();
+                break;
 
-    @Override
-    public void addDialogListener(DialogEventListener listener) {
-        listeners.add(listener);
-    }
-
-    @Override
-    public void removeDialogListener(DialogEventListener listener) {
-        listeners.removeValue(listener, true);
-    }
-
-    @Override
-    public void clearDialogListeners() {
-        listeners.clear();
-    }
-
-    @Override
-    public void startDialog(DialogNode dialog) {
-        this.onDialogStart(dialog);
-
-        for(DialogEventListener listener : listeners) {
-            listener.onDialogStart(dialog);
-        }
-    }
-
-    @Override
-    public void endDialog() {
-        this.onDialogEnd();
-
-        for(DialogEventListener listener : listeners) {
-            listener.onDialogEnd();
+            case DIALOG_START:
+                onDialogStart(event.dialog);
+                break;
         }
     }
 }

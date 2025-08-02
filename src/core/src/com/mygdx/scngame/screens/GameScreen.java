@@ -10,31 +10,30 @@ import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dongbat.jbump.Item;
 import com.dongbat.jbump.Rect;
 import com.dongbat.jbump.World;
+import com.mygdx.scngame.dialog.DialogEvent;
 import com.mygdx.scngame.dialog.DialogView;
 import com.mygdx.scngame.entity.component.HealthComponent;
 import com.mygdx.scngame.entity.player.Player;
-import com.mygdx.scngame.event.MapChangeEventBus;
-import com.mygdx.scngame.event.MapChangeEventListener;
-import com.mygdx.scngame.event.SaveEventBus;
+import com.mygdx.scngame.event.*;
 import com.mygdx.scngame.hud.HUD;
+import com.mygdx.scngame.map.MapManager;
 import com.mygdx.scngame.map.MapObjectLoader;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.save.SaveFile;
+import com.mygdx.scngame.save.SaveSystem;
 import com.mygdx.scngame.scene.Scene;
 import com.mygdx.scngame.screens.data.ScreenData;
 import com.mygdx.scngame.settings.SettingsMenu;
 import com.mygdx.scngame.viewport.PixelFitScaling;
 
-import java.time.Instant;
 import java.util.Map;
 
-public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, HealthComponent.DeathListener {
+public class GameScreen implements Screen, MapManager, HealthComponent.DeathListener {
     Game game;
     Scene scene;
 
@@ -64,11 +63,17 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
 
     SaveFile saveFile;
 
+    EventBus<DialogEvent> dialogEventBus;
+
+    SaveSystem saveSystem;
+
     public GameScreen(ScreenData screenData, SaveFile save) {
+        dialogEventBus = new SyncEventBus<>();
+
         this.game = screenData.game();
 
         this.saveFile = save;
-
+        this.saveSystem = new SaveSystem(save);
         this.screenData = screenData;
 
         shape = screenData.shapeRenderer();
@@ -85,7 +90,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
 
         scene = new Scene(gameViewport, screenData.batch(), screenData.shapeRenderer(), world);
 
-        dialogView = new DialogView(screenData);
+        dialogView = new DialogView(screenData, dialogEventBus);
         settingsMenu = new SettingsMenu(screenData);
         hud = new HUD(screenData, player.health.getMaxHealth());
         player.health.addHealthDamageListener(hud);
@@ -124,7 +129,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
         MAP_WIDTH = tiledMap.getProperties().get("width", Integer.class) * tiledMap.getProperties().get("tilewidth", Integer.class);
 
         MapObjectLoader mapObjects = new MapObjectLoader(tiledMap, this.world, this.scene,
-                screenData.assets(), this.dialogView, this, this);
+                screenData.assets(), this.dialogEventBus, this, saveSystem);
 
         Map<String, Vector2> spawnLocations = mapObjects.getSpawnLocations();
 
@@ -161,8 +166,9 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
         screenData.controls().addActionListener(scene);
 
         gameViewport.setCamera(camera);
-        dialogView.clearDialogListeners();
-        dialogView.addDialogListener(scene);
+
+        dialogEventBus.addListener(dialogView);
+        dialogEventBus.addListener(scene);
 
         gameViewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
@@ -181,6 +187,7 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
 
         scene.update(Math.min(Gdx.graphics.getDeltaTime(), 1/30f));
 
+        // Camera Logic
         float worldWidth = gameViewport.getWorldWidth();
         float worldHeight = gameViewport.getWorldHeight();
 
@@ -195,32 +202,28 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
         camera.position.x = MathUtils.lerp(camera.position.x, targetX, 4f * delta);
         camera.position.y = MathUtils.lerp(camera.position.y, targetY, 4f * delta);
 
-        camera.update();
-
-        gameViewport.apply();
-
+        // render calls
         scene.drawWaterReflection();
 
-        gameViewport.apply();
         camera.update();
-
+        gameViewport.apply();
         mapRenderer.setView(camera);
+
         mapRenderer.render();
-
         scene.draw();
-
         hud.draw();
         dialogView.draw(delta);
         settingsMenu.draw();
 
         fadeRenderState.render(delta);
 
+        // DEBUG rendering
         if(!Boolean.getBoolean("debugRender")) return;
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_BLEND);
 
-        gameViewport.apply();
+        gameViewport.apply(); // some previous draw calls alter the current viewport - so we need to reset it!
 
         drawWorld(ShapeRenderer.ShapeType.Filled, shape, 0.6f);
         drawWorld(ShapeRenderer.ShapeType.Line, shape, 1f);
@@ -228,6 +231,9 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
+    /***
+     * Draws boxes of a given ShapeType for every rectangle in a JBump world
+     ***/
     private void drawWorld(ShapeRenderer.ShapeType shapeType, ShapeRenderer shape, float alpha) {
         shape.setProjectionMatrix(camera.combined);
         shape.begin(shapeType);
@@ -274,44 +280,15 @@ public class GameScreen implements Screen, MapChangeEventBus, SaveEventBus, Heal
     @Override
     public void dispose() {}
 
-    private Array<MapChangeEventListener> listeners = new Array<>();
-
     @Override
-    public void addMapChangeListener(MapChangeEventListener listener) {
-        listeners.add(listener);
-    }
+    public void changeMap(String mapPath, String spawnID) {
+        TiledMap map = screenData.assets().get(mapPath, TiledMap.class);
 
-    @Override
-    public void removeMapChangeListener(MapChangeEventListener listener) {
-        listeners.removeValue(listener, true);
-    }
-
-    @Override
-    public void clearMapChangeListener() {
-        listeners.clear();
-    }
-
-    @Override
-    public void changeMap(TiledMap map, String spawnID) {
         if(map == tiledMap) return;
 
         Gdx.app.log("GameScreen", "Changing map to: " + map + " with spawnID: " + spawnID);
 
         fadeRenderState = new FadeOutRenderState(map, spawnID);
-
-        for(MapChangeEventListener listener : listeners) {
-            listener.onMapChange(map, spawnID);
-        }
-    }
-
-    @Override
-    public void save(String mapPath, String spawnLocation, String displayName) {
-        saveFile.spawnLocation = spawnLocation;
-        saveFile.map = mapPath;
-        saveFile.saveDateEpoch = Instant.now().getEpochSecond();
-        saveFile.displayName = displayName;
-
-        saveFile.writeToXML();
     }
 
     @Override

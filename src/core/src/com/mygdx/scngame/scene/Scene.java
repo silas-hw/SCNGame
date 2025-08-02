@@ -16,11 +16,11 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dongbat.jbump.World;
 import com.mygdx.scngame.controls.ActionListener;
-import com.mygdx.scngame.dialog.DialogNode;
+import com.mygdx.scngame.dialog.DialogEvent;
 import com.mygdx.scngame.entity.Entity;
 import com.mygdx.scngame.entity.context.EntityContext;
 import com.mygdx.scngame.entity.enemy.Enemy;
-import com.mygdx.scngame.event.DialogEventListener;
+import com.mygdx.scngame.event.EventListener;
 import com.mygdx.scngame.physics.Box;
 import com.mygdx.scngame.controls.Controls;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +45,7 @@ import java.util.Comparator;
  *
  * @author Silas Hayes-Williams
  */
-public class Scene extends InputAdapter implements Disposable, EntityContext, DialogEventListener, ActionListener {
+public class Scene extends InputAdapter implements Disposable, EntityContext, EventListener<DialogEvent>, ActionListener {
     protected SnapshotArray<Entity> entities;
     protected Comparator<Entity> renderComparator;
 
@@ -186,6 +186,7 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
 
         screenViewport.apply();
         screenViewport.getCamera().update();
+
         batch.setProjectionMatrix(screenViewport.getCamera().combined);
         batch.begin();
 
@@ -282,19 +283,6 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
     }
 
     @Override
-    public void onDialogStart(DialogNode dialog) {
-        Arrays.fill(actionsJustPressed, false);
-        Arrays.fill(actionsPressed, false);
-
-        freeze = true;
-    }
-
-    @Override
-    public void onDialogEnd() {
-        freeze = false;
-    }
-
-    @Override
     public boolean actionDown(Controls.Actions action) {
         actionJustPressed = true;
         actionsJustPressed[action.ordinal()] = true;
@@ -314,6 +302,21 @@ public class Scene extends InputAdapter implements Disposable, EntityContext, Di
         if(width == 0 || height == 0) return;
 
         waterFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
+    }
+
+    @Override
+    public void onEvent(DialogEvent event) {
+        switch(event.eventType) {
+            case DIALOG_START:
+                Arrays.fill(actionsJustPressed, false);
+                Arrays.fill(actionsPressed, false);
+                freeze = true;
+                break;
+
+                case DIALOG_END:
+                    freeze = false;
+                    break;
+        }
     }
 
     public static class YComparator implements Comparator<Entity> {
