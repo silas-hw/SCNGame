@@ -164,6 +164,7 @@ public class GameScreen implements Screen, MapManager, HealthComponent.DeathList
         screenData.controls().addActionListener(settingsMenu);
         screenData.controls().addActionListener(dialogView);
         screenData.controls().addActionListener(scene);
+        screenData.controls().addInputProcessor(dialogView);
 
         gameViewport.setCamera(camera);
 
@@ -275,6 +276,7 @@ public class GameScreen implements Screen, MapManager, HealthComponent.DeathList
         screenData.controls().removeActionListener(this.settingsMenu);
         screenData.controls().removeActionListener(dialogView);
         screenData.controls().removeActionListener(scene);
+        screenData.controls().removeInputProcessor(dialogView);
     }
 
     @Override

@@ -1,12 +1,18 @@
 package com.mygdx.scngame.dialog;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -21,6 +27,7 @@ import com.mygdx.scngame.ui.TiledNinePatch;
 import com.mygdx.scngame.ui.TruetypeLabel;
 
 import java.util.Iterator;
+import java.util.Optional;
 
 // TODO: encapsulate dialog box UI into its own class
 
@@ -28,9 +35,11 @@ import java.util.Iterator;
  * Encapsulates the handling of dialog events, including capturing events, drawing dialog boxes, and
  * firing dialog end events.
  */
-public class DialogView implements ActionListener, EventListener<DialogEvent> {
+public class DialogView implements ActionListener, EventListener<DialogEvent>, InputProcessor {
 
     private boolean inFocus = false;
+
+    private FreeTypeFontGenerator fontGenerator;
 
     private String message = "";
 
@@ -47,6 +56,8 @@ public class DialogView implements ActionListener, EventListener<DialogEvent> {
     private Container<Table> container;
     private Container<Label> wrapper;
     private Table inside;
+
+    private Table optionsGroup;
 
     private Image icon;
 
@@ -100,7 +111,7 @@ public class DialogView implements ActionListener, EventListener<DialogEvent> {
 
         stage.addActor(root);
 
-        FreeTypeFontGenerator fontGenerator = screenData.assets().get("skin/MyFont2.ttf", FreeTypeFontGenerator.class);
+        fontGenerator = screenData.assets().get("skin/MyFont2.ttf", FreeTypeFontGenerator.class);
         label = new TruetypeLabel(fontGenerator, 20);
 
         label.setFontScale(scale);
@@ -118,10 +129,23 @@ public class DialogView implements ActionListener, EventListener<DialogEvent> {
         icon.setScaling(Scaling.stretch);
         icon.setScale(settings.getUIScale());
 
+        // container for dialog options
+        optionsGroup = new Table();
+
+        TruetypeLabel label1 = new TruetypeLabel(fontGenerator, 20);
+
+        label1.setFontScale(scale);
+        label1.setWrap(true);
+        label1.setAlignment(Align.top | Align.left);
+        label1.setText("LALALALALALALALALAL");
+
         // colspan didn't work, so just manually setting the width of the icon and scaling it is best
         inside = new Table();
         inside.add(wrapper).grow();
         inside.add(icon).growY().width(200 * scale);
+
+        inside.row();
+        inside.add(optionsGroup).growX().height(30 * scale);
 
         inside.layout();
 
@@ -278,6 +302,30 @@ public class DialogView implements ActionListener, EventListener<DialogEvent> {
             inside.getCell(this.icon).setActor(icon);
 
             this.icon = icon;
+        } else if (!node.options.isEmpty()) {
+            optionsGroup.clear();
+            for(DialogOption option : node.options) {
+                TruetypeLabel label = new TruetypeLabel(fontGenerator, 10);
+                label.setText(option.getText());
+
+                Button butt = new Button(skin);
+                butt.add(label);
+
+                butt.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        optionsGroup.clear();
+                        if(option.nextNode().isEmpty()) {
+                            eventBus.publish(new DialogEvent(node, DialogEvent.EventType.DIALOG_END));
+                            return;
+                        }
+
+                        onDialogStart(option.nextNode().get());
+                    }
+                });
+
+                optionsGroup.add(butt);
+            }
         } else {
             eventBus.publish(new DialogEvent(node, DialogEvent.EventType.DIALOG_END));
         }
@@ -320,5 +368,70 @@ public class DialogView implements ActionListener, EventListener<DialogEvent> {
                 onDialogStart(event.dialog);
                 break;
         }
+    }
+
+    // InputProcessor logic. Passes all to stage but blocks if not in focus
+
+    @Override
+    public boolean keyDown(int keycode) {
+        if(!inFocus) return false;
+
+        return stage.keyDown(keycode);
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        if(!inFocus) return false;
+
+        return stage.keyUp(keycode);
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        if(!inFocus) return false;
+
+        return stage.keyTyped(character);
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if(!inFocus) return false;
+
+        return stage.touchDown(screenX, screenY, pointer, button);
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        if(!inFocus) return false;
+
+        return stage.touchUp(screenX, screenY, pointer, button);
+    }
+
+    @Override
+    public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
+        if(!inFocus) return false;
+
+        return stage.touchCancelled(screenX, screenY, pointer, button);
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        if(!inFocus) return false;
+
+        return stage.touchDragged(screenX, screenY, pointer);
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        if(!inFocus) return false;
+
+        return stage.mouseMoved(screenX, screenY);
+    }
+
+    @Override
+    public boolean scrolled(float amountX, float amountY) {
+        if(!inFocus) return false;
+
+        return stage.scrolled(amountX, amountY);
     }
 }
