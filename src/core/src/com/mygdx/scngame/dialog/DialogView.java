@@ -155,7 +155,7 @@ public class DialogView implements ActionListener, EventListener<DialogEvent>, I
         dialogWrapper.width(CONTAINER_WIDTH * scale);
         dialogWrapper.height(CONTAINER_HEIGHT * scale);
 
-        npatch.scale = 3 * scale;
+        npatch.scale = basePatchScale * scale;
         dialogWrapper.pad(npatch.getTopHeight(), npatch.getLeftWidth(), npatch.getBottomHeight(), npatch.getRightWidth());
 
         dialogWrapper.layout();
