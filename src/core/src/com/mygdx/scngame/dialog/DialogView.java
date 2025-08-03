@@ -1,13 +1,11 @@
 package com.mygdx.scngame.dialog;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -27,7 +25,6 @@ import com.mygdx.scngame.ui.TiledNinePatch;
 import com.mygdx.scngame.ui.TruetypeLabel;
 
 import java.util.Iterator;
-import java.util.Optional;
 
 // TODO: encapsulate dialog box UI into its own class
 
@@ -36,46 +33,33 @@ import java.util.Optional;
  * firing dialog end events.
  */
 public class DialogView implements ActionListener, EventListener<DialogEvent>, InputProcessor {
+    // constants
+    private final float CONTAINER_WIDTH = 600f;
+    private final float CONTAINER_HEIGHT = 150f;
+    private final float basePatchScale = 3f;
 
     private boolean inFocus = false;
 
-    private FreeTypeFontGenerator fontGenerator;
-
-    private String message = "";
+    private final FreeTypeFontGenerator fontGenerator;
 
     private Viewport view;
+    private final Skin skin;
+    private final Label messageLabel;
+    private final Stage stage;
 
-    private Skin skin;
+    private final Container<Table> dialogWrapper;
+    private final Table dialogContainer;
 
-    private Label label;
-
-    private Stage stage;
-
-    private Table root;
-
-    private Container<Table> container;
-    private Container<Label> wrapper;
-    private Table inside;
-
-    private Table optionsGroup;
-
+    private final Table optionsContainer;
     private Image icon;
 
-    private float WIDTH = 600f;
-    private float HEIGHT = 150f;
-
     TiledNinePatch npatch;
-
-    private float basePatchScale = 3f;
 
     private final Settings settings;
 
     AssetManager assets;
-
     Iterator<DialogMessage> currentMessages;
-
     DialogNode defaultDialog;
-
     Sound blip;
 
     EventBus<DialogEvent> eventBus;
@@ -103,24 +87,21 @@ public class DialogView implements ActionListener, EventListener<DialogEvent>, I
 
         stage = new Stage(new ScreenViewport());
 
-        root = new Table();
-
+        Table root = new Table();
         root.setFillParent(true);
-
         root.pad(20f);
-
         stage.addActor(root);
 
         fontGenerator = screenData.assets().get("skin/MyFont2.ttf", FreeTypeFontGenerator.class);
-        label = new TruetypeLabel(fontGenerator, 20);
+        messageLabel = new TruetypeLabel(fontGenerator, 20);
 
-        label.setFontScale(scale);
-        label.setWrap(true);
-        label.setAlignment(Align.top | Align.left);
+        messageLabel.setFontScale(scale);
+        messageLabel.setWrap(true);
+        messageLabel.setAlignment(Align.top | Align.left);
 
-        wrapper = new Container<>(label);
-        wrapper.center();
-        wrapper.fill();
+        Container<Label> messageWrapper = new Container<>(messageLabel);
+        messageWrapper.center();
+        messageWrapper.fill();
 
         Texture patchTexture = screenData.assets().get("sprites/patch.9.png", Texture.class);
 
@@ -130,36 +111,27 @@ public class DialogView implements ActionListener, EventListener<DialogEvent>, I
         icon.setScale(settings.getUIScale());
 
         // container for dialog options
-        optionsGroup = new Table();
-
-        TruetypeLabel label1 = new TruetypeLabel(fontGenerator, 20);
-
-        label1.setFontScale(scale);
-        label1.setWrap(true);
-        label1.setAlignment(Align.top | Align.left);
-        label1.setText("LALALALALALALALALAL");
+        optionsContainer = new Table();
 
         // colspan didn't work, so just manually setting the width of the icon and scaling it is best
-        inside = new Table();
-        inside.add(wrapper).grow();
-        inside.add(icon).growY().width(200 * scale);
+        dialogContainer = new Table();
+        dialogContainer.add(messageWrapper).grow();
+        dialogContainer.add(icon).growY().width(Value.percentWidth(0.3f, dialogContainer));
 
-        inside.row();
-        inside.add(optionsGroup).growX().height(30 * scale);
+        dialogContainer.row();
+        dialogContainer.add(optionsContainer).growX().height(Value.percentHeight(0.2f, dialogContainer));
 
-        inside.layout();
+        dialogContainer.layout();
 
-        container = new Container<>(inside);
+        dialogWrapper = new Container<>(dialogContainer);
 
-        container.width(WIDTH*scale);
-        container.height(HEIGHT*scale);
-        container.fill();
+        dialogWrapper.fill();
 
         npatch = TiledNinePatch.getInstanceFromDot9(patchTexture);
 
-        container.setBackground(npatch, false);
+        dialogWrapper.setBackground(npatch, false);
 
-        root.add(container);
+        root.add(dialogWrapper);
 
         root.bottom();
 
@@ -176,40 +148,18 @@ public class DialogView implements ActionListener, EventListener<DialogEvent>, I
 
         float scale = settings.getUIScale();
 
-        /*
-         *  Yeah, I know I *should* be doing root.getCell()... but that resizes the container and not the wrapper or
-         * label. Even if you set the wrapper and label to fill parent they bloody dont! Or atleast not properly.
-         * They either don't resize at all or resize and drift away from the position of the container.
-         *
-         * Not pleasant, but just leave it as is. This is really a problem with how much of a god shite mess
-         * scene2d.ui is (probably, or I'm just a dumbass. Either could be true).
-         *
-         * Also drawables don't have their scale set by the thing thats drawing them??? So if you want the drawable
-         * to be scaled or anything (if the drawable in question even supports that) you have to either set some world
-         * height/width on the drawable manually and have that scaled to the required width/height, or set some scale
-         * on the drawable manually.
-         *
-         * It also seems widgets containing a drawable don't re-calculate their padding if the pad sizes provided by
-         * their drawable change.
-         *
-         * Failed refactoring attempts: 2
-         */
-
         stage.act();
 
-        label.setFontScale(scale);
+        messageLabel.setFontScale(scale);
 
-        inside.getCell(icon).pad(5 * scale).width(200*scale);
-        inside.getCell(wrapper).pad(5 * scale);
+        dialogWrapper.width(CONTAINER_WIDTH * scale);
+        dialogWrapper.height(CONTAINER_HEIGHT * scale);
 
-        inside.layout();
-
-        container.width(WIDTH * scale);
-        container.height(HEIGHT * scale);
         npatch.scale = 3 * scale;
-        container.pad(npatch.getTopHeight(), npatch.getLeftWidth(), npatch.getBottomHeight(), npatch.getRightWidth());
+        dialogWrapper.pad(npatch.getTopHeight(), npatch.getLeftWidth(), npatch.getBottomHeight(), npatch.getRightWidth());
 
-        container.layout();
+        dialogWrapper.layout();
+        dialogContainer.layout();
 
         stage.getViewport().apply();
         stage.draw();
@@ -255,8 +205,8 @@ public class DialogView implements ActionListener, EventListener<DialogEvent>, I
         if(charTimer >= charTime && currentMessageIndex < currentMessage.length()) {
             charTimer = 0f;
             char currentChar = currentMessage.charAt(currentMessageIndex);
-            label.setText(label.getText().append(currentChar).toString());
-            label.invalidate();
+            messageLabel.setText(messageLabel.getText().append(currentChar).toString());
+            messageLabel.invalidate();
             currentMessageIndex++;
 
             if(currentChar != ' ') {
@@ -272,18 +222,32 @@ public class DialogView implements ActionListener, EventListener<DialogEvent>, I
             nextMessageCooldown = messageCooldownTime;
         }
 
+        if(currentMessageIndex >= currentMessage.length()-1) {
+            optionsContainer.setTouchable(Touchable.enabled);
+        }
+
         nextMessageCooldown -= delta;
     }
 
     // skips all the remaining character ticks, filling the display text with the full message
     void skipCharacterTicks() {
         String slice = currentMessage.substring(currentMessageIndex);
-        label.setText(label.getText().append(slice).toString());
-        label.invalidate();
+        messageLabel.setText(messageLabel.getText().append(slice).toString());
+        messageLabel.invalidate();
 
         currentMessageIndex = currentMessage.length();
+        optionsContainer.setTouchable(Touchable.enabled);
     }
 
+    /**
+        Move to the next message in the current dialogNode. If it happens to be the final
+        message, display dialog options if any are present but keep the buttons disabled (they
+        are enabled once the full message has been displayed, either by `tickCharacter` finishing or
+        `skipCharacterTicks()`).
+        <p>
+        If there are no messages left and there are no dialog options for the current node, this ends
+        the dialog sequence by creating a dialog end event.
+     */
     void nextMessage() {
         if(currentMessages.hasNext()) {
             DialogMessage msg = currentMessages.next();
@@ -294,39 +258,41 @@ public class DialogView implements ActionListener, EventListener<DialogEvent>, I
             dialogSound = msg.sound;
             pitch = msg.pitch;
 
-            label.setText(msg.speaker + ": \n ");
+            messageLabel.setText(msg.speaker + ": \n ");
 
             Image icon = new Image(msg.icon);
             icon.setScaling(Scaling.fit);
 
-            inside.getCell(this.icon).setActor(icon);
+            dialogContainer.getCell(this.icon).setActor(icon);
 
             this.icon = icon;
-        } else if (!node.options.isEmpty()) {
-            optionsGroup.clear();
-            for(DialogOption option : node.options) {
-                TruetypeLabel label = new TruetypeLabel(fontGenerator, 10);
-                label.setText(option.getText());
 
-                Button butt = new Button(skin);
-                butt.add(label);
+            if (!node.options.isEmpty() && !currentMessages.hasNext()) {
+                optionsContainer.clear();
+                optionsContainer.setTouchable(Touchable.disabled);
+                for(DialogOption option : node.options) {
+                    TruetypeLabel label = new TruetypeLabel(fontGenerator, 20);
+                    label.setText(option.getText());
 
-                butt.addListener(new ClickListener() {
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        optionsGroup.clear();
-                        if(option.nextNode().isEmpty()) {
-                            eventBus.publish(new DialogEvent(node, DialogEvent.EventType.DIALOG_END));
-                            return;
+                    Button butt = new Button(skin);
+                    butt.add(label);
+
+                    butt.addListener(new ClickListener() {
+                        @Override
+                        public void clicked(InputEvent event, float x, float y) {
+                            optionsContainer.clear();
+                            if(option.nextNode().isEmpty()) {
+                                eventBus.publish(new DialogEvent(node, DialogEvent.EventType.DIALOG_END));
+                                return;
+                            }
+
+                            onDialogStart(option.nextNode().get());
                         }
+                    });
 
-                        onDialogStart(option.nextNode().get());
-                    }
-                });
-
-                optionsGroup.add(butt);
-            }
-        } else {
+                    optionsContainer.add(butt);
+                }
+        } else if(node.options.isEmpty())
             eventBus.publish(new DialogEvent(node, DialogEvent.EventType.DIALOG_END));
         }
     }

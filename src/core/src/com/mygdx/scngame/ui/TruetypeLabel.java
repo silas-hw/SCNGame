@@ -101,4 +101,6 @@ public class TruetypeLabel extends Label {
     public void setFontScale(float fontScale) {
         this.setFontSize((int) (fontScale * this.baseFontSize));
     }
+
+
 }
