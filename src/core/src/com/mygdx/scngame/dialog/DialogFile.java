@@ -7,21 +7,17 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class DialogFile {
-    private final HashMap<String, Array<DialogNode>> dialogNodes = new HashMap<>();
+    private final HashMap<String, DialogGroup> dialogGroups = new HashMap<>();
 
-    public void addDialogNode(String groupName, DialogNode dialogNode) {
-        if(!dialogNodes.containsKey(groupName)) {
-            dialogNodes.put(groupName, new Array<>());
-        }
-
-        dialogNodes.get(groupName).add(dialogNode);
+    public void addDialogGroup(DialogGroup group) {
+        dialogGroups.put(group.name, group);
     }
 
-    public DialogNode getDialogNode(String id) {
-        Array<DialogNode> nodes = dialogNodes.get(id);
+    public DialogNode getDialogNode(String id, Set<String> storyFlags) {
+        DialogGroup group = dialogGroups.get(id);
 
-        if(nodes == null) return null;
+        if(group == null) return null;
 
-        return nodes.random();
+        return group.getNode(storyFlags);
     }
 }

@@ -56,7 +56,7 @@ public class NPC extends Entity {
         InteractBox interactBox = new InteractBox() {
             @Override
             public void interact() {
-                dialogBus.publish(new DialogEvent(breed.dialogFile.getDialogNode(breed.dialogID), DialogEvent.EventType.DIALOG_START));
+                dialogBus.publish(new DialogEvent(breed.dialogFile.getDialogNode(breed.dialogID, null), DialogEvent.EventType.DIALOG_START));
             }
         };
 

@@ -318,7 +318,7 @@ public class MapObjectLoader {
         InteractBox signBox = new InteractBox() {
             @Override
             public void interact() {
-                dialogBus.publish(new DialogEvent(signDialogFile.getDialogNode(signDialogGroup), DialogEvent.EventType.DIALOG_START));
+                dialogBus.publish(new DialogEvent(signDialogFile.getDialogNode(signDialogGroup, null), DialogEvent.EventType.DIALOG_START));
             }
         };
 
@@ -339,7 +339,7 @@ public class MapObjectLoader {
         InteractBox saveBox = new InteractBox() {
             @Override
             public void interact() {
-                dialogBus.publish(new DialogEvent(savePointDialogFile.getDialogNode(savePointDialogGroup), DialogEvent.EventType.DIALOG_START));
+                dialogBus.publish(new DialogEvent(savePointDialogFile.getDialogNode(savePointDialogGroup, null), DialogEvent.EventType.DIALOG_START));
                 saveSystem.save(saveMap, saveSpawnPoint, saveDisplayName);
             }
         };

@@ -11,6 +11,9 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.XmlReader;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class XmlDialogLoader extends SynchronousAssetLoader<DialogFile, XmlDialogLoader.DialogFileParameters> {
@@ -34,10 +37,11 @@ public class XmlDialogLoader extends SynchronousAssetLoader<DialogFile, XmlDialo
 
         for(XmlReader.Element group : root.getChildrenByName("group")) {
             String groupName = group.getAttribute("id", "");
+            HashMap<String, DialogNode> nodes = new HashMap<>();
 
+            DialogNode first = null;
             for(XmlReader.Element dialog : group.getChildrenByName("dialog")) {
-                DialogNode dialogNode = new DialogNode();
-                dialogNode.id = dialog.getAttribute("id");
+                DialogNode dialogNode = new DialogNode(dialog.getAttribute("id"));
 
                 for(XmlReader.Element message : dialog.getChildrenByName("message")) {
                     DialogMessage dialogMessage = new DialogMessage();
@@ -64,8 +68,33 @@ public class XmlDialogLoader extends SynchronousAssetLoader<DialogFile, XmlDialo
 
                     dialogNode.messages.add(dialogMessage);
                 }
-                dFile.addDialogNode(groupName, dialogNode);
+
+                nodes.put(dialogNode.id, dialogNode);
+
+                if(first == null) {
+                    first = dialogNode;
+                }
             }
+
+            for(XmlReader.Element dialog : group.getChildrenByName("dialog")) {
+                if(dialog.getChildrenByName("options").isEmpty()) {
+                    continue;
+                };
+
+                DialogNode dialogNode = nodes.get(dialog.getAttribute("id"));
+                XmlReader.Element options =  dialog.getChildrenByName("options").get(0);
+
+                for(XmlReader.Element option : options.getChildrenByName("option")) {
+                    String nextDialogID = option.getAttribute("next");
+
+                    DialogNode nextNode = nodes.getOrDefault(nextDialogID, null);
+                    DialogOption dialogOption = new DialogOption(option.getText(), nextNode);
+
+                    dialogNode.options.add(dialogOption);
+                }
+            }
+
+            dFile.addDialogGroup(new DialogGroup(groupName, first));
         }
 
         return dFile;

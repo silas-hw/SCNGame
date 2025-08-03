@@ -68,7 +68,7 @@ public class DialogView implements ActionListener, EventListener<DialogEvent>, I
         defaultMessage.message = "Invalid dialog file provided.";
         defaultMessage.icon = assets.get("sprites/sign.png", Texture.class);
 
-        defaultDialog = new DialogNode();
+        defaultDialog = new DialogNode("default");
         defaultDialog.messages.add(defaultMessage);
 
         currentMessages = defaultDialog.iterator();
@@ -281,7 +281,8 @@ public class DialogView implements ActionListener, EventListener<DialogEvent>, I
 
                     optionsContainer.add(butt);
                 }
-        } else if(node.options.isEmpty())
+            }
+        } else if(node.options.isEmpty()) {
             eventBus.publish(new DialogEvent(node, DialogEvent.EventType.DIALOG_END));
         }
     }

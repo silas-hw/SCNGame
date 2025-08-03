@@ -19,19 +19,19 @@
 
             <options>
                 <option next="sign_3A">Let's try option A!!</option>
-                <option next="sign_3B">I guess I'll give B ago...</option>
+                <option next="sign_3B">I guess I'll give B a go</option>
             </options>
         </dialog>
 
         <dialog id="sign_3A">
-            <message speaker="Weird Sign :(" icon="dialog/icons/sign.png" pitch="0.2">
+            <message speaker="Weird Sign :(" icon="dialog/icons/sign.png" pitch="0.1">
                 You chose Option A. There's nothing else, really.
             </message>
         </dialog>
 
         <dialog id="sign_3B">
-            <message speaker="Weird Sign :(" icon="dialog/icons/sign.png" pitch="0.2">
-                You chose Option A. There's nothing else, really.
+            <message speaker="Weird Sign :(" icon="dialog/icons/sign.png" pitch="0.9">
+                You chose Option B. There's nothing else, really.
             </message>
         </dialog>
     </group>
