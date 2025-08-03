@@ -14,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.scngame.controls.ActionListener;
 import com.mygdx.scngame.event.EventBus;
 import com.mygdx.scngame.event.EventListener;
@@ -26,23 +25,15 @@ import com.mygdx.scngame.ui.TruetypeLabel;
 
 import java.util.Iterator;
 
-// TODO: encapsulate dialog box UI into its own class
-
 /**
  * Encapsulates the handling of dialog events, including capturing events, drawing dialog boxes, and
  * firing dialog end events.
  */
 public class DialogView implements ActionListener, EventListener<DialogEvent>, InputProcessor {
-    // constants
-    private final float CONTAINER_WIDTH = 600f;
-    private final float CONTAINER_HEIGHT = 150f;
-    private final float basePatchScale = 3f;
-
     private boolean inFocus = false;
 
     private final FreeTypeFontGenerator fontGenerator;
 
-    private Viewport view;
     private final Skin skin;
     private final Label messageLabel;
     private final Stage stage;
@@ -60,7 +51,6 @@ public class DialogView implements ActionListener, EventListener<DialogEvent>, I
     AssetManager assets;
     Iterator<DialogMessage> currentMessages;
     DialogNode defaultDialog;
-    Sound blip;
 
     EventBus<DialogEvent> eventBus;
 
@@ -71,7 +61,7 @@ public class DialogView implements ActionListener, EventListener<DialogEvent>, I
         this.assets = screenData.assets();
         this.skin = screenData.assets().get("skin/uiskin2.json", Skin.class);
 
-        blip = Gdx.audio.newSound(Gdx.files.internal("sfx/blipc5.mp3"));
+        this.dialogSound = Gdx.audio.newSound(Gdx.files.internal("sfx/blipc5.mp3"));
 
         DialogMessage defaultMessage = new DialogMessage();
         defaultMessage.speaker = "Error...";
@@ -140,6 +130,11 @@ public class DialogView implements ActionListener, EventListener<DialogEvent>, I
     }
 
     public void draw(float delta) {
+        // constants
+        final float CONTAINER_WIDTH = 600f;
+        final float CONTAINER_HEIGHT = 150f;
+        final float basePatchScale = 3f;
+
         if(!inFocus) {
             return;
         }
@@ -165,12 +160,6 @@ public class DialogView implements ActionListener, EventListener<DialogEvent>, I
         stage.draw();
     }
 
-    private float easeOutExpo(float x) {
-        return x >= 1 ? x : 1 - (float) Math.pow(2, -10 * x);
-    }
-
-    public Viewport getViewport() {return this.stage.getViewport();}
-
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
     }
@@ -194,7 +183,7 @@ public class DialogView implements ActionListener, EventListener<DialogEvent>, I
     float nextMessageCooldown = 0.1f;
     final float messageCooldownTime = 0.2f;
 
-    Sound dialogSound = blip;
+    Sound dialogSound;
     float pitch = 1f;
 
     // tick to the next character if enough time has passed
