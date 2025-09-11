@@ -7,4 +7,6 @@
 
 Summer game project B)
 
+2D RPG Game made with LibGDX.
+
 PromptFont by Yukari "Shinmera" Hafner, available at https://shinmera.com/promptfont
